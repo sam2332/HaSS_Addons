@@ -1,0 +1,21 @@
+<!-- home.html -->
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+    <h2>Discover</h2>
+    <div class="row">
+        {% for suggestion in suggestions %}
+        <div class="col-md-4 text-center suggestion">
+            <div class="input-group">
+                <span class="form-control">{{ suggestion }}</span>
+                <span class="input-group-btn">
+                    <a class="btn btn-success" type="button" href="{{ url_for('add_suggestion', suggestion=suggestion) }}">✓</a>
+                    <a class="btn btn-danger" type="button" href ="{{ url_for('remove_suggestion', suggestion=suggestion) }}">X</a>  
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

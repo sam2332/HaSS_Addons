@@ -9,6 +9,8 @@ from Libs.ConfigFile import ConfigFile
 from Libs.SuggestionsManager import SuggestionsManager
 from Libs.CategoryEngine import CategoryEngine
 from Libs.todo_list_api import get_todo_items, add_item, remove_item
+from Libs.DiscoverEngine import DiscoverEngine
+
 SUPERVISOR_TOKEN = os.environ.get('SUPERVISOR_TOKEN')
 app = Flask(__name__)  
 
@@ -35,6 +37,8 @@ CONFIG_PATH = '/config/'
 ADDON_FILES_DIR_PATH = f'{CONFIG_PATH}/PersonalShopper'
 ADDON_CONFIG_FILE = f'{ADDON_FILES_DIR_PATH}/config.json'
 ADDON_SUGGESTIONS_DB_FILE = f'{ADDON_FILES_DIR_PATH}/suggestions.db'
+ADDON_DISCOVER_CSV_FILE = f'{ADDON_FILES_DIR_PATH}/Discovery.csv'
+
 # Check If FirstTime Running
 if not os.path.exists(ADDON_FILES_DIR_PATH):
     os.makedirs(ADDON_FILES_DIR_PATH)
@@ -90,6 +94,13 @@ def main():
         )  
 
 
+
+
+#discover new foods
+@app.route('/discover', methods=['GET'])
+def discover():
+    discoveries = DiscoverEngine().discover()
+    return render_template('discover.html', suggestions=discoveries)
 
 #settings_update_all_categories
 @app.route('/settings_update_all_categories', methods=['get'])
