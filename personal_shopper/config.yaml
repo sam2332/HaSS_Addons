@@ -1,5 +1,5 @@
 name: "Personal Shopper"
-version: "0.1.15.3"
+version: "0.1.15.4"
 slug: "personalshopper"
 description: "Add items to your shopping list using inteligence"
 panel_icon: mdi:shopping-search
