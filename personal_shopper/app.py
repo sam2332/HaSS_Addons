@@ -106,7 +106,7 @@ def discover():
         discoveries = discover_engine.discover(10000)
     categories = discover_engine.get_categories()
     discover_count = discover_engine.get_suggestion_count()
-    return render_template('discover.html', suggestions=discoveries, categories=categories,discover_count=discover_count,active_tab = "discover")
+    return render_template('discover.html', discoveries=discoveries, categories=categories,discover_count=discover_count,active_tab = "discover")
 
 
 

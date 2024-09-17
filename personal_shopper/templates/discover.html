@@ -19,13 +19,14 @@
             {% endfor %}
         </div>
     </div>
+    <hr>
     <div class="row">
-        {% for suggestion in suggestions %}
-        <div class="col-md-4 text-center suggestion">
+        {% for discovery in discoveries %}
+        <div class="col-md-4 text-center discovery">
             <div class="input-group">
-                <span class="form-control">{{ suggestion }}</span>
+                <span class="form-control">{{ discovery }}</span>
                 <span class="input-group-btn">
-                    <a class="btn btn-success ajax" type="button" href="{{ url_for('add_suggestion', suggestion=suggestion) }}">+</a> 
+                    <a class="btn btn-success ajax" type="button" href="{{ url_for('add_suggestion', suggestion=discovery) }}">+</a> 
                 </span>
             </div>
         </div>
@@ -47,9 +48,9 @@
 
             $('#search').keyup(function(){
                 var search = $(this).val();
-                $('.suggestion').each(function(){
-                    var suggestion = $(this).find('.form-control').text();
-                    if(suggestion.toLowerCase().indexOf(search.toLowerCase()) == -1){
+                $('.discovery').each(function(){
+                    var discovery = $(this).find('.form-control').text();
+                    if(discovery.toLowerCase().indexOf(search.toLowerCase()) == -1){
                         $(this).hide();
                     }else{
                         $(this).show();
