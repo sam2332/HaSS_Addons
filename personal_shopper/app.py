@@ -99,8 +99,13 @@ def main():
 #discover new foods
 @app.route('/discover', methods=['GET'])
 def discover():
-    discoveries = DiscoverEngine().discover()
-    return render_template('discover.html', suggestions=discoveries)
+    discover_engine = DiscoverEngine()
+    if request.args.get('category_filter'):
+        discoveries = discover_engine.discover(25, category=request.args.get('category_filter'))
+    else:
+        discoveries = discover_engine.discover(25)
+    categories = discover_engine.get_categories()
+    return render_template('discover.html', suggestions=discoveries, categories=categories)
 
 #settings_update_all_categories
 @app.route('/settings_update_all_categories', methods=['get'])

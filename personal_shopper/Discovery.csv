@@ -1,3 +1,178 @@
-Apple,
-Bannana,
-Grapes,
+Category,Item
+Pantry,Bread
+Pantry,Milk
+Pantry,Eggs
+Pantry,Butter
+Pantry,Cheese
+Pantry,Rice
+Pantry,Pasta
+Pantry,Canned Beans
+Pantry,Canned Tomatoes
+Pantry,Flour
+Pantry,Sugar
+Pantry,Coffee
+Pantry,Tea
+Pantry,Cooking Oil
+Pantry,Salt
+Pantry,Pepper
+Pantry,Spices
+Household Goods,Toilet Paper
+Household Goods,Paper Towels
+Household Goods,Trash Bags
+Household Goods,Aluminum Foil
+Household Goods,Plastic Wrap
+Household Goods,Batteries
+Cleaning Products,Dish Soap
+Cleaning Products,Laundry Detergent
+Cleaning Products,All-Purpose Cleaner
+Cleaning Products,Glass Cleaner
+Cleaning Products,Bleach
+Cleaning Products,Sponges
+Cleaning Products,Disinfecting Wipes
+Cleaning Products,Toilet Bowl Cleaner
+Cleaning Products,Air Freshener
+Pantry,Honey
+Pantry,Oats
+Pantry,Peanut Butter
+Pantry,Jelly
+Pantry,Cereal
+Pantry,Granola Bars
+Pantry,Nuts
+Pantry,Dried Fruit
+Pantry,Canned Tuna
+Pantry,Broth
+Pantry,Soy Sauce
+Pantry,Vinegar
+Pantry,Hot Sauce
+Pantry,Mustard
+Pantry,Mayonnaise
+Household Goods,Light Bulbs
+Household Goods,Toothpaste
+Household Goods,Shampoo
+Household Goods,Body Wash
+Household Goods,Hand Soap
+Household Goods,Lotion
+Household Goods,Deodorant
+Cleaning Products,Mop
+Cleaning Products,Broom and Dustpan
+Cleaning Products,Laundry Softener
+Cleaning Products,Dishwasher Detergent
+Cleaning Products,Oven Cleaner
+Cleaning Products,Carpet Cleaner
+Cleaning Products,Furniture Polish
+Cleaning Products,Mold Remover
+Cleaning Products,Drain Cleaner
+Pantry,Canned Corn
+Pantry,Canned Peas
+Pantry,Chicken Stock
+Pantry,Pancake Mix
+Pantry,Syrup
+Pantry,Baking Powder
+Pantry,Baking Soda
+Pantry,Yeast
+Pantry,Chocolate Chips
+Pantry,Cocoa Powder
+Pantry,Coconut Oil
+Pantry,Tomato Sauce
+Pantry,Ketchup
+Pantry,Brown Sugar
+Pantry,Vanilla Extract
+Household Goods,Foil Pans
+Household Goods,Zip-top Bags
+Household Goods,Wax Paper
+Household Goods,Parchment Paper
+Household Goods,Cotton Swabs
+Household Goods,Facial Tissues
+Household Goods,Hand Sanitizer
+Household Goods,Bandages
+Cleaning Products,Rubber Gloves
+Cleaning Products,Floor Cleaner
+Cleaning Products,Stainless Steel Cleaner
+Cleaning Products,Bathroom Cleaner
+Cleaning Products,Dusting Spray
+Cleaning Products,Lint Roller
+Cleaning Products,Toilet Brush
+Cleaning Products,Garbage Disposal Cleaner
+Cleaning Products,Metal Polish
+Category,Item
+Personal Care Products,Razors
+Personal Care Products,Shaving Cream
+Personal Care Products,Mouthwash
+Personal Care Products,Dental Floss
+Personal Care Products,Cotton Balls
+Baby Products,Diapers
+Baby Products,Baby Wipes
+Baby Products,Baby Shampoo
+Baby Products,Baby Food
+Pet Supplies,Dog Food
+Pet Supplies,Cat Litter
+Pet Supplies,Pet Treats
+Pet Supplies,Pet Shampoo
+Fresh Produce,Apples
+Fresh Produce,Bananas
+Fresh Produce,Carrots
+Fresh Produce,Spinach
+Meat and Seafood,Chicken Breasts
+Meat and Seafood,Ground Beef
+Meat and Seafood,Salmon Fillets
+Meat and Seafood,Bacon
+Frozen Foods,Frozen Vegetables
+Frozen Foods,Ice Cream
+Frozen Foods,Frozen Pizza
+Frozen Foods,Frozen Fruit
+Beverages,Bottled Water
+Beverages,Orange Juice
+Beverages,Soda
+Beverages,Beer
+Snacks,Chips
+Snacks,Cookies
+Snacks,Crackers
+Snacks,Popcorn
+Breakfast Items,Bagels
+Breakfast Items,Yogurt
+Breakfast Items,Breakfast Sausages
+Breakfast Items,Granola
+Baking Supplies,Baking Chocolate
+Baking Supplies,Nuts
+Baking Supplies,Sprinkles
+Baking Supplies,Food Coloring
+Health and Wellness,Vitamins
+Health and Wellness,Pain Relievers
+Health and Wellness,First Aid Kit
+Health and Wellness,Hand Sanitizer
+Office Supplies,Printer Paper
+Office Supplies,Pens
+Office Supplies,Envelopes
+Office Supplies,Sticky Notes
+Seasonal Items,Holiday Decorations
+Seasonal Items,Scented Candles
+Seasonal Items,Seasonal Spices
+Seasonal Items,Gift Wrap
+Hardware and Maintenance,Duct Tape
+Hardware and Maintenance,Light Bulbs
+Hardware and Maintenance,Batteries
+Hardware and Maintenance,Extension Cord
+Automotive Supplies,Motor Oil
+Automotive Supplies,Windshield Washer Fluid
+Automotive Supplies,Car Air Freshener
+Automotive Supplies,Tire Pressure Gauge
+Outdoor and Garden,Potting Soil
+Outdoor and Garden,Plant Seeds
+Outdoor and Garden,Fertilizer
+Outdoor and Garden,Insect Repellent
+Laundry Supplies,Stain Remover
+Laundry Supplies,Fabric Bleach
+Laundry Supplies,Dryer Sheets
+Laundry Supplies,Laundry Basket
+Kitchen Supplies,Dish Towels
+Kitchen Supplies,Oven Mitts
+Kitchen Supplies,Cutting Board
+Kitchen Supplies,Kitchen Utensils
+Paper Products,Napkins
+Paper Products,Paper Plates
+Paper Products,Disposable Cups
+Paper Products,Coffee Filters
+Miscellaneous,Gift Cards
+Miscellaneous,Greeting Cards
+Miscellaneous,Batteries
+Miscellaneous,Flashlight

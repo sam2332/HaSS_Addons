@@ -6,13 +6,21 @@
 {% block content %}
     <h2>Discover</h2>
     <div class="row">
+        <div class="col-md-12">
+            Categories: 
+            <a class="category" href="{{ url_for('discover') }}">All</a>
+            {% for category in categories %}
+            <a  class="category" href="{{ url_for('discover', category_filter=category) }}">{{ category }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
         {% for suggestion in suggestions %}
         <div class="col-md-4 text-center suggestion">
             <div class="input-group">
                 <span class="form-control">{{ suggestion }}</span>
                 <span class="input-group-btn">
-                    <a class="btn btn-success" type="button" href="{{ url_for('add_suggestion', suggestion=suggestion) }}">✓</a>
-                    <a class="btn btn-danger" type="button" href ="{{ url_for('remove_suggestion', suggestion=suggestion) }}">X</a>  
+                    <a class="btn btn-success" type="button" href="{{ url_for('add_suggestion', suggestion=suggestion) }}">+</a> 
                 </span>
             </div>
         </div>
