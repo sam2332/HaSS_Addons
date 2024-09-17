@@ -33,16 +33,25 @@ class DiscoverEngine:
             s for s in filtered_suggestions if s['item'] not in todo_list
         ]
 
-        # Return a random sample of the available suggestions
+        # Select a random sample of available suggestions
         suggestions = random.sample(
             available_suggestions, min(count, len(available_suggestions))
         )
 
-        # Return list of items
-        return [s['item'] for s in suggestions]
+        # Sort the selected suggestions alphabetically by 'item' before returning
+        sorted_suggestions = sorted(suggestions, key=lambda x: x['item'])
+
+        # Return list of sorted items
+        return [s['item'] for s in sorted_suggestions]
 
     def get_categories(self):
         return sorted(self.categories)
 
     def get_suggestion_count(self):
         return len(self.possible_suggestions)
+    
+    def lookup_category(self, item):
+        for suggestion in self.possible_suggestions:
+            if suggestion['item'] == item:
+                return suggestion['category']
+        return None

@@ -103,11 +103,6 @@ Cleaning Products,Lint Roller
 Cleaning Products,Toilet Brush
 Cleaning Products,Garbage Disposal Cleaner
 Cleaning Products,Metal Polish
-Personal Care Products,Razors
-Personal Care Products,Shaving Cream
-Personal Care Products,Mouthwash
-Personal Care Products,Dental Floss
-Personal Care Products,Cotton Balls
 Baby Products,Diapers
 Baby Products,Baby Wipes
 Baby Products,Baby Shampoo
@@ -437,7 +432,6 @@ Frozen Foods,Frozen Lasagna
 Frozen Foods,Frozen Pasta
 Frozen Foods,Frozen Shrimp
 Frozen Foods,Frozen Scallops
-Frozen Foods,Frozen Ice Cream
 Frozen Foods,Frozen Yogurt
 Frozen Foods,Frozen Sorbet
 Frozen Foods,Frozen Pies
@@ -985,3 +979,129 @@ Kitchen Supplies,Juicer
 Kitchen Supplies,Bread Maker
 Kitchen Supplies,Ice Cream Maker
 Kitchen Supplies,Pizza Stone
+Personal Care Products,Toothbrush
+Personal Care Products,Toothpaste
+Personal Care Products,Shampoo
+Personal Care Products,Conditioner
+Personal Care Products,Body Wash
+Personal Care Products,Bar Soap
+Personal Care Products,Deodorant
+Personal Care Products,Antiperspirant
+Personal Care Products,Body Lotion
+Personal Care Products,Face Wash
+Personal Care Products,Facial Moisturizer
+Personal Care Products,Sunscreen
+Personal Care Products,Hand Cream
+Personal Care Products,Foot Cream
+Personal Care Products,Nail Clippers
+Personal Care Products,Nail File
+Personal Care Products,Cuticle Oil
+Personal Care Products,Cuticle Pusher
+Personal Care Products,Hair Brush
+Personal Care Products,Comb
+Personal Care Products,Hair Gel
+Personal Care Products,Hair Wax
+Personal Care Products,Hair Mousse
+Personal Care Products,Hair Spray
+Personal Care Products,Hair Serum
+Personal Care Products,Leave-in Conditioner
+Personal Care Products,Beard Oil
+Personal Care Products,Beard Balm
+Personal Care Products,Beard Brush
+Personal Care Products,Beard Scissors
+Personal Care Products,Shaving Razor Blades
+Personal Care Products,Aftershave
+Personal Care Products,Shaving Brush
+Personal Care Products,Shaving Soap
+Personal Care Products,Electric Razor
+Personal Care Products,Nose Hair Trimmer
+Personal Care Products,Ear Hair Trimmer
+Personal Care Products,Tweezers
+Personal Care Products,Eyebrow Scissors
+Personal Care Products,Eyebrow Razor
+Personal Care Products,Facial Cleansing Brush
+Personal Care Products,Cleansing Wipes
+Personal Care Products,Exfoliating Scrub
+Personal Care Products,Bath Bombs
+Personal Care Products,Bath Salts
+Personal Care Products,Bath Sponge
+Personal Care Products,Loofah
+Personal Care Products,Bath Towel
+Personal Care Products,Hand Towel
+Personal Care Products,Ear Cleaner
+Personal Care Products,Ear Wax Removal Kit
+Personal Care Products,Makeup Remover
+Personal Care Products,Makeup Remover Wipes
+Personal Care Products,Cotton Swabs
+Personal Care Products,Disposable Razors
+Personal Care Products,Shaving Cream (Sensitive Skin)
+Personal Care Products,Tooth Whitener
+Personal Care Products,Dental Picks
+Personal Care Products,Dental Guard
+Personal Care Products,Mouth Guard
+Personal Care Products,Electric Toothbrush
+Personal Care Products,Toothbrush Replacement Heads
+Personal Care Products,Floss Picks
+Personal Care Products,Tongue Scraper
+Personal Care Products,Denture Cleaner
+Personal Care Products,Denture Adhesive
+Personal Care Products,Hair Tie
+Personal Care Products,Hair Clip
+Personal Care Products,Shower Cap
+Personal Care Products,Hair Drying Towel
+Personal Care Products,Exfoliating Mitt
+Personal Care Products,Body Scrub
+Personal Care Products,Foot Scrub
+Personal Care Products,Foot File
+Personal Care Products,Callus Remover
+Personal Care Products,Blemish Extractor
+Personal Care Products,Acne Treatment
+Personal Care Products,Facial Toner
+Personal Care Products,Facial Serum
+Personal Care Products,Eye Cream
+Personal Care Products,Lip Balm
+Personal Care Products,Lip Scrub
+Personal Care Products,Lip Mask
+Personal Care Products,Hand Sanitizer
+Personal Care Products,Body Powder
+Personal Care Products,Feminine Hygiene Products
+Personal Care Products,Menstrual Pads
+Personal Care Products,Menstrual Cups
+Personal Care Products,Tampons
+Personal Care Products,Incontinence Pads
+Personal Care Products,Adult Wipes
+Personal Care Products,Body Spray
+Personal Care Products,Perfume
+Personal Care Products,Cologne
+Personal Care Products,Essential Oils
+Personal Care Products,Essential Oil Diffuser
+Personal Care Products,Deodorant Wipes
+Personal Care Products,Body Oil
+Personal Care Products,Shaving Gel
+Personal Care Products,Epilator
+Personal Care Products,Hot Wax Kit
+Personal Care Products,Wax Strips
+Personal Care Products,Hair Removal Cream
+Personal Care Products,Body Wash (Sensitive Skin)
+Personal Care Products,Skin Balm
+Personal Care Products,Talcum Powder
+Personal Care Products,Sunburn Relief Gel
+Personal Care Products,After Sun Lotion
+Personal Care Products,Travel Toiletry Kit
+Personal Care Products,Toiletry Bag
+Personal Care Products,Pumice Stone
+Personal Care Products,Hair Cutting Scissors
+Personal Care Products,Scalp Massager
+Personal Care Products,Foot Massager
+Personal Care Products,Massage Oil
+Personal Care Products,Whitening Mouthwash
+Personal Care Products,Mouthwash (Alcohol-Free)
+Personal Care Products,Mouthwash Dispenser
+Personal Care Products,Travel Toothbrush
+Personal Care Products,Travel Toothpaste
+Personal Care Products,Travel Shampoo
+Personal Care Products,Travel Conditioner
+Personal Care Products,Travel Body Wash
+Personal Care Products,Travel Deodorant
+Personal Care Products,Travel Razor
+Personal Care Products,Travel Mouthwash

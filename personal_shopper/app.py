@@ -115,11 +115,16 @@ def discover():
 #settings_update_all_categories
 @app.route('/settings_update_all_categories', methods=['get'])
 def settings_update_all_categories():
+    discover_engine = DiscoverEngine()
     suggestions_manager = SuggestionsManager(ADDON_SUGGESTIONS_DB_FILE)
     category_engine = CategoryEngine()
     for item in suggestions_manager.get_all_items():
         logging.info(f"Updating category for {item}")
-        category = category_engine.guess(item)
+        category = discover_engine.lookup_category(item)
+        if category is None:
+            category = category_engine.guess(item)
+            if category is None:
+                category = "Other"
         suggestions_manager.update_category(item, category)
 
 

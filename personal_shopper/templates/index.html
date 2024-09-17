@@ -11,7 +11,7 @@
             <li>{{ item.summary }} - <a href="{{ url_for('remove_todo_item', item=item.summary) }}">Remove</a></li>
             {% endfor %}
         </ul>
-        <a href="{{ url_for('process_completed') }}">Process Completed</a>
+        <a class="btn btn-primary" href="{{ url_for('process_completed') }}">Process Completed Items</a>
         <hr>
     {% endif %}
     <h2>Suggestions</h2>
