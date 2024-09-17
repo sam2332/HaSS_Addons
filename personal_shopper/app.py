@@ -101,9 +101,9 @@ def main():
 def discover():
     discover_engine = DiscoverEngine()
     if request.args.get('category_filter'):
-        discoveries = discover_engine.discover(100, category=request.args.get('category_filter'))
+        discoveries = discover_engine.discover(10000, category=request.args.get('category_filter'))
     else:
-        discoveries = discover_engine.discover(100)
+        discoveries = discover_engine.discover(10000)
     categories = discover_engine.get_categories()
     discover_count = discover_engine.get_suggestion_count()
     return render_template('discover.html', suggestions=discoveries, categories=categories,discover_count=discover_count,active_tab = "discover")

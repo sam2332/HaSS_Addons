@@ -7,6 +7,11 @@
     <h2>Discover {{discover_count}} new Items</h2>
     <div class="row">
         <div class="col-md-12">
+            <input type="text" class="form-control" id="search" placeholder="Search">
+        </div>  
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             Categories: 
             <a class="category" href="{{ url_for('discover') }}">All</a>
             {% for category in categories %}
@@ -38,6 +43,18 @@
                     oele.text('✓');
                 });
                 return false;
+            });
+
+            $('#search').keyup(function(){
+                var search = $(this).val();
+                $('.suggestion').each(function(){
+                    var suggestion = $(this).find('.form-control').text();
+                    if(suggestion.toLowerCase().indexOf(search.toLowerCase()) == -1){
+                        $(this).hide();
+                    }else{
+                        $(this).show();
+                    }
+                });
             });
         });
     </script>
