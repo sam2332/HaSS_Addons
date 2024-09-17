@@ -71,9 +71,19 @@ def main():
     else:
         suggestions_manager = SuggestionsManager(ADDON_SUGGESTIONS_DB_FILE)
         todo_items = get_todo_items(todo_list_entitiy_id)
+        needs_action_todo_items = [item for item in todo_items if item['status'] != 'needs_action']
         suggestions = suggestions_manager.suggest_items([item['summary'] for item in todo_items], 20)
 
-        return render_template('index.html', todo_items=todo_items,suggestions=suggestions)  
+        return render_template('index.html', needs_action_todo_items=needs_action_todo_items,suggestions=suggestions)  
+
+
+
+
+
+
+
+
+
 
 @app.route('/process_completed', methods=['GET'])
 def process_completed():
@@ -107,6 +117,13 @@ def remove_suggestion():
     suggestions_manager = SuggestionsManager(ADDON_SUGGESTIONS_DB_FILE)
     item_name = request.args.get('suggestion')
     suggestions_manager.remove_item(item_name)
+    return go_home(request)
+
+#remove_todo_item
+@app.route('/remove_todo_item', methods=['get'])
+def remove_todo_item():
+    item_name = request.args.get('item')
+    remove_item(config_file.get('todo_list_entitiy_id'), item_name)
     return go_home(request)
 
 @app.route('/settings', methods=['GET', 'POST'])
