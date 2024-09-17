@@ -17,7 +17,7 @@
     <h2>Suggestions</h2>
     <div class="row">
         {% for suggestion in suggestions %}
-        <div class="col-md-4 text-center">{{ suggestion }} - <a href="{{ url_for('add_suggestion', suggestion=suggestion) }}">Add</a>|<a href="{{ url_for('remove_suggestion', suggestion=suggestion) }}">Remove</a></div>
+        <div class="col-md-4 text-center suggestion">{{ suggestion }} - <a href="{{ url_for('add_suggestion', suggestion=suggestion) }}">Add</a>|<a  href="{{ url_for('remove_suggestion', suggestion=suggestion) }}" class="text-muted">Remove</a></div>
         {% endfor %}
     </div>
 {% endblock %}
