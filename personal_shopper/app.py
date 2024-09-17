@@ -1,10 +1,13 @@
 from flask import Flask, jsonify, request, redirect, url_for, render_template # type: ignore
 import os
 import time
+import logging
+logging.basicConfig(level=logging.INFO)
 import json
 import requests
 from Libs.ConfigFile import ConfigFile
 from Libs.SuggestionsManager import SuggestionsManager
+from Libs.CategoryEngine import CategoryEngine
 from Libs.todo_list_api import get_todo_items, add_item, remove_item
 SUPERVISOR_TOKEN = os.environ.get('SUPERVISOR_TOKEN')
 app = Flask(__name__)  
@@ -57,7 +60,6 @@ def main():
         if request.args.get('entity_id'):
             entity_id = request.args.get('entity_id')
             config_file.set('todo_list_entitiy_id', entity_id)
-            #return redirect(url_for('main')) but respecting the ingress path
             return go_home(request)
 
         else:
@@ -72,13 +74,35 @@ def main():
         suggestions_manager = SuggestionsManager(ADDON_SUGGESTIONS_DB_FILE)
         todo_items = get_todo_items(todo_list_entitiy_id)
         needs_action_todo_items = [item for item in todo_items if item['status'] != 'needs_action']
-        suggestions = suggestions_manager.suggest_items([item['summary'] for item in todo_items], 20)
+        suggestion_count = 20
+        if request.args.get('suggestion_count'):
+            suggestion_count = int(request.args.get('suggestion_count'))
+        if request.args.get('category_filter'):
+            suggestions = suggestions_manager.suggest_items([item['summary'] for item in todo_items], suggestion_count, request.args.get('category_filter'))
+        else:
+            suggestions = suggestions_manager.suggest_items([item['summary'] for item in todo_items], suggestion_count)
+        categories = suggestions_manager.get_categories()
+        return render_template(
+            'index.html',
+            needs_action_todo_items=needs_action_todo_items,
+            suggestions=suggestions,
+            categories=categories
+        )  
 
-        return render_template('index.html', needs_action_todo_items=needs_action_todo_items,suggestions=suggestions)  
 
 
+#settings_update_all_categories
+@app.route('/settings_update_all_categories', methods=['get'])
+def settings_update_all_categories():
+    suggestions_manager = SuggestionsManager(ADDON_SUGGESTIONS_DB_FILE)
+    category_engine = CategoryEngine()
+    for item in suggestions_manager.get_all_items():
+        logging.info(f"Updating category for {item}")
+        category = category_engine.guess(item)
+        suggestions_manager.update_category(item, category)
 
 
+    return go_home(request)
 
 
 

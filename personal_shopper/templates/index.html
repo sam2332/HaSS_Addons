@@ -16,8 +16,26 @@
     {% endif %}
     <h2>Suggestions</h2>
     <div class="row">
+        <div class="col-md-12">
+            Categories: 
+            <a class="badge" href="{{ url_for('main') }}">All</a>
+            {% for category in categories %}
+            <a  class="badge" href="{{ url_for('main', category_filter=category) }}">{{ category }}</a>
+            {% endfor %}
+            
+        </div>
+    </div>
+    <div class="row">
         {% for suggestion in suggestions %}
-        <div class="col-md-4 text-center suggestion">{{ suggestion }} - <a href="{{ url_for('add_suggestion', suggestion=suggestion) }}">Add</a>|<a  href="{{ url_for('remove_suggestion', suggestion=suggestion) }}" class="text-muted">Remove</a></div>
+        <div class="col-md-4 text-center suggestion">
+            <div class="input-group">
+                <span class="form-control">{{ suggestion }}</span>
+                <span class="input-group-btn">
+                    <a class="btn btn-success" type="button" href="{{ url_for('add_suggestion', suggestion=suggestion) }}">✓</a>
+                    <a class="btn btn-danger" type="button" href ="{{ url_for('remove_suggestion', suggestion=suggestion) }}">X</a>  
+                </span>
+            </div>
+        </div>
         {% endfor %}
     </div>
 {% endblock %}
