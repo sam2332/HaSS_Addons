@@ -43,3 +43,6 @@ class DiscoverEngine:
 
     def get_categories(self):
         return sorted(self.categories)
+
+    def get_suggestion_count(self):
+        return len(self.possible_suggestions)

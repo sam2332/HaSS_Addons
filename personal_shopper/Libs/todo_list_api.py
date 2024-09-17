@@ -10,7 +10,7 @@ def get_todo_items(todo_list_entitiy_id):
         'Content-Type': 'application/json'
     }
     # Set up your URL and headers
-    url = 'http://supervisor/core/api/services/todo/get_items?return_response'  
+    url = 'http://supervisor/core/api/services/todo/get_items?return_response'  # Replace with your actual Home Assistant URL
     # Define your data (service_data)
     data = {
         "entity_id": todo_list_entitiy_id

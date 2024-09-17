@@ -4,4 +4,4 @@ household members
     : quantity
 
 
-suggest items based on previously completed items, frequency( weekly, monthly, yearly)
+suggest items based on previously completed items
