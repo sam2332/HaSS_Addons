@@ -1,9 +1,20 @@
-<h2>Select google todo list input</h2>
+<!-- home.html -->
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+
+<h2>Select todo list</h2>
 <form action="{{ url_for('main') }}" method="get">
     <select name="entity_id">
         {% for state in states | sort(attribute='entity_id') %}
-            <option value="{{ state.entity_id }}">{{ state.entity_id }}</option>
+            {% if 'todo' in state.entity_id %}
+                <option value="{{ state.entity_id }}" selected>{{ state.entity_id }}</option>
+            {% endif %}
         {% endfor %}
     </select>
     <input type="submit">
 </form>
+
+{% endblock %}

@@ -27,6 +27,13 @@ class SuggestionsManager:
     def normalize_name(self, name):
         """Normalize item name by stripping whitespace and replacing multiple spaces."""
         return re.sub(r'\s+', ' ', name).strip()
+    
+    def remove_item(self, item_name):
+        """Remove an item by name."""
+        item_name = self.normalize_name(item_name)
+        self.cursor.execute('DELETE FROM lists WHERE item = ?', (item_name,))
+        self.conn.commit()
+        
 
     def touch_items(self, item_names):
         """Update or insert multiple items in a transaction with name normalization."""

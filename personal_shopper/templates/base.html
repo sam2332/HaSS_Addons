@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Your Site Title{% endblock %}</title>
+    
+    <!-- Bootstrap 3 CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">{% block brand %}Personal Shopper{% endblock %}</a>
+            </div>
+            <ul class="nav navbar-nav">
+                {% block nav_items %}
+                <li class="active"><a href="{{url_for('main')}}">Home</a></li>
+                <li class=""><a href="{{url_for('settings')}}">Settings</a></li>
+                {% endblock %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% block content %}
+                <h1>Welcome to the website</h1>
+                <p>This is your main content area.</p>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">
+                {% block footer %}
+                &copy; 2024 Your Website. All rights reserved.
+                {% endblock %}
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,13 +1,18 @@
+<!-- home.html -->
+{% extends "base.html" %}
 
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
 <hr>
 <a href="{{ url_for('process_completed') }}">Process Completed</a>
 <hr>
 <h2>Suggestions</h2>
-<ul>
+<div class="row">
     {% for suggestion in suggestions %}
-    <li>{{ suggestion }} - <a href="{{ url_for('add_suggestion', suggestion=suggestion) }}">Add</a></li>
+    <div class="col-md-4 text-center">{{ suggestion }} - <a href="{{ url_for('add_suggestion', suggestion=suggestion) }}">Add</a>|<a href="{{ url_for('remove_suggestion', suggestion=suggestion) }}">Remove</a></div>
     {% endfor %}
-</ul>
+</div>
 <hr>
 <h2>Existing List Items</h2>
 <table class="table-responsive table-stripped">
@@ -20,3 +25,4 @@
     </tr>
     {% endfor %}
 </table>
+{% endblock %}

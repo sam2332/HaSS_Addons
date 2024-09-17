@@ -42,7 +42,7 @@ def go_home(request):
     # Get the ingress path from the request headers
     ingress_path = request.headers.get('X-Ingress-Path', '')
     # Redirect to the home page using the ingress path
-    return redirect(f"{ingress_path}")
+    return redirect(f"{ingress_path}/")
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
@@ -52,7 +52,7 @@ def main():
     }
 
     todo_list_entitiy_id = config_file.get('todo_list_entitiy_id')
-    if not todo_list_entitiy_id:
+    if not todo_list_entitiy_id or todo_list_entitiy_id == "":
         # Set up the headers
         if request.args.get('entity_id'):
             entity_id = request.args.get('entity_id')
@@ -71,7 +71,7 @@ def main():
     else:
         suggestions_manager = SuggestionsManager(ADDON_SUGGESTIONS_DB_FILE)
         todo_items = get_todo_items(todo_list_entitiy_id)
-        suggestions = suggestions_manager.suggest_items([item['summary'] for item in todo_items], 5)
+        suggestions = suggestions_manager.suggest_items([item['summary'] for item in todo_items], 20)
 
         return render_template('index.html', todo_items=todo_items,suggestions=suggestions)  
 
@@ -94,6 +94,29 @@ def add_suggestion():
     item_name = request.args.get('suggestion')
     add_item(config_file.get('todo_list_entitiy_id'), item_name)
     return go_home(request)
+
+#settings_change_list
+@app.route('/settings_change_list', methods=['get'])
+def settings_change_list():
+    config_file.set('todo_list_entitiy_id',"")
+    return go_home(request)
+
+#remove_suggestion
+@app.route('/remove_suggestion', methods=['get'])
+def remove_suggestion():
+    suggestions_manager = SuggestionsManager(ADDON_SUGGESTIONS_DB_FILE)
+    item_name = request.args.get('suggestion')
+    suggestions_manager.remove_item(item_name)
+    return go_home(request)
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if request.method == 'POST':
+        todo_list_entitiy_id = request.form['todo_list_entitiy_id']
+        config_file.set('todo_list_entitiy_id', todo_list_entitiy_id)
+        return go_home(request)
+    else:
+        return render_template('settings.html', todo_list_entitiy_id=config_file.get('todo_list_entitiy_id'))
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
