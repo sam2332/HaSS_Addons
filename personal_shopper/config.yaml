@@ -1,0 +1,23 @@
+name: "Personal Shopper"
+version: "0.0.21"
+slug: "personalshopper"
+description: "Add items to your shopping list using inteligence"
+panel_icon: mdi:shopping-search
+startup: application
+boot: "auto"
+hassio_api: true
+homeassistant_api: true
+ingress: true
+ingress_port: 5000
+ingress_entry: "/"
+ingress_user: true
+arch:
+  - "armv7"
+  - "armhf"
+  - "aarch64"
+  - "amd64"
+  - "i386"
+options: {}
+schema: {}
+map:
+  - "config:rw"

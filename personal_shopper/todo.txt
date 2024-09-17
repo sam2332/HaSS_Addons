@@ -1,0 +1,7 @@
+household members
+-> requested items
+    : frequency 
+    : quantity
+
+
+suggest items based on previously completed items

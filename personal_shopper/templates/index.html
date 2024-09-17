@@ -1,0 +1,22 @@
+
+<hr>
+<a href="{{ url_for('process_completed') }}">Process Completed</a>
+<hr>
+<h2>Suggestions</h2>
+<ul>
+    {% for suggestion in suggestions %}
+    <li>{{ suggestion }} - <a href="{{ url_for('add_suggestion', suggestion=suggestion) }}">Add</a></li>
+    {% endfor %}
+</ul>
+<hr>
+<h2>Existing List Items</h2>
+<table class="table-responsive table-stripped">
+<thead><tr><th>Task</th><th>Completed</th></tr></thead>
+    
+    {% for item in todo_items %}
+    <tr data-item-id="{{item.uid}}">
+        <td>{{ item.summary }}</td>
+        <td>{{ item.status }}</td>
+    </tr>
+    {% endfor %}
+</table>

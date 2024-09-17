@@ -1,0 +1,9 @@
+<h2>Select google todo list input</h2>
+<form action="{{ url_for('main') }}" method="get">
+    <select name="entity_id">
+        {% for state in states | sort(attribute='entity_id') %}
+            <option value="{{ state.entity_id }}">{{ state.entity_id }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit">
+</form>
