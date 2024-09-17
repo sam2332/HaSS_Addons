@@ -90,7 +90,8 @@ def main():
             'index.html',
             needs_action_todo_items=needs_action_todo_items,
             suggestions=suggestions,
-            categories=categories
+            categories=categories,
+            active_tab = "main",
         )  
 
 
@@ -105,7 +106,7 @@ def discover():
     else:
         discoveries = discover_engine.discover(75)
     categories = discover_engine.get_categories()
-    return render_template('discover.html', suggestions=discoveries, categories=categories)
+    return render_template('discover.html', suggestions=discoveries, categories=categories,active_tab = "discover")
 
 #settings_update_all_categories
 @app.route('/settings_update_all_categories', methods=['get'])
@@ -173,7 +174,7 @@ def settings():
         config_file.set('todo_list_entitiy_id', todo_list_entitiy_id)
         return go_home(request)
     else:
-        return render_template('settings.html', todo_list_entitiy_id=config_file.get('todo_list_entitiy_id'))
+        return render_template('settings.html', todo_list_entitiy_id=config_file.get('todo_list_entitiy_id'),active_tab = "settings")
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

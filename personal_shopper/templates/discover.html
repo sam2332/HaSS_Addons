@@ -20,10 +20,25 @@
             <div class="input-group">
                 <span class="form-control">{{ suggestion }}</span>
                 <span class="input-group-btn">
-                    <a class="btn btn-success" type="button" href="{{ url_for('add_suggestion', suggestion=suggestion) }}">+</a> 
+                    <a class="btn btn-success ajax" type="button" href="{{ url_for('add_suggestion', suggestion=suggestion) }}">+</a> 
                 </span>
             </div>
         </div>
         {% endfor %}
     </div>
+{% endblock %}
+{% block extra_scripts %}
+    <script>
+        $(document).ready(function(){
+            $('.ajax').click(function(e){
+                e.preventDefault();
+                var oele =$(this)
+                var url = $(this).attr('href');
+                $.get(url, function(data){
+                    oele.text('✓');
+                });
+                return false;
+            });
+        });
+    </script>
 {% endblock %}

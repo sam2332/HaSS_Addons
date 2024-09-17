@@ -14,6 +14,7 @@
 
 
         .category {
+            margin-top:7px;
             display: inline-block;
             min-width: 10px;
             padding: 3px 7px;
@@ -28,100 +29,100 @@
             border-radius: 10px;
         }
         .category:nth-of-type(1) {
-    background-color: #777; /* Original color */
-}
+            background-color: #777; /* Original color */
+        }
 
-.category:nth-of-type(2) {
-    background-color: #FF5733; /* Example color for the 2nd occurrence */
-}
+        .category:nth-of-type(2) {
+            background-color: #FF5733; /* Example color for the 2nd occurrence */
+        }
 
-.category:nth-of-type(3) {
-    background-color: #33FF57;
-}
+        .category:nth-of-type(3) {
+            background-color: #33FF57;
+        }
 
-.category:nth-of-type(4) {
-    background-color: #5733FF;
-}
+        .category:nth-of-type(4) {
+            background-color: #5733FF;
+        }
 
-/* Continue this pattern for the remaining occurrences */
-.category:nth-of-type(5) {
-    background-color: #c49703;
-}
+        /* Continue this pattern for the remaining occurrences */
+        .category:nth-of-type(5) {
+            background-color: #c49703;
+        }
 
-.category:nth-of-type(6) {
-    background-color: #FF33C3;
-}
+        .category:nth-of-type(6) {
+            background-color: #FF33C3;
+        }
 
-.category:nth-of-type(7) {
-    background-color: #33C3FF;
-}
+        .category:nth-of-type(7) {
+            background-color: #33C3FF;
+        }
 
-.category:nth-of-type(8) {
-    background-color: #698a1d;
-}
+        .category:nth-of-type(8) {
+            background-color: #698a1d;
+        }
 
-.category:nth-of-type(9) {
-    background-color: #1a7a5d;
-}
+        .category:nth-of-type(9) {
+            background-color: #1a7a5d;
+        }
 
-.category:nth-of-type(10) {
-    background-color: #FF5733;
-}
+        .category:nth-of-type(10) {
+            background-color: #FF5733;
+        }
 
-.category:nth-of-type(11) {
-    background-color: #C70039;
-}
+        .category:nth-of-type(11) {
+            background-color: #C70039;
+        }
 
-.category:nth-of-type(12) {
-    background-color: #bd4472;
-}
+        .category:nth-of-type(12) {
+            background-color: #bd4472;
+        }
 
-.category:nth-of-type(13) {
-    background-color: #5b87b9;
-}
+        .category:nth-of-type(13) {
+            background-color: #5b87b9;
+        }
 
-.category:nth-of-type(14) {
-    background-color: #64704d;
-}
+        .category:nth-of-type(14) {
+            background-color: #64704d;
+        }
 
-.category:nth-of-type(15) {
-    background-color: #FFC300;
-}
+        .category:nth-of-type(15) {
+            background-color: #FFC300;
+        }
 
-.category:nth-of-type(16) {
-    background-color: #FF5733;
-}
+        .category:nth-of-type(16) {
+            background-color: #FF5733;
+        }
 
-.category:nth-of-type(17) {
-    background-color: #C70039;
-}
+        .category:nth-of-type(17) {
+            background-color: #C70039;
+        }
 
-.category:nth-of-type(18) {
-    background-color: #7170e7;
-}
+        .category:nth-of-type(18) {
+            background-color: #7170e7;
+        }
 
-.category:nth-of-type(19) {
-    background-color: #e380c6;
-}
+        .category:nth-of-type(19) {
+            background-color: #e380c6;
+        }
 
-.category:nth-of-type(20) {
-    background-color: #DAF7A6;
-}
+        .category:nth-of-type(20) {
+            background-color: #DAF7A6;
+        }
 
-.category:nth-of-type(21) {
-    background-color: #FFC300;
-}
-.category:nth-of-type(22) {
-    background-color: #96ad43;
-}
+        .category:nth-of-type(21) {
+            background-color: #FFC300;
+        }
+        .category:nth-of-type(22) {
+            background-color: #96ad43;
+        }
 
-.category:nth-of-type(23) {
-    background-color: #5fd399;
-}
+        .category:nth-of-type(23) {
+            background-color: #5fd399;
+        }
 
-.category:nth-of-type(24) {
-    background-color: #c55e85;
-}
+        .category:nth-of-type(24) {
+            background-color: #c55e85;
+        }
 
     </style>
     
@@ -138,9 +139,9 @@
             </div>
             <ul class="nav navbar-nav">
                 {% block nav_items %}
-                <li class="active"><a href="{{url_for('main')}}">Home</a></li>
-                <li class=""><a href="{{url_for('discover')}}">Discover New items</a></li>
-                <li class=""><a href="{{url_for('settings')}}">Settings</a></li>
+                <li class="{% if active_tab  == 'main' %}active {% endif %}"><a href="{{url_for('main')}}">Home</a></li>
+                <li class="{% if active_tab  == 'discover' %}active {% endif %}"><a href="{{url_for('discover')}}">Discover New items</a></li>
+                <li class="{% if active_tab  == 'settings' %}active {% endif %}"><a href="{{url_for('settings')}}">Settings</a></li>
                 {% endblock %}
             </ul>
         </div>
