@@ -20,7 +20,6 @@ Welcome to the **Lily Rudloff Custom Hassio Addons** repository. This repository
 
 - **Intelligent Suggestions:** Automatically suggest items based on your existing shopping list.
 - **Discover New Products:** Discover new items from our list of 1100+ products.
-- **Category Management:** Organize your shopping items into categories for easier navigation.
 - **Data Management:** Track usage and manage data purging to optimize database performance.
 - **User-Friendly Interface:** Accessible through Home Assistant’s ingress with a responsive web interface.
 - **Customizable Settings:** Configure suggestion count and cooldown periods to tailor the experience to your needs.
