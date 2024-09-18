@@ -19,7 +19,7 @@ Welcome to the **Lily Rudloff Custom Hassio Addons** repository. This repository
 #### Features
 
 - **Intelligent Suggestions:** Automatically suggest items based on your existing shopping list.
-- **Intelligent Discoveries:** Automatically discover new items based on your previous shopping history and similar patterns.
+- **Discover New Products:** Discover new items from our list of 1100+ products.
 - **Category Management:** Organize your shopping items into categories for easier navigation.
 - **Data Management:** Track usage and manage data purging to optimize database performance.
 - **User-Friendly Interface:** Accessible through Home Assistant’s ingress with a responsive web interface.
@@ -35,7 +35,7 @@ Welcome to the **Lily Rudloff Custom Hassio Addons** repository. This repository
 2. **Install Personal Shopper:**
    - After adding the repository, find **Personal Shopper** in the Add-on Store.
    - Click **Install**.
-   - 
+     
 4. **Start the Add-on:**
    - Click **Start** to run the Personal Shopper add-on.
    - Optionally, enable **Start on Boot** for automatic startup.
