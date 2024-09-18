@@ -10,3 +10,6 @@ The installation of this add-on is simple and follows the same process as instal
 5. Click "OPEN WEB UI" to access the Personal Shopper dashboard. You will be prompted to select your todo list.
 
 the add-on uses Home Assistant's authentication system for access.
+
+
+Created By Lily(sam) Rudloff

@@ -7,5 +7,48 @@
 <a href="{{ url_for('settings_change_list') }}">Change List</a><br>
 <a href="{{ url_for('settings_update_all_categories') }}">Update All Categories</a><br>
 
+<div class="form-group">
+    <label for="cooldown-days">Recomendation Cooldown Days</label>
+    <input type="number" class="form-control" id="cooldown-days" value="{{ cooldown_days }}">
+</div>
 
+
+<div class="form-group">
+    <label for="suggestion-count">Suggestion Count</label>
+    <input type="number" class="form-control" id="suggestion-count" value="{{ suggestion_count }}">
+</div>
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script>
+    $(document).ready(function() {
+        $('#cooldown-days').change(function() {
+            var cooldown_days = $('#cooldown-days').val();
+            cooldown_days = parseInt(cooldown_days);
+            if (cooldown_days < 0) {
+                cooldown_days = 0;
+            }
+            if (cooldown_days > 365) {
+                cooldown_days = 365;
+            }
+            $.post("{{ url_for('settings_update_cooldown_days') }}", {
+                cooldown_days: cooldown_days
+            });
+        });
+        $('#suggestion-count').change(function() {
+            var suggestion_count = $('#suggestion-count').val();
+            suggestion_count = parseInt(suggestion_count);
+            if (suggestion_count < 0) {
+                suggestion_count = 0;
+            }
+            if (suggestion_count > 9001) {
+                suggestion_count = 9001;
+            }
+            $.post("{{ url_for('settings_update_suggestion_count') }}", {
+                suggestion_count: suggestion_count
+            });
+        });
+    });
+</script>
 {% endblock %}

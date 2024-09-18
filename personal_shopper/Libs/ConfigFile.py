@@ -16,9 +16,12 @@ class ConfigFile:
     
     def save(self):
         with open(self.file_name, 'w') as file:
-            json.dump(self.config, file)
+            json.dump(self.config, file,indent=4)
     
-    def get(self, key):
+    def get(self, key,default=None):
+        if key not in self.config:
+            self.set(key, default)
+            return default
         return self.config.get(key)
     
     def set(self, key, value):
