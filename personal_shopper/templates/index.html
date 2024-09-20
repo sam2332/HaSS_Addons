@@ -25,16 +25,22 @@
         </div>
     </div>
     <div class="row">
-        {% for suggestion in suggestions %}
+        {% if suggestions|length == 0 %}
+        <div class="col-md-12 text-center mt-5">
+            <h3>No suggestions available, change cuttoff date, or use your shopping list and check back later</h3>
+        </div>
+        {% else %}
+            {% for suggestion in suggestions %}
         <div class="col-md-4 text-center suggestion">
             <div class="input-group">
                 <span class="form-control">{{ suggestion }}</span>
                 <span class="input-group-btn">
                     <a class="btn btn-success" type="button" href="{{ url_for('add_suggestion', suggestion=suggestion) }}">✓</a>
-                    <a class="btn btn-danger" type="button" href ="{{ url_for('remove_suggestion', suggestion=suggestion) }}">X</a>  
+                    <a class="btn btn-danger" type="button" href ="{{ url_for('remove_suggestion', suggestion=suggestion) }}">X</a>
                 </span>
             </div>
         </div>
-        {% endfor %}
+            {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}

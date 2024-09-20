@@ -1,2 +1,2 @@
-## 0.1.10+
-- discovery list modifications
+## 0.1.15+
+- discovery list excluding todo items

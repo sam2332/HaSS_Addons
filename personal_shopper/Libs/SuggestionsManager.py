@@ -5,7 +5,7 @@ from Libs.CategoryEngine import CategoryEngine
 
 
 class SuggestionsManager:
-    def __init__(self, db_file):
+    def __init__(self,db_file):
         self.db_file = db_file
         needs_setup = False
         if not os.path.exists(db_file):
@@ -69,23 +69,49 @@ class SuggestionsManager:
                 ON CONFLICT(item) DO NOTHING
             ''', params)
 
-    def suggest_items(self, existing_items, max_items, category=None):
-        """Suggest items not in existing_items, filtered by category (optional), and ordered by times_completed."""
+    def suggest_items(self, existing_items, max_items, category=None, cooldown_days=None):
+        """
+        Suggest items not in existing_items, optionally filtered by category and cooldown period,
+        ordered by times_completed descending and last_completed descending.
+        
+        :param existing_items: List of items to exclude from suggestions.
+        :param max_items: Maximum number of items to suggest.
+        :param category: (Optional) Category to filter suggestions.
+        :param cooldown_days: (Optional) Minimum number of days since last_completed.
+        :return: List of suggested item names.
+        """
         # Normalize existing items before querying
         existing_items = [self.normalize_name(item) for item in existing_items]
         
-        placeholders = ', '.join('?' for _ in existing_items)
+        query_conditions = []
+        params = []
+
+        if existing_items:
+            placeholders = ', '.join('?' for _ in existing_items)
+            query_conditions.append(f"item NOT IN ({placeholders})")
+            params.extend(existing_items)
+        
+        if category:
+            query_conditions.append("category = ?")
+            params.append(category)
+        
+        if cooldown_days is not None:
+            query_conditions.append("last_completed <= datetime('now', ?)")
+            params.append(f'-{cooldown_days} days')
+        
+        where_clause = "WHERE " + " AND ".join(query_conditions) if query_conditions else ""
+        
         query = f'''
             SELECT item FROM lists
-            WHERE item NOT IN ({placeholders})
-            {f"AND category = ?" if category else ""}
+            {where_clause}
             ORDER BY times_completed DESC, last_completed DESC
             LIMIT ?
         '''
-        params = existing_items + ([category] if category else []) + [max_items]
+        params.append(max_items)
+        
         self.cursor.execute(query, params)
         return [row[0] for row in self.cursor.fetchall()]
-    
+        
     def get_categories(self):
         self.cursor.execute('SELECT DISTINCT category FROM lists')
         return [row[0] for row in self.cursor.fetchall() if row[0]]

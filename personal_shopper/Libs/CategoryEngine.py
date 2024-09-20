@@ -5,7 +5,7 @@ import csv, re
 class CategoryEngine:
     def __init__(self):
         self.categories = []
-        with open(f'/app/categories_regex.csv') as f:
+        with open(f'/app/Data/categories_regex.csv') as f:
             reader = csv.reader(f)
             for row in reader:
                 self.categories.append(row)

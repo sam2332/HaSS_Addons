@@ -3,7 +3,7 @@ import random
 
 class DiscoverEngine:
     def __init__(self):
-        self.csv_file = "/app/Discovery.csv"
+        self.csv_file = "/app/Data/Discovery.csv"
         self.possible_suggestions = []
         self.categories = set()
         self.load()
@@ -19,7 +19,7 @@ class DiscoverEngine:
                     self.possible_suggestions.append({'category': category, 'item': item})
                     self.categories.add(category)
 
-    def discover(self, count=15, todo_list=[], category=None):
+    def discover(self, count=15, todo_items=[], category=None):
         # Filter suggestions based on the single category if provided
         if category:
             filtered_suggestions = [
@@ -30,7 +30,7 @@ class DiscoverEngine:
 
         # Exclude items already in the todo list
         available_suggestions = [
-            s for s in filtered_suggestions if s['item'] not in todo_list
+            s for s in filtered_suggestions if s['item'] not in todo_items
         ]
 
         # Select a random sample of available suggestions
@@ -52,6 +52,6 @@ class DiscoverEngine:
     
     def lookup_category(self, item):
         for suggestion in self.possible_suggestions:
-            if suggestion['item'] == item:
+            if suggestion['item'].lower() == item.lower():
                 return suggestion['category']
         return None
