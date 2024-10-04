@@ -5,7 +5,7 @@ from libs.utils import get_remote_user
 import random
 from CONST import SAYINGS,PAST_SAYINGS
 import time
-
+import uuid
 
 
 def register_blueprint(app):
@@ -28,6 +28,8 @@ def register_blueprint(app):
                 tag = Tag(name=tag_name, user=user, entry_id=entry.id)
                 db.session.add(tag)
             db.session.commit()
+            last_post_uuid = uuid.uuid4()
+            session['last_post_uuid'] = last_post_uuid
 
             return redirect(app.wrapped_url_for('main.journal'))
 
@@ -41,8 +43,14 @@ def register_blueprint(app):
             saying = random.choice(SAYINGS)
             session['saying'] = saying
             session['saying_set_time'] = time.time()
+            
+        if session.get('last_post_uuid'):
+            last_post_uuid = session.get('last_post_uuid')
+        else:
+            last_post_uuid = uuid.uuid4()
+            session['last_post_uuid'] = last_post_uuid
 
-        return render_template('journal.html', user = user,saying=saying)
+        return render_template('journal.html', user = user,saying=saying, last_post_uuid =last_post_uuid)
     
     
     
