@@ -4,10 +4,11 @@ import time
 import json
 import requests
 from libs.ConfigFile import ConfigFile
-from libs.utils import link_tags, nl2br, wrapped_url_for,u2s
+from libs.utils import link_tags, nl2br, wrapped_url_for,u2s,time_link,set_timezone
 from libs.models import db
 from routes import main, tags, settings
 SUPERVISOR_TOKEN = os.environ.get('SUPERVISOR_TOKEN')
+set_timezone()
 app = Flask(__name__)  
 app.debug = True
 # https://developers.home-assistant.io/docs/add-ons/communication
@@ -32,6 +33,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.jinja_env.filters['link_tags'] = link_tags
 app.jinja_env.filters['nl2br'] = nl2br
 app.jinja_env.filters['u2s'] = u2s
+app.jinja_env.filters['time_link'] = time_link
 
 app.wrapped_url_for = wrapped_url_for
 @app.context_processor
@@ -45,6 +47,7 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
     db.session.commit()
+    
 # Register Blueprints
 main.register_blueprint(app)
 tags.register_blueprint(app)

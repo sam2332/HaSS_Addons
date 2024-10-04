@@ -1,5 +1,9 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, Response
 import random
+import time
+import uuid
+import io
+import csv
 
 from libs.models import db, JournalEntry, Tag
 from libs.utils import get_remote_user
@@ -21,16 +25,36 @@ def register_blueprint(app):
                 db.session.add(tag)
         db.session.commit()
         return redirect(app.wrapped_url_for('settings.main'))
-    
+ 
+
     @bp.route('/export_csv')
     def export_csv():
         user = get_remote_user()
         entries = JournalEntry.query.filter_by(user=user).all()
-        csv = 'id,content\n'
+
+        # Create an in-memory file object to store the CSV data
+        output = io.StringIO()
+
+        # Create a CSV writer
+        writer = csv.writer(output)
+
+        # Write the header
+        writer.writerow(['id', 'content'])
+
+        # Write the entries, properly escaping content
         for entry in entries:
-            csv += f'{entry.id},"{entry.content}"\n'
-        return csv
-    
+            writer.writerow([entry.id, entry.content])
+
+        # Move to the start of the stream
+        output.seek(0)
+
+        # Return the CSV file as a response
+        return Response(
+            output,
+            mimetype='text/csv',
+            headers={'Content-Disposition': 'attachment;filename=journal_entries.csv'}
+        )
+        
     @bp.route('/')
     def main():       
         return render_template('settings.html')

@@ -36,7 +36,7 @@
             </ul>
             {% endif %}
             <div>
-                <small>Written on: {{ entry.timestamp.strftime('%Y-%m-%d %I:%M:%S %p') }}</small>
+                <small>Written on: {{ entry.timestamp|time_link |safe}}</small>
                 <a href="{{ url_for('main.update_journal_entry', entry_id=entry.id) }}">Edit</a>
             </div>
         </li>

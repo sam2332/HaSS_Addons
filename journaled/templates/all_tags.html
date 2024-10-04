@@ -4,7 +4,7 @@
     <style>
         .tag-cloud {
             position: relative;
-            width: 800px; /* Adjust the width as needed */
+            width: 100%;
             height: 450px; /* Adjust the height as needed */
             font-family: sans-serif;
         }
@@ -152,7 +152,7 @@
             /* ======================= END PLACEMENT FUNCTIONS ======================= */
 
             /* ======================= PLACE WORDS ======================= */
-            (function placeWords() {
+            function placeWords() {
                 for (var i = 0; i < words.length; i++) {
                     var wordObj = words[i];
                     var wordEl = createWordObject(wordObj.word, wordObj.freq);
@@ -170,7 +170,8 @@
                         }
                     }
                 }
-            })();
+            }
+            placeWords();
             /* ======================= END PLACE WORDS ======================= */
 
             /* ======================= EVENT LISTENERS ======================= */
@@ -178,6 +179,15 @@
                 if (event.target.classList.contains("tag")) {
                     window.location.href = event.target.dataset.url;
                 }
+            });
+            window.addEventListener("resize", function() {
+                cloud.innerHTML = "";
+                wordsDown = [];
+                startPoint = {
+                    x: cloud.offsetWidth / 2,
+                    y: cloud.offsetHeight / 2
+                };
+                placeWords();
             });
             /* ======================= END EVENT LISTENERS ======================= */
         });

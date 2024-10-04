@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+    ul {
+        list-style-type: none;
+    }
+    .entry {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>{{ day }}</h1>
+<ul>
+    {% for entry in entries %}
+    <li class="entry">
+        <!-- Render the content of the entry with linked tags and line breaks -->
+        <div>{{ entry.content | link_tags | nl2br | safe }}</div>
+        
+        {% if entry.tags %}
+        <!-- Render tags associated with the entry -->
+        <strong>Tags:</strong>
+        <ul class="list-inline d-inline ml-1">
+            {% for tag in entry.tags %}
+            <li class="list-inline-item">
+                <a href="{{ url_for('tags.tag_detail', tag_name=tag.name) }}">#{{ tag.name | u2s | title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <br>
+        {% endif %}
+        
+        <!-- Show the timestamp and link to edit the entry -->
+        <div>
+            <small>Written on: {{ entry.timestamp | time_link |safe}}</small>
+            <a href="{{ url_for('main.update_journal_entry', entry_id=entry.id) }}">Edit</a>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

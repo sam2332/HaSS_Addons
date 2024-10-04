@@ -13,7 +13,7 @@
     </style>
 {% endblock %}
 {% block content %}
-<h1>Entries tagged with #{{ tag_name | u2s | title}}</h1>
+<h1>{{date}}</h1>
 <ul>
     {% for tag in tags %}
     <li class="entry">
@@ -29,7 +29,7 @@
         <br>
         {% endif %}
         <div>
-            <small>Written on: {{ tag.entry.timestamp.strftime('%Y-%m-%d %I:%M:%S %p') }}</small>
+            <small>Written on: {{ tag.entry.timestamp|time_link|safe}}</small>
             <a href="{{url_for('main.update_journal_entry',entry_id=tag.entry.id)}}">Edit</a>
         </div>
     </li>

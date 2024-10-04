@@ -6,7 +6,7 @@ import random
 from CONST import SAYINGS,PAST_SAYINGS
 import time
 import uuid
-
+from datetime import datetime
 
 def register_blueprint(app):
     bp = Blueprint('main', __name__)
@@ -43,6 +43,8 @@ def register_blueprint(app):
             saying = random.choice(SAYINGS)
             session['saying'] = saying
             session['saying_set_time'] = time.time()
+            
+            
             
         if session.get('last_post_uuid'):
             last_post_uuid = session.get('last_post_uuid')
@@ -109,5 +111,25 @@ def register_blueprint(app):
             session['past_saying_set_time'] = time.time()
         entries = JournalEntry.query.filter_by(user=user).order_by(JournalEntry.timestamp.desc()).all()
         return render_template('past.html', entries=entries, user = user,past_saying=past_saying)
+    
+    @bp.route('/on_day/<day>')
+    def on_day(day):
+        user = get_remote_user()
+        
+        # Convert day string (e.g., '2024-10-04') into a date object
+        day_start = datetime.strptime(day, '%Y-%m-%d')
+
+        # Filter journal entries that match the given day (ignoring time), and timezone
+        entries = (
+            JournalEntry.query.filter(
+                JournalEntry.timestamp >= day_start,
+                JournalEntry.timestamp < day_start + timedelta(days=1),
+                JournalEntry.user == user
+            )
+            .order_by(JournalEntry.timestamp.desc())
+            .all()
+        )
+
+        return render_template('on_day.html', entries=entries, user=user, day=day)
     
     app.register_blueprint(bp)
