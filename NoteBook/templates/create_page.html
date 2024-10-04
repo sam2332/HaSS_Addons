@@ -1,0 +1,17 @@
+<!-- create_page.html -->
+{% extends "base.html" %}
+
+{% block title %}Create Page{% endblock %}
+
+{% block content %}
+<h1>Create a New Page in Section "{{ section_name }}"</h1>
+<form action="{{ url_for('create_page', notebook_name=notebook_name, section_name=section_name) }}" method="post">
+    <label for="title">Page Title:</label><br>
+    <input type="text" id="title" name="title" required><br><br>
+
+    <label for="content">Content:</label><br>
+    <textarea id="content" name="content" rows="10"></textarea><br><br>
+
+    <button type="submit">Create Page</button>
+</form>
+{% endblock %}

@@ -1,0 +1,23 @@
+<!-- create_notebook.html -->
+{% extends "base.html" %}
+
+{% block title %}Create Notebook{% endblock %}
+
+{% block content %}
+<h1>Create a New Notebook</h1>
+<form action="{{ url_for('create_notebook') }}" method="post">
+    <label for="name">Notebook Name:</label><br>
+    <input type="text" id="name" name="name" required><br><br>
+
+    <label for="description">Description:</label><br>
+    <textarea id="description" name="description"></textarea><br><br>
+
+    <label for="tags">Tags (comma-separated):</label><br>
+    <input type="text" id="tags" name="tags"><br><br>
+
+    <label for="theme">Theme:</label><br>
+    <input type="text" id="theme" name="theme"><br><br>
+
+    <button type="submit">Create Notebook</button>
+</form>
+{% endblock %}

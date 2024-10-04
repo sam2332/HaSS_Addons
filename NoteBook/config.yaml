@@ -1,8 +1,8 @@
-name: "Personal Shopper"
-version: "0.1.15.39"
-slug: "personalshopper"
-description: "Add items to your shopping list using inteligence"
-panel_icon: mdi:shopping-search
+name: "Notebooks"
+version: "0.0.0.35"
+slug: "notebooks"
+description: "Keep Track of your notes"
+panel_icon: mdi:notebook
 startup: application
 boot: "auto"
 hassio_api: true

@@ -1,0 +1,18 @@
+<!-- sorted_notebooks.html -->
+{% extends "base.html" %}
+
+{% block title %}Notebooks Sorted by {{ sort_by }}{% endblock %}
+
+{% block content %}
+<h1>Notebooks Sorted by {{ sort_by|capitalize }}</h1>
+
+<ul>
+    {% for notebook in notebooks %}
+    <li>
+        <a href="{{ url_for('view_notebook', notebook_name=notebook) }}">{{ notebook }}</a>
+    </li>
+    {% else %}
+    <li>No notebooks available.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

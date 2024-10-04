@@ -1,0 +1,39 @@
+notebooks:
+    has attributes:
+        name
+        description
+        cover image
+        tags
+        theme
+
+    has sections:
+        which are a collection of markdown pages
+
+
+
+themes:
+    GLOBAL:
+        font select
+        markdown styles
+        dark mode
+    notebook override:
+        font select
+        markdown styles
+
+
+editor:
+    markdown, autosave,
+
+group by:
+    tags
+
+sort by:
+    name
+    last modified
+    page count
+    importance
+
+
+
+future:
+    export as pdf

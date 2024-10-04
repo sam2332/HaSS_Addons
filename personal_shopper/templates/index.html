@@ -36,11 +36,25 @@
                 <span class="form-control">{{ suggestion }}</span>
                 <span class="input-group-btn">
                     <a class="btn btn-success" type="button" href="{{ url_for('add_suggestion', suggestion=suggestion) }}">✓</a>
-                    <a class="btn btn-danger" type="button" href ="{{ url_for('remove_suggestion', suggestion=suggestion) }}">X</a>
+                    <a class="btn btn-danger show-on-shift" type="button" style="display:none;" href ="{{ url_for('remove_suggestion', suggestion=suggestion) }}">X</a>
+                    <a class="btn btn-danger" type="button" href ="{{ url_for('delay_suggestion', suggestion=suggestion) }}">🕒</a>
                 </span>
             </div>
         </div>
             {% endfor %}
         {% endif %}
     </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    $(document).ready(function() {
+        // when shift held down, show delete buttons
+        $(document).keydown(function(e) {
+            if (e.shiftKey) {
+                $('.show-on-shift').toggle();
+            }
+        });
+    });
+</script>
 {% endblock %}

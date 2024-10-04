@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>All Tags</h1>
+<ul>
+    {% for tag in tags_with_size %}
+    <li>
+        <a href="{{ url_for('tags.tag_detail', tag_name=tag.name) }}" style="font-size: {{ tag.size }}px;">
+            #{{ tag.name }}
+        </a>
+    </li>
+    {% else %}
+    <li>No tags found. Try using #hashtags in your posts to cross link your memories</li>
+    {% endfor %}
+</ul>
+{% endblock %}

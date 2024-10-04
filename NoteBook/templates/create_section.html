@@ -1,0 +1,14 @@
+<!-- create_section.html -->
+{% extends "base.html" %}
+
+{% block title %}Create Section{% endblock %}
+
+{% block content %}
+<h1>Create a New Section in "{{ notebook_name }}"</h1>
+<form action="{{ url_for('create_section', notebook_name=notebook_name) }}" method="post">
+    <label for="name">Section Name:</label><br>
+    <input type="text" id="name" name="name" required><br><br>
+
+    <button type="submit">Create Section</button>
+</form>
+{% endblock %}

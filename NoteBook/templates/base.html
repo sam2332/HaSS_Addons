@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ theme }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Your Site Title{% endblock %}</title>
+    
+    <!-- Bootstrap 3 CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ url_for('home') }}">{% block brand %}Notebook{% endblock %}</a>
+            </div>
+            <ul class="nav navbar-nav">
+                {% block nav_items %}
+                <li><a href="{{ url_for('home') }}">Library</a></li>
+                <li>
+                    <form  action="{{ url_for('search') }}" method="get" class="navbar-form navbar-left" role="search">
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="Search" name="q">
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                      </form>
+                </li>
+                {% endblock %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% block content %}
+                <h1>Welcome to the website</h1>
+                <p>This is your main content area.</p>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

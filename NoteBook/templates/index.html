@@ -1,0 +1,113 @@
+<!-- index.html -->
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock %}
+{% block extra_head %}
+<style>
+    .Notebook_Theme_1{
+        background-image:
+            linear-gradient(45deg, #ccc 25%, transparent 25%),
+            linear-gradient(-45deg, #ccc 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, #ccc 75%),
+            linear-gradient(-45deg, transparent 75%, #ccc 75%);
+        background-size: 20px 20px;
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        .Notebook_Theme_2 {
+        background-image: linear-gradient(0deg, transparent 75%, #000 75%, #000 80%, transparent 80%),
+                            linear-gradient(90deg, transparent 75%, #000 75%, #000 80%, transparent 80%);
+        background-size: 40px 40px;
+    }
+
+    .Notebook_Theme_3 {
+        background-image: linear-gradient(90deg, #5c3d2e 10%, #f9eae1 10%);
+        background-size: 40px 40px;
+    }
+    .Notebook_Theme_4 {
+        background-image:
+            radial-gradient(circle, #4a3d52 20%, transparent 20%),
+            radial-gradient(circle, #4a3d52 20%, transparent 20%);
+        background-size: 30px 30px;
+        background-position: 0 0, 15px 15px;
+    }
+    .Notebook_Theme_5 {
+        background-image: linear-gradient(135deg, #2d3748 25%, transparent 25%), 
+                        linear-gradient(135deg, transparent 75%, #2d3748 75%);
+        background-size: 20px 20px;
+    }    
+
+    .Notebook_Cover{
+        height: 256px;
+        width: 170px;
+        outline: 1px solid;
+        margin:0 auto;
+    }
+
+
+    .Notebook_Theme_Title {
+        bottom: 15%;
+        position: absolute;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        width: 170px;
+        background-color: #fff;
+    }
+    .Notebook_Link{
+        display: block;
+        padding: 5px;
+        text-align: center;
+        color: black;
+        text-decoration: none;
+    }
+    .Notebook_Cover:hover {
+        box-shadow: 0 0 10px 5px #f9eae1;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid" style="background-color: #f8f8f8; padding: 10px;">
+    <a href="{{ url_for('sort_notebooks') }}" class="pull-left" style="color: #337ab7;">Sort</a>
+    <a href="{{ url_for('create_notebook') }}" class="pull-right" style="color: #337ab7;">Create Notebook</a>
+</div>
+
+
+<div class="row" id="library_box">
+    {% set total_notebooks = notebooks|length %}
+    {% set items_in_last_row = total_notebooks % 4 %}
+    {% if items_in_last_row == 0 %}
+        {% set items_in_last_row = 4 %}
+    {% endif %}
+
+    {% for notebook in notebooks %}
+        {% if loop.index > total_notebooks - items_in_last_row %}
+            <!-- This notebook is in the last row -->
+            {% if items_in_last_row == 1 %}
+                {% set col_class = "col-sm-12" %}
+            {% elif items_in_last_row == 2 %}
+                {% set col_class = "col-sm-6" %}
+            {% elif items_in_last_row == 3 %}
+                {% set col_class = "col-sm-4" %}
+            {% else %}
+                {% set col_class = "col-sm-3" %}
+            {% endif %}
+        {% else %}
+            {% set col_class = "col-sm-3" %}
+        {% endif %}
+
+        <div class="{{ col_class }}">
+            <a href="{{ url_for('view_notebook', notebook_name=notebook.name) }}" class="Notebook_Link">
+                <div class="Notebook_Cover {{ notebook.theme }}">
+                    <div class="Notebook_Theme_Title">
+                        {{ notebook.display_name }}
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% else %}
+        <div class="text-center">No notebooks available.</div>
+    {% endfor %}
+</div>
+{% endblock %}

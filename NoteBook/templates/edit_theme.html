@@ -1,0 +1,45 @@
+<!-- templates/edit_theme.html -->
+{% extends "base.html" %}
+
+{% block title %}Edit Theme - {{ notebook_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Theme for Notebook: "{{ notebook_name }}"</h2>
+    
+    <!-- Display flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <form method="POST" action="{{ url_for('edit_theme', notebook_name=notebook_name) }}">
+        <!-- CSRF Token -->
+        {{ csrf_field() }}
+        
+        <div class="form-group">
+            <label for="theme">Select Theme:</label>
+            <select class="form-control" id="theme" name="theme" required>
+                {% for theme in available_themes %}
+                    <option value="{{ theme }}" {% if theme == current_theme %}selected{% endif %}>{{ theme.capitalize() }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <!-- Alternatively, if you want to allow custom themes:
+        <div class="form-group">
+            <label for="theme">Enter Theme Name:</label>
+            <input type="text" class="form-control" id="theme" name="theme" value="{{ current_theme }}" required>
+        </div>
+        -->
+        
+        <button type="submit" class="btn btn-primary">Update Theme</button>
+        <a href="{{ url_for('view_notebook', notebook_name=notebook_name) }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

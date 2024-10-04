@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, redirect, url_for, render_template # type: ignore
+from flask import Flask, jsonify, request, redirect, url_for, render_template, session
 import os
 import time
 import logging
@@ -11,8 +11,8 @@ from Libs.CategoryEngine import CategoryEngine
 from Libs.todo_list_api import get_todo_items, add_item, remove_item,get_all_todo_lists
 from Libs.DiscoverEngine import DiscoverEngine
 
-app = Flask(__name__)  
-
+app = Flask(__name__)
+app.secret_key = b'A\nb\xd6\xe5\x13\xa8\x07\x88\x04P\xd0P\xff\xace\nH\x01\xd8\xa1%\xf8\xab'
 # Fixes url_for when running behind a reverse proxy
 @app.context_processor
 def override_url_for():
@@ -41,15 +41,16 @@ if not os.path.exists(ADDON_FILES_DIR_PATH):
 
 config_file = ConfigFile(ADDON_CONFIG_FILE)
 
-def go_home(request):
+def go_home(request, extra_path=""):
     # Get the ingress path from the request headers
     ingress_path = request.headers.get('X-Ingress-Path', '')
     # Redirect to the home page using the ingress path
-    return redirect(f"{ingress_path}/")
+    if session['category_filter']:
+        return redirect(f"{ingress_path}/{extra_path}?category_filter={session['category_filter']}")
+    return redirect(f"{ingress_path}/{extra_path}")
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-
     todo_list_entitiy_id = config_file.get('todo_list_entitiy_id')
     if not todo_list_entitiy_id or todo_list_entitiy_id == "":
         if request.args.get('entity_id'):
@@ -66,11 +67,14 @@ def main():
         needs_action_todo_items = [item for item in todo_items if item['status'] != 'needs_action']
         suggestion_count = config_file.get('suggestion_count', 20)
         cooldown_days = config_file.get('cooldown_days', 7)
+        existing_items = [item['summary'] for item in todo_items]
         if request.args.get('category_filter'):
-            suggestions = suggestions_manager.suggest_items([item['summary'] for item in todo_items], suggestion_count, request.args.get('category_filter'),cooldown_days=cooldown_days)
+            session['category_filter'] = request.args.get('category_filter')
+            suggestions = suggestions_manager.suggest_items(existing_items, suggestion_count, request.args.get('category_filter'),cooldown_days=cooldown_days)
         else:
-            suggestions = suggestions_manager.suggest_items([item['summary'] for item in todo_items], suggestion_count,cooldown_days=cooldown_days)
-        categories = suggestions_manager.get_categories()
+            session['category_filter'] = None
+            suggestions = suggestions_manager.suggest_items(existing_items, suggestion_count,cooldown_days=cooldown_days)
+        categories = suggestions_manager.get_categories(existing_items=existing_items,cooldown_days=cooldown_days)
         return render_template(
             'index.html',
             needs_action_todo_items=needs_action_todo_items,
@@ -130,6 +134,13 @@ def settings_update_suggestion_count():
     config_file.set('suggestion_count', int(request.form['suggestion_count']))
     return go_home(request)
 
+
+#settings_update_suggestion_sleep
+@app.route('/settings_update_suggestion_sleep', methods=['post'])
+def settings_update_suggestion_sleep():
+    config_file.set('suggestion_sleep', int(request.form['suggestion_sleep']))
+    return go_home(request)
+
 @app.route('/process_completed', methods=['GET'])
 def process_completed():
     suggestions_manager = SuggestionsManager(ADDON_SUGGESTIONS_DB_FILE)
@@ -156,6 +167,22 @@ def settings_change_list():
     config_file.set('todo_list_entitiy_id',"")
     return go_home(request)
 
+
+#delay_suggestion
+@app.route('/delay_suggestion', methods=['get'])
+def delay_suggestion():
+    suggestions_manager = SuggestionsManager(ADDON_SUGGESTIONS_DB_FILE)
+    item_name = request.args.get('suggestion')
+    days = config_file.get('suggestion_sleep', 7)
+    try:
+        days = int(days)
+        suggestions_manager.delay_item(item_name,days)
+    except Exception as e:
+        logging.error(e)
+        pass
+    return go_home(request)
+
+
 #remove_suggestion
 @app.route('/remove_suggestion', methods=['get'])
 def remove_suggestion():
@@ -177,11 +204,13 @@ def settings():
     cooldown_days = config_file.get('cooldown_days',7)
     suggestion_count = config_file.get('suggestion_count',20)
     todo_list_entitiy_id=config_file.get('todo_list_entitiy_id')
+    suggestion_sleep = config_file.get('suggestion_sleep', 7)
     return render_template(
         'settings.html',
         todo_list_entitiy_id=todo_list_entitiy_id,
         suggestion_count=suggestion_count,
         cooldown_days=cooldown_days,
+        suggestion_sleep=suggestion_sleep,
         active_tab = "settings"
     )
     

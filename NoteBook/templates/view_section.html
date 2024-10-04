@@ -1,0 +1,21 @@
+<!-- view_section.html -->
+{% extends "base.html" %}
+
+{% block title %}{{ section.display_name }}{% endblock %}
+
+{% block content %}
+<h1>Section: {{ section.display_name }}</h1>
+
+<h2>Pages</h2>
+<a href="{{ url_for('create_page', notebook_name=notebook_name, section_name=section_name) }}">Create New Page</a>
+<ul>
+    {% for page in section.pages %}
+    <li>
+        <a href="{{ url_for('view_page', notebook_name=notebook_name, section_name=section_name, page_name=page[:-3]) }}">{{ page[:-3] }}</a>
+    </li>
+    {% else %}
+    <li>No pages available.</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+    ul {
+        list-style-type: none;
+    }
+    .entry {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+</style>
+
+{% endblock %}
+{% block content %}
+<h1>{{past_saying}}, {{ user }}</h1>
+
+{% if entries %}
+    <ul>
+        {% for entry in entries %}
+        <li class="entry">
+            <p>{{ entry.content | link_tags | nl2br|safe }}</p>
+            <small>Written on: {{ entry.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+            <a href="{{url_for('main.update_journal_entry',entry_id=entry.id)}}">Edit</a>
+            <br>
+            <strong>Tags:</strong>
+            <ul class="list-inline">
+                {% for tag in entry.tags %}
+                <li  class="list-inline-item"><a href="{{url_for('tags.tag_detail',tag_name=tag.name)}}">#{{tag.name}}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No journal entries found. Start journaling today!</p>
+{% endif %}
+{% endblock %}

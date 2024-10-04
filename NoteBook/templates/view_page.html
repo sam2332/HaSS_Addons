@@ -1,0 +1,22 @@
+<!-- view_page.html -->
+{% extends "base.html" %}
+
+{% block title %}{{ page_name }}{% endblock %}
+
+{% block content %}
+<h1>{{ page_name }}</h1>
+
+<div class="page-content">
+    {{ content | safe }}
+</div>
+
+<a href="{{ url_for('edit_page', notebook_name=notebook_name, section_name=section_name, page_name=page_name) }}">Edit Page</a>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    const md = window.markdownit();
+    const markdown_page_text = document.querySelector('.page-content').innerHTML;
+    const result = md.render(markdown_page_text);
+    document.querySelector('.page-content').innerHTML = result;
+</script>
+{% endblock %}
