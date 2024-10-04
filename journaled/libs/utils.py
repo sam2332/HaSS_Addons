@@ -27,6 +27,8 @@ def get_remote_user():
 def nl2br(value):
     return value.replace('\n', '<br>')
 
+def u2s(value):
+    return value.replace('_',' ')
 
 def wrapped_url_for(endpoint, **values):
     # Get the ingress path from the request headers

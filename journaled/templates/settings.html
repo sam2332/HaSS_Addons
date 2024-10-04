@@ -2,5 +2,6 @@
 
 {% block content %}
 <h1>Settings</h1>
-<a href = "{{ url_for('settings.reindex_tags') }}">Reindex Tags</a><br
+<a href = "{{ url_for('settings.reindex_tags') }}">Reindex Tags</a><br>
+<a href = "{{ url_for('settings.export_csv') }}">Export Csv</a><br
 {% endblock %}

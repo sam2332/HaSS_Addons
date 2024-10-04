@@ -1,0 +1,26 @@
+<!-- home.html -->
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+
+<h2>Select HomeAssistant To-Do List</h2>
+
+<strong>Recommended: Google Nest/Keep Sync</strong>
+<p>The Google Keep sync addon will synchronize your Google Keep shopping list. By selecting this option, you'll have multiple methods to add items seamlessly.
+    <a href="https://github.com/watkins-matt/home-assistant-google-keep-sync" target="_blank">Google Keep Sync Github</a>
+</p>
+
+<form action="{{ url_for('main') }}" method="get">
+    <select name="entity_id">
+        {% for state in states | sort(attribute='entity_id') %}
+            {% if 'todo' in state.entity_id %}
+                <option value="{{ state.entity_id }}" selected>{{ state.entity_id }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock %}

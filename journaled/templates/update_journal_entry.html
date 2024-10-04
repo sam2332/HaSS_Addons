@@ -5,8 +5,26 @@
     <h3>Updating a entry, {{ user }}</h3><a href="{{url_for('main.delete_journal_entry',entry_id=entry.id)}}" onclick="return confirm('confirm delete?')"><i class="fas fa-trash"></i></a>
     <form method="POST">
         <input type="hidden" name="entry_id" value="{{entry_id}}">
-        <textarea name="content" rows="10" cols="50" >{{entry.content}}</textarea><br>
+        <textarea id="markdown-editor"  name="content" rows="10" cols="50" >{{entry.content}}</textarea><br>
         <button type="submit">Update</button>
     </form>
 </div>
+
+<!-- SimpleMDE Markdown Editor -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+    var simplemde = new SimpleMDE({ 
+        element: document.getElementById("markdown-editor"),
+        placeholder: "Write something amazing...",
+        spellChecker: true,
+        autosave: {
+            enabled: true,
+            uniqueId: "markdown-editor-{{ user }}_{{entry_id}}",
+            delay: 1000,
+        },
+        status: false,
+        toolbar: ["bold", "italic", "heading", "|", "quote", "code", "link", "|", "preview", "guide"]
+    });
+</script>
 {% endblock %}

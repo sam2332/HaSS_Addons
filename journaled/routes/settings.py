@@ -22,6 +22,15 @@ def register_blueprint(app):
         db.session.commit()
         return redirect(app.wrapped_url_for('settings.main'))
     
+    @bp.route('/export_csv')
+    def export_csv():
+        user = get_remote_user()
+        entries = JournalEntry.query.filter_by(user=user).all()
+        csv = 'id,content\n'
+        for entry in entries:
+            csv += f'{entry.id},"{entry.content}"\n'
+        return csv
+    
     @bp.route('/')
     def main():       
         return render_template('settings.html')

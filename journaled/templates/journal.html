@@ -2,10 +2,28 @@
 
 {% block content %}
 <div class="container text-center">
-    <h3>{{saying}}, {{ user }}</h3>
+    <h3>{{ saying }}, {{ user | title}}</h3>
     <form method="POST">
-        <textarea name="content" rows="10" cols="50" placeholder="What's on your mind?"></textarea><br>
-        <button type="submit">Submit</button>
+        <textarea id="markdown-editor" name="content" placeholder="What's on your mind?"></textarea><br>
+        <button type="submit" class="btn btn-primary mt-2">Submit</button>
     </form>
 </div>
+
+<!-- SimpleMDE Markdown Editor -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+    var simplemde = new SimpleMDE({ 
+        element: document.getElementById("markdown-editor"),
+        placeholder: "Write something amazing...",
+        spellChecker: true,
+        autosave: {
+            enabled: true,
+            uniqueId: "markdown-editor-{{ user }}",
+            delay: 1000,
+        },
+        status: false,
+        toolbar: ["bold", "italic", "heading", "|", "quote", "code", "link", "|", "preview", "guide"]
+    });
+</script>
 {% endblock %}

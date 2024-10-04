@@ -1,5 +1,5 @@
 name: "Journaled"
-version: "0.0.22"
+version: "0.0.58"
 slug: "journaled"
 description: "Journaled is a multi user journaling app for Home Assistant."
 startup: "application"

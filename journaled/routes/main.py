@@ -99,7 +99,7 @@ def register_blueprint(app):
             past_saying = random.choice(PAST_SAYINGS)
             session['past_saying'] = past_saying
             session['past_saying_set_time'] = time.time()
-        entries = JournalEntry.query.filter_by(user=user).all()
+        entries = JournalEntry.query.filter_by(user=user).order_by(JournalEntry.timestamp.desc()).all()
         return render_template('past.html', entries=entries, user = user,past_saying=past_saying)
     
     app.register_blueprint(bp)

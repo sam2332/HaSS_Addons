@@ -10,31 +10,50 @@
         padding: 10px;
         margin-bottom: 10px;
     }
-
 </style>
+<!-- Include the marked.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 {% endblock %}
 {% block content %}
-<h1>{{past_saying}}, {{ user }}</h1>
+<h1>{{ past_saying }}, {{ user | title}}</h1>
 
 {% if entries %}
     <ul>
         {% for entry in entries %}
         <li class="entry">
-            <p>{{ entry.content | link_tags | nl2br|safe }}</p>
-            <small>Written on: {{ entry.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
-            <a href="{{url_for('main.update_journal_entry',entry_id=entry.id)}}">Edit</a>
-            <br>
+            <!-- The content will be converted to markdown by marked.js -->
+            <p class="markdown-content">{{ entry.content | link_tags | nl2br }}</p>
+            <!-- Only show the tags section if there are tags -->
+            {% if entry.tags %}
             <strong>Tags:</strong>
-            <ul class="list-inline">
+            <ul class="list-inline d-inline ml-1">
                 {% for tag in entry.tags %}
-                <li  class="list-inline-item"><a href="{{url_for('tags.tag_detail',tag_name=tag.name)}}">#{{tag.name}}</a></li>
+                <li class="list-inline-item">
+                    <a href="{{ url_for('tags.tag_detail', tag_name=tag.name) }}">#{{ tag.name|u2s|title }}</a>
+                </li>
                 {% endfor %}
             </ul>
+            {% endif %}
+            <div>
+                <small>Written on: {{ entry.timestamp.strftime('%Y-%m-%d %I:%M:%S %p') }}</small>
+                <a href="{{ url_for('main.update_journal_entry', entry_id=entry.id) }}">Edit</a>
+            </div>
         </li>
         {% endfor %}
     </ul>
 {% else %}
     <p>No journal entries found. Start journaling today!</p>
 {% endif %}
+
+<!-- Script to render markdown client-side -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Select all elements with class 'markdown-content'
+        document.querySelectorAll('.markdown-content').forEach(function(el) {
+            // Convert the text content from markdown to HTML
+            el.innerHTML = marked.parse(el.textContent);
+        });
+    });
+</script>
 {% endblock %}

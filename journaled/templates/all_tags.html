@@ -1,16 +1,185 @@
-{% extends 'base.html' %}
+{% extends 'base-fluid.html' %}
 
 {% block content %}
-<h1>All Tags</h1>
-<ul>
-    {% for tag in tags_with_size %}
-    <li>
-        <a href="{{ url_for('tags.tag_detail', tag_name=tag.name) }}" style="font-size: {{ tag.size }}px;">
-            #{{ tag.name }}
-        </a>
-    </li>
-    {% else %}
-    <li>No tags found. Try using #hashtags in your posts to cross link your memories</li>
-    {% endfor %}
-</ul>
+    <style>
+        .tag-cloud {
+            position: relative;
+            width: 800px; /* Adjust the width as needed */
+            height: 450px; /* Adjust the height as needed */
+            font-family: sans-serif;
+        }
+        .tag {
+            position: absolute;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+        }
+        .tag:hover {
+            color: #ff6600; /* Change the text color on hover */
+            transform: scale(1.1); /* Slightly enlarge the word on hover */
+        }
+    </style>
+
+    <div id="word-cloud" class="tag-cloud mx-auto"></div>
+   <!-- Table of Tags -->
+   <div class="table-container">
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Tag</th>
+                <th>Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tag, count in table_items %}
+                <tr>
+                    <td><a href="{{ url_for('tags.tag_detail', tag_name=tag) }}">{{ tag | u2s | title}}</a></td>
+                    <td>{{ count }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            /* ======================= SETUP ======================= */
+            var config = {
+                spiralResolution: 1, // Lower = better resolution
+                spiralLimit: 360 * 5,
+                lineHeight: 0.8,
+                xWordPadding: 0,
+                yWordPadding: 3,
+                font: "sans-serif",
+                minFontSize: 12, // Minimum font size in pixels
+                maxFontSize: 48  // Maximum font size in pixels
+            };
+
+            // Convert the word_cloud from your backend into a JavaScript array
+            var words = [
+                {% for tag, count in word_cloud.items() %}
+                    { word: "{{ tag | u2s |title}}", freq: {{ count }} },
+                {% endfor %}
+            ];
+
+            // Sort words by frequency
+            words.sort(function(a, b) {
+                return b.freq - a.freq;
+            });
+
+            // Calculate min and max frequencies
+            var minFreq = Infinity;
+            var maxFreq = -Infinity;
+            words.forEach(function(w) {
+                if (w.freq < minFreq) minFreq = w.freq;
+                if (w.freq > maxFreq) maxFreq = w.freq;
+            });
+
+            // Function to normalize frequencies to font sizes
+            function getFontSize(freq) {
+                var minSize = config.minFontSize;
+                var maxSize = config.maxFontSize;
+
+                // Handle edge case when all frequencies are the same
+                if (maxFreq === minFreq) {
+                    return (minSize + maxSize) / 2;
+                }
+
+                // Normalize freq to range [minSize, maxSize]
+                var fontSize = ((freq - minFreq) / (maxFreq - minFreq)) * (maxSize - minSize) + minSize;
+                return fontSize;
+            }
+
+            var cloud = document.getElementById("word-cloud");
+            cloud.style.fontFamily = config.font;
+
+            var startPoint = {
+                x: cloud.offsetWidth / 2,
+                y: cloud.offsetHeight / 2
+            };
+
+            var wordsDown = [];
+            /* ======================= END SETUP ======================= */
+
+            /* ======================= PLACEMENT FUNCTIONS ======================= */
+            function createWordObject(word, freq) {
+                var wordContainer = document.createElement("div");
+                wordContainer.className = "tag";
+                wordContainer.style.fontSize = getFontSize(freq) + "px";
+                wordContainer.style.lineHeight = config.lineHeight;
+                wordContainer.dataset.url = "{{ url_for('tags.tag_detail', tag_name='') }}" + encodeURIComponent(word);
+                wordContainer.appendChild(document.createTextNode(word));
+
+                return wordContainer;
+            }
+
+            function placeWord(word, x, y) {
+                cloud.appendChild(word);
+                word.style.left = x - word.offsetWidth / 2 + "px";
+                word.style.top = y - word.offsetHeight / 2 + "px";
+                wordsDown.push(word.getBoundingClientRect());
+            }
+
+            function intersect(word, x, y) {
+                cloud.appendChild(word);
+                word.style.left = x - word.offsetWidth / 2 + "px";
+                word.style.top = y - word.offsetHeight / 2 + "px";
+
+                var currentWord = word.getBoundingClientRect();
+                cloud.removeChild(word);
+
+                for (var i = 0; i < wordsDown.length; i++) {
+                    var comparisonWord = wordsDown[i];
+
+                    if (!(
+                        currentWord.right + config.xWordPadding < comparisonWord.left - config.xWordPadding ||
+                        currentWord.left - config.xWordPadding > comparisonWord.right + config.xWordPadding ||
+                        currentWord.bottom + config.yWordPadding < comparisonWord.top - config.yWordPadding ||
+                        currentWord.top - config.yWordPadding > comparisonWord.bottom + config.yWordPadding
+                    )) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            function spiral(i, callback) {
+                var angle = config.spiralResolution * i;
+                var x = (1 + angle) * Math.cos(angle);
+                var y = (1 + angle) * Math.sin(angle);
+                return callback ? callback(x, y) : null;
+            }
+            /* ======================= END PLACEMENT FUNCTIONS ======================= */
+
+            /* ======================= PLACE WORDS ======================= */
+            (function placeWords() {
+                for (var i = 0; i < words.length; i++) {
+                    var wordObj = words[i];
+                    var wordEl = createWordObject(wordObj.word, wordObj.freq);
+
+                    for (var j = 0; j < config.spiralLimit; j++) {
+                        if (spiral(j, function(x, y) {
+                            var nx = startPoint.x + x;
+                            var ny = startPoint.y + y;
+                            if (!intersect(wordEl, nx, ny)) {
+                                placeWord(wordEl, nx, ny);
+                                return true;
+                            }
+                        })) {
+                            break;
+                        }
+                    }
+                }
+            })();
+            /* ======================= END PLACE WORDS ======================= */
+
+            /* ======================= EVENT LISTENERS ======================= */
+            cloud.addEventListener("click", function(event) {
+                if (event.target.classList.contains("tag")) {
+                    window.location.href = event.target.dataset.url;
+                }
+            });
+            /* ======================= END EVENT LISTENERS ======================= */
+        });
+    </script>
 {% endblock %}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Your Site Title{% endblock %}</title>
+    
+    <!-- Bootstrap 3 CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+        .suggestion, .discovery {
+            margin-top: 15px;
+        }
+
+
+        .category {
+            margin-top:7px;
+            display: inline-block;
+            min-width: 10px;
+            padding: 3px 7px;
+            font-size: 19px;
+            font-weight: 700;
+            line-height: 1;
+            color: #000;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            background-color: #777;
+            border-radius: 10px;
+        }
+        .category:nth-of-type(1) {
+            background-color: #777; /* Original color */
+        }
+
+        .category:nth-of-type(2) {
+            background-color: #FF5733; /* Example color for the 2nd occurrence */
+        }
+
+        .category:nth-of-type(3) {
+            background-color: #33FF57;
+        }
+
+        .category:nth-of-type(4) {
+            background-color: #5733FF;
+        }
+
+        /* Continue this pattern for the remaining occurrences */
+        .category:nth-of-type(5) {
+            background-color: #c49703;
+        }
+
+        .category:nth-of-type(6) {
+            background-color: #FF33C3;
+        }
+
+        .category:nth-of-type(7) {
+            background-color: #33C3FF;
+        }
+
+        .category:nth-of-type(8) {
+            background-color: #698a1d;
+        }
+
+        .category:nth-of-type(9) {
+            background-color: #1a7a5d;
+        }
+
+        .category:nth-of-type(10) {
+            background-color: #FF5733;
+        }
+
+        .category:nth-of-type(11) {
+            background-color: #C70039;
+        }
+
+        .category:nth-of-type(12) {
+            background-color: #bd4472;
+        }
+
+        .category:nth-of-type(13) {
+            background-color: #5b87b9;
+        }
+
+        .category:nth-of-type(14) {
+            background-color: #64704d;
+        }
+
+        .category:nth-of-type(15) {
+            background-color: #FFC300;
+        }
+
+        .category:nth-of-type(16) {
+            background-color: #FF5733;
+        }
+
+        .category:nth-of-type(17) {
+            background-color: #C70039;
+        }
+
+        .category:nth-of-type(18) {
+            background-color: #7170e7;
+        }
+
+        .category:nth-of-type(19) {
+            background-color: #e380c6;
+        }
+
+        .category:nth-of-type(20) {
+            background-color: #DAF7A6;
+        }
+
+        .category:nth-of-type(21) {
+            background-color: #FFC300;
+        }
+        .category:nth-of-type(22) {
+            background-color: #96ad43;
+        }
+
+        .category:nth-of-type(23) {
+            background-color: #5fd399;
+        }
+
+        .category:nth-of-type(24) {
+            background-color: #c55e85;
+        }
+
+    </style>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">{% block brand %}Meal Planner{% endblock %}</a>
+            </div>
+            <ul class="nav navbar-nav">
+                {% block nav_items %}
+                <li class="{% if active_tab  == 'main' %}active {% endif %}"><a href="{{url_for('main')}}">Home</a></li>
+                <li class="{% if active_tab  == 'discover' %}active {% endif %}"><a href="{{url_for('discover')}}">Discover New items</a></li>
+                <li class="{% if active_tab  == 'settings' %}active {% endif %}"><a href="{{url_for('settings')}}">Settings</a></li>
+                {% endblock %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% block content %}
+                <h1>Welcome to the website</h1>
+                <p>This is your main content area.</p>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!-- home.html -->
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+    {% if needs_action_todo_items|length > 0 %}
+        <h3>New Completed Items to process!</h3>
+        <ul>
+            {% for item in needs_action_todo_items %}
+            <li>{{ item.summary }} - <a href="{{ url_for('remove_todo_item', item=item.summary) }}">Remove</a></li>
+            {% endfor %}
+        </ul>
+        <a class="btn btn-primary" href="{{ url_for('process_completed') }}">Process Completed Items</a>
+        <hr>
+    {% endif %}
+    <h2>Suggestions</h2>
+    <div class="row">
+        <div class="col-md-12">
+            Categories: 
+            <a class="category" href="{{ url_for('main') }}">All</a>
+            {% for category in categories %}
+            <a  class="category" href="{{ url_for('main', category_filter=category) }}">{{ category }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        {% if suggestions|length == 0 %}
+        <div class="col-md-12 text-center mt-5">
+            <h3>No suggestions available, change cuttoff date, or use your shopping list and check back later</h3>
+        </div>
+        {% else %}
+            {% for suggestion in suggestions %}
+        <div class="col-md-4 text-center suggestion">
+            <div class="input-group">
+                <span class="form-control">{{ suggestion }}</span>
+                <span class="input-group-btn">
+                    <a class="btn btn-success" type="button" href="{{ url_for('add_suggestion', suggestion=suggestion) }}">✓</a>
+                    <a class="btn btn-danger" type="button" href ="{{ url_for('remove_suggestion', suggestion=suggestion) }}">X</a>
+                </span>
+            </div>
+        </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

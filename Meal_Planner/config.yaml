@@ -1,0 +1,23 @@
+name: "Meal Planner"
+version: "0.0.1"
+slug: "mealplanner"
+description: "Plan your weekly meals and generate a shopping list"
+panel_icon: mdi:basket-plus-outline
+startup: application
+boot: "auto"
+hassio_api: true
+homeassistant_api: true
+ingress: true
+ingress_port: 5000
+ingress_entry: "/"
+ingress_user: true
+arch:
+  - "armv7"
+  - "armhf"
+  - "aarch64"
+  - "amd64"
+  - "i386"
+options: {}
+schema: {}
+map:
+  - "config:rw"

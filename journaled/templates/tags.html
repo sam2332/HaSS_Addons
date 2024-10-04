@@ -13,20 +13,25 @@
     </style>
 {% endblock %}
 {% block content %}
-<h1>Entries tagged with #{{ tag_name }}</h1>
+<h1>Entries tagged with #{{ tag_name | u2s | title}}</h1>
 <ul>
     {% for tag in tags %}
     <li class="entry">
         <div>{{ tag.entry.content| link_tags | nl2br | safe }}</div>
-        <small>{{ tag.entry.timestamp }}</small>
-        <a href="{{url_for('main.update_journal_entry',entry_id=entry.id)}}">Edit</a>
-        <br>
+        
+        {% if tag.entry.tags %}
         <strong>Tags:</strong>
-        <ul class="list-inline">
-            {% for tag in entry.tags %}
-            <li  class="list-inline-item"><a href="{{url_for('tags.tag_detail',tag_name=tag.name)}}">#{{tag.name}}</a></li>
+        <ul class="list-inline d-inline ml-1">
+            {% for tag in tag.entry.tags %}
+            <li  class="list-inline-item"><a href="{{url_for('tags.tag_detail',tag_name=tag.name)}}">#{{tag.name|u2s|title}}</a></li>
             {% endfor %}
         </ul>
+        <br>
+        {% endif %}
+        <div>
+            <small>Written on: {{ tag.entry.timestamp.strftime('%Y-%m-%d %I:%M:%S %p') }}</small>
+            <a href="{{url_for('main.update_journal_entry',entry_id=tag.entry.id)}}">Edit</a>
+        </div>
     </li>
     {% endfor %}
 </ul>

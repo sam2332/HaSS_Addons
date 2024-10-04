@@ -4,7 +4,7 @@ import time
 import json
 import requests
 from libs.ConfigFile import ConfigFile
-from libs.utils import link_tags, nl2br, wrapped_url_for
+from libs.utils import link_tags, nl2br, wrapped_url_for,u2s
 from libs.models import db
 from routes import main, tags, settings
 SUPERVISOR_TOKEN = os.environ.get('SUPERVISOR_TOKEN')
@@ -31,6 +31,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Register the custom filter in Flask
 app.jinja_env.filters['link_tags'] = link_tags
 app.jinja_env.filters['nl2br'] = nl2br
+app.jinja_env.filters['u2s'] = u2s
 
 app.wrapped_url_for = wrapped_url_for
 @app.context_processor
