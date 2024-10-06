@@ -17,6 +17,7 @@ Welcome to the Journal Application! This web-based app allows you to record your
 - **Tag Cloud Visualization**: View a word cloud of all your tags, with sizes indicating frequency.
 - **View Entries by Tag**: Click on any tag to see all related entries.
 - **Reindex Tags**: Re-scan all entries to update and correct tag associations.
+- **AutoHashAdder**: The application automatically converts matching phrases in your entries into hashtags based on your existing tags. This feature simplifies tagging and improves content discoverability.
 
 ### Additional Features
 

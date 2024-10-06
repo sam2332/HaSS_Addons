@@ -19,6 +19,9 @@ ADDON_FILES_DIR_PATH = f'{CONFIG_PATH}/Journal'
 #abspath = os.path.abspath(__file__)
 ADDON_FILES_DIR_PATH = os.path.abspath(ADDON_FILES_DIR_PATH)
 ADDON_CONFIG_FILE = f'{ADDON_FILES_DIR_PATH}/config.json'
+app.filesystem_paths = {}
+app.filesystem_paths['ADDON_CONFIG_FILE'] = ADDON_CONFIG_FILE
+app.filesystem_paths['ADDON_FILES_DIR_PATH'] = ADDON_FILES_DIR_PATH
 # Check If FirstTime Running
 if not os.path.exists(ADDON_FILES_DIR_PATH):
     os.makedirs(ADDON_FILES_DIR_PATH)

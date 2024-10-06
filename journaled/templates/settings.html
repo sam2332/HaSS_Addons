@@ -1,7 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Settings</h1>
+<h3>Per User Settings</h3>
+{% if user_settings.get("EnableAutoHasher",'false') == 'false' %}
+<a href = "{{ url_for('settings.enable_auto_hasher') }}">Enable Auto Hasher</a><br>
+{% else %}
+<a href = "{{ url_for('settings.disable_auto_hasher') }}">Disable Auto Hasher</a><br>
+{% endif %}
+
+<hr>
+<h3 class="mb-3 mt-2">Settings</h3>
 <a href = "{{ url_for('settings.reindex_tags') }}">Reindex Tags</a><br>
-<a href = "{{ url_for('settings.export_csv') }}">Export Csv</a><br
+<a href = "{{ url_for('settings.export_csv') }}">Export Csv</a><br>
+
+<h4>Csv Import</h4>
+<form action="{{ url_for('settings.import_csv') }}" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" id="file">
+    <input type="submit">
+</form>
 {% endblock %}

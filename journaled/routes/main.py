@@ -2,12 +2,13 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from libs.models import db, JournalEntry, Tag
 from libs.utils import extract_tags
 from libs.utils import get_remote_user
+from libs.HashTagAdder import HashTagAdder
 import random
 from CONST import SAYINGS,PAST_SAYINGS
 import time
 import uuid
-from datetime import datetime
-
+from datetime import datetime, timedelta
+from libs.file_attachment_manager import FileAttachmentManager
 def register_blueprint(app):
     bp = Blueprint('main', __name__)
 
@@ -16,12 +17,18 @@ def register_blueprint(app):
         user = get_remote_user()
         if request.method == 'POST':
             content = request.form['content']
+            attachements = request.files.getlist('attachements')
+
+            ah = HashTagAdder()
+            content = ah.add_hashtags(content)
             tags = extract_tags(content)
 
             # Save journal entry with user
             entry = JournalEntry(content=content, user=user)
             db.session.add(entry)
             db.session.commit()
+
+
 
             # Save tags with user
             for tag_name in tags:
