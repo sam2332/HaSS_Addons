@@ -1,47 +1,11 @@
 {% extends 'base.html' %}
 
-{% block extra_head %}
-<style>
-    ul {
-        list-style-type: none;
-    }
-    .entry {
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
-    .blurred_entry {
-        filter: blur(2px);
-    }
-</style>
-{% endblock %}
 
 {% block content %}
 <h3 class="mb-3 mt-2">Date: {{ day }}</h3>
-<ul class="pl-0"></ul>
+<div class="row pl-0"></ul>
     {% for entry in entries %}
     {% include 'partials/entry_row.html' with context %}
     {% endfor %}
-</ul>
-{% endblock %}
-
-
-
-{% block extra_scripts %}
-<!-- Script to render markdown client-side -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Select all elements with class 'markdown-content'
-        document.querySelectorAll('.markdown-content').forEach(function(el) {
-            // Convert the text content from markdown to HTML
-            el.innerHTML = marked.parse(el.textContent);
-        });
-        //blurred_entry remove on click
-        document.querySelectorAll('.blurred_entry').forEach(function(el) {
-            el.addEventListener('click', function() {
-                el.classList.remove('blurred_entry');
-            });
-        });
-    });
-</script>
+</div>
 {% endblock %}

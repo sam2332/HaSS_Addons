@@ -1,0 +1,10 @@
+<script>
+    window.meta_urls ={
+        "page_journal": "{{ url_for('main.journal') }}",
+        "page_past": "{{ url_for('main.past') }}",
+        "page_tags": "{{ url_for('tags.all_tags') }}",
+        "page_settings": "{{ url_for('settings.main') }}",
+        "journal_entry_blur": "{{ url_for('main.blur_journal_entry', entry_id='') }}",
+        "journal_entry_unblur": "{{ url_for('main.unblur_journal_entry', entry_id='') }}"
+    };
+</script>

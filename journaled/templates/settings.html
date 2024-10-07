@@ -3,17 +3,17 @@
 {% block content %}
 <h3 class="mt-3 border-bottom">Per User Settings</h3>
 
-<div class="border">
+<div class="border p-2">
 
     <p>This is a feature that will look at your used tags and try and match words to them based on longest underscored words first.</p>
-    {% if user_settings.get("EnableAutoHasher",'false') == 'false' %}
+    {% if user_settings.get("autohasher_enabled",'false') == 'false' %}
     <a href = "{{ url_for('settings.enable_auto_hasher') }}">Enable Auto Hasher</a><br>
     {% else %}
     <a href = "{{ url_for('settings.disable_auto_hasher') }}">Disable Auto Hasher</a><br>
     {% endif %}
 </div>
 
-<div class="mt-5 border">
+<div class="mt-5 border p-2">
     <p>Where do you want to go after publishing a new journal entry</p>
     <select id="post_journal_url">
         <option value="journal" {% if user_settings.get("post_journal_url",'past') == 'journal' %}selected{% endif %}>New Journal Page</option>
@@ -21,11 +21,62 @@
         <option value="tags" {% if user_settings.get("post_journal_url",'past') == 'tags' %}selected{% endif %}>Tags</option>
     </select>
 </div>
+
+
+
+
+<div class="mt-5 border p-2">
+    <p>
+        List of Hashtags that will be blur out journal entries on creation.
+    </p>
+    <span>auto_blur_mode:</span>
+    <select id="post_journal_url">
+        <option value="off" {% if user_settings.get("auto_blur_mode",'off') == 'off' %}selected{% endif %}>Partial match</option>
+        <option value="partial match" {% if user_settings.get("auto_blur_mode",'partial match') == 'partial match' %}selected{% endif %}>Partial match</option>
+        <option value="full match" {% if user_settings.get("auto_blur_mode",'full match') == 'full match' %}selected{% endif %}>Full Match Only</option>
+    </select>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Hashtag</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tag in user_settings.get("Hashtags",[]) %}
+            <tr>
+                <td>{{tag}}</td>
+                <td><a href="{{url_for('settings.remove_hashtag',tag=tag)}}">Remove</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>
+                    <form action="{{url_for('settings.add_hashtag')}}" method="post">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">#</span>
+                            </div>
+                            <input type="text" name="tag" placeholder="Hashtag">
+                        </div>
+                            
+                        <input type="submit" value="Add">
+                    </form>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
 {% endblock %}
 {% block extra_scripts %}
 <script>
     document.getElementById("post_journal_url").addEventListener("change", function() {
         fetch("{{url_for('settings.set_post_journal_url',page='')}}"+this.value)
+    });
+
+    document.getElementById("auto_blur_mode").addEventListener("change", function() {
+        fetch("{{url_for('settings.set_auto_blur_mode',mode='')}}"+this.value)
     });
 </script>
 {% endblock %}

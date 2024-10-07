@@ -1,31 +1,14 @@
 {% extends 'base.html' %}
 
-{% block extra_head %}
-<style>
-    ul {
-        list-style-type: none;
-    }
-    .entry {
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
-    .blurred_entry {
-        filter: blur(2px);
-    }
-</style>
-<!-- Include the marked.js CDN -->
-
-{% endblock %}
 {% block content %}
 <h3 class="mb-3 mt-2">{{ past_saying }}, {{ user | title}}</h3>
 
 {% if entries_with_attachements %}
-    <ul class='pl-0'>
+    <div class=' row pl-0 list-group'>
         {% for entry,attachments in entries_with_attachements %}
             {% include 'partials/entry_row.html' with context %}
         {% endfor %}
-    </ul>
+    </div>
 {% else %}
     <p>No journal entries found. Start journaling today!</p>
 {% endif %}

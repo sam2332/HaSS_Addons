@@ -6,8 +6,7 @@
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href='{{url_for("static",filename="css/bootstrap.min.css")}}'>
-    <!-- fontawesome -->
-    <link rel="stylesheet" href='{{url_for("static",filename="/font-awesome/5.15.1/css/all.min.css")}}'>
+    <link rel="stylesheet" href='{{url_for("static",filename="css/main.css")}}'>
 
     <style>
         .navbar-nav .nav-item {
@@ -16,12 +15,14 @@
         .navbar-brand {
             font-size: 1.5rem;
         }
+        
     </style>
     
+    {% include 'partials/magic_url_link_block.html' with context %}
     {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-light bg-light" style="max-height:56px; border-bottom: 1px solid lightgray;">
         <a class="navbar-brand">Journald</a>
         <ul class="navbar-nav d-flex flex-row">
             <li class="nav-item">
@@ -45,8 +46,8 @@
 
     <!-- Bootstrap and JS dependencies -->
     <script src='{{url_for("static",filename="js/jquery-3.7.1.min.js")}}'></script>
-    <script src='{{url_for("static",filename="/js/bootstrap.min.js")}}'></script>
-    <script src='{{url_for("static",filename="/js/app.js")}}'></script>
+    <script src='{{url_for("static",filename="js/bootstrap.min.js")}}'></script>
+    <script src='{{url_for("static",filename="js/app.js")}}'></script>
     {% block extra_scripts %}{% endblock %}
 </body>
 

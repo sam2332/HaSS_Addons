@@ -11,7 +11,6 @@ class HashTagAdder():
             return Tag.query.filter_by(user=self.user).all()
         except Exception as e:
             # Log the exception
-            print(f"Error fetching tags for user {self.user}: {e}")
             return []
 
 

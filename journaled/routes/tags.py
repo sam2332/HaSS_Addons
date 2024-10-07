@@ -47,7 +47,6 @@ def register_blueprint(app):
         # Prepare data for the word cloud and table
         word_cloud = {tag.name: entry_count for tag, entry_count in tags_with_counts}
         table_items = sorted(word_cloud.items(), key=lambda x: x[1], reverse=True)
-        print(word_cloud)
         # Pass the word cloud data and table items to the template
         return render_template('all_tags.html', word_cloud=word_cloud, table_items=table_items)
 

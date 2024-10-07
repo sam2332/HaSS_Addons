@@ -1,0 +1,32 @@
+#entry_input{
+    width: 67%;
+    height: 317px;
+    border-radius: 14px;
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.entry {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.blurred_entry {
+    filter: blur(4px);
+}
+
+
+
+.navbar-nav .nav-item {
+    margin-right: 2px;
+    border-left: 1px solid lightgray;
+    padding: 0 15px;
+}
+.navbar-brand {
+    font-size: 1.5rem;
+}

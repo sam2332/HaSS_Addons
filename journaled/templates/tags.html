@@ -1,26 +1,11 @@
 {% extends 'base.html' %}
 
-{% block extra_head %}
-<style>
-    ul {
-        list-style-type: none;
-    }
-    .entry {
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
-    .blurred_entry {
-        filter: blur(2px);
-    }
-    </style>
-{% endblock %}
 {% block content %}
 <h3 class="mb-3 mt-2">Tagged: #{{tag_name}}</h3>
 
-<ul class="pl-0">
+<div class=" row pl-0">
     {% for entry in entries %}
     {% include 'partials/entry_row.html' with context %}
     {% endfor %}
-</ul>
+</div>
 {% endblock %}

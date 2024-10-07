@@ -12,7 +12,6 @@ from datetime import datetime, timedelta
 from libs.file_attachment_manager import FileAttachmentManager
 from sqlalchemy.orm import joinedload
 
-
 def register_blueprint(app):
     bp = Blueprint('main', __name__)
 
@@ -23,16 +22,26 @@ def register_blueprint(app):
         if request.method == 'POST':
             content = request.form['content']
             attachments = request.files.getlist('attachments')
-            print(attachments)
-
+            
             ah = HashTagAdder()
             user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
-            if bool(user_settings.get("EnableAutoHasher",'false')):
+            if bool(user_settings.get("autohasher_enabled",'false')):
                 content = ah.add_hashtags(content)
+            auto_blur_tags = user_settings.get("Hashtags", [])
             tags_in_content = extract_tags(content)
 
             # Save journal entry with user
             entry = JournalEntry(content=content, user=user)
+            #if any tags_in_content in auto_blur_tags then set visible to False
+            
+            if user_settings.get("auto_blur_mode","off") == 'partial match':
+                if any(blocked_tag in tag for blocked_tag in auto_blur_tags for tag in tags_in_content):
+                    entry.visible = False
+                    
+            elif user_settings.get("auto_blur_mode","off") == 'full match':
+                if set(tag.lower() for tag in tags_in_content) & set(tag.lower() for tag in auto_blur_tags):
+                    entry.visible = False
+        
             db.session.add(entry)
             db.session.commit()
 
@@ -40,7 +49,6 @@ def register_blueprint(app):
             for attachment in attachments:
                 if attachment.filename == '':
                     continue  # Skip empty files
-                print(attachment)
                 file_attachment_manager.save_file(attachment, entry.id)
 
             # Save tags with user, avoiding duplicates
@@ -110,18 +118,25 @@ def register_blueprint(app):
         if request.method == 'POST':
             entry_id = request.form['entry_id']
             content = request.form['content']
-            print(content)
             ah = HashTagAdder()
             user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
-            if bool(user_settings.get("EnableAutoHasher",'false')):
+            if bool(user_settings.get("autohasher_enabled",'false')):
                 content = ah.add_hashtags(content)
-            print(content)
             tags_in_content = extract_tags(content)
             attachments = request.files.getlist('attachements')
 
+            auto_blur_tags = user_settings.get("Hashtags", [])
             # Save journal entry with user
             entry = JournalEntry.query.filter_by(id=entry_id).first()
             entry.content = content
+            
+            if user_settings.get("auto_blur_mode","off") == 'partial match':
+                if any(blocked_tag in tag for blocked_tag in auto_blur_tags for tag in tags_in_content):
+                    entry.visible = False
+                    
+            elif user_settings.get("auto_blur_mode","off") == 'full match':
+                if set(tag.lower() for tag in tags_in_content) & set(tag.lower() for tag in auto_blur_tags):
+                    entry.visible = False
             db.session.commit()
 
             # Save attachements with user   
@@ -182,6 +197,7 @@ def register_blueprint(app):
     @bp.route('/delete_journal_entry', methods=['GET'])
     def delete_journal_entry():
         user = get_remote_user()
+        file_attachment_manager = FileAttachmentManager(app, user)
         entry_id = request.args.get('entry_id')
         entry = JournalEntry.query.options(joinedload(JournalEntry.tags)).filter_by(id=entry_id).first()
         # Copy the list of tags before deleting the entry
@@ -190,11 +206,12 @@ def register_blueprint(app):
 
         # Check for orphaned tags and delete them
         for tag in tags:
-            if tag.is_orphaned():
-                print("deleting tag", tag)
+            if tag.is_orphaned(when_removing=entry):
                 db.session.delete(tag)
         db.session.delete(entry)
         db.session.commit()
+        
+        file_attachment_manager.delete_all_files(entry_id)
         return redirect(session['return_url'] or app.wrapped_url_for('main.past'))
     
     @bp.route('/past')
@@ -219,15 +236,27 @@ def register_blueprint(app):
             attachements = file_attachment_manager.get_files(entry.id)
             entries_with_attachements.append((entry,attachements))
         return render_template('past.html', entries_with_attachements=entries_with_attachements, user = user,past_saying=past_saying)
-    
+    from flask import send_file, make_response
+
     @bp.route('/download_attachment', methods=['GET'])
     def download_attachment():
         user = get_remote_user()
         entry_id = request.args.get('entry_id')
         file_name = request.args.get('file_name')
         file_attachment_manager = FileAttachmentManager(app, user)
-        return file_attachment_manager.get_file_stream(entry_id, file_name)
-                                                       
+
+        # Get the file stream (assuming it's a BytesIO or similar)
+        file_stream = file_attachment_manager.get_file_stream(entry_id, file_name)
+
+        # Create a response with the file stream
+        response = make_response(file_stream)
+
+        # Set headers for downloading the file
+        response.headers['Content-Disposition'] = f'attachment; filename={file_name}'
+        response.headers['Content-Type'] = 'application/octet-stream'
+
+        return response
+
     @bp.route('/on_day/<day>')
     def on_day(day):
         user = get_remote_user()

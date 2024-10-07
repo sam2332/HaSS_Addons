@@ -17,9 +17,9 @@ app = Flask(
     "/static",
     "static"
 )  
-app.debug = True
 # https://developers.home-assistant.io/docs/add-ons/communication
 # https://developers.home-assistant.io/docs/api/rest
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable default caching behavior for static files
 
 CONFIG_PATH = '/config'
 # if windows
@@ -33,6 +33,13 @@ ADDON_CONFIG_FILE = f'{ADDON_FILES_DIR_PATH}/config.json'
 UPLOAD_FOLDER = f'{ADDON_FILES_DIR_PATH}/uploads'
 if os.path.exists(UPLOAD_FOLDER) == False:
     os.makedirs(UPLOAD_FOLDER)
+
+
+#static file cache prevent
+@app.after_request
+def add_header(response):
+    response.cache_control.max_age = 0
+    return response
 
 app.filesystem_paths = {}
 app.filesystem_paths['ADDON_CONFIG_FILE'] = ADDON_CONFIG_FILE
@@ -48,7 +55,6 @@ app.config['secret_key'] = os.urandom(24)
 # secret_key
 app.secret_key = app.config['secret_key']
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{ADDON_FILES_DIR_PATH}/app.db'
-print(app.config['SQLALCHEMY_DATABASE_URI'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 

@@ -24,6 +24,9 @@ class Tag(db.Model):
     hidden = db.Column(db.Boolean, default=False,index=True)
     __table_args__ = (db.UniqueConstraint('name', 'user', name='_user_tag_uc'),)
 
-    # Method to check if a tag is orphaned
-    def is_orphaned(self):
-        return not self.entries.count()
+    def is_orphaned(self, when_removing=None):
+        query = self.entries
+        if when_removing:
+            # Assuming `when_removing` is an instance of JournalEntry
+            query = query.filter(JournalEntry.id != when_removing.id)
+        return query.count() == 0

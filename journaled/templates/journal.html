@@ -1,22 +1,10 @@
 {% extends 'base.html' %}
 
-{%block extra_head %}
-    <style>
-        #new_entry{
-            width: 67%;
-            height: 317px;
-            border-radius: 14px;
-            padding-top: 10px;
-            padding-left: 10px;
-        }
-    </style>
-{% endblock %}
-
 {% block content %}
 <div class="container text-center">
     <h3 class="mb-3 mt-2">{{ saying }}, {{ user | title}}</h3>
     <form method="POST" enctype="multipart/form-data">
-        <textarea id='new_entry' name="content" placeholder="What's on your mind?"></textarea>
+        <textarea id='entry_input' name="content" placeholder="What's on your mind?"></textarea>
         <div class="form-group mt-2 col-3 mx-auto">
             <label for="attachment text-decoration-underline" id="attachment_label">Attachment?</label>
             <input type="file" class="form-control-file" id="attachment" name="attachments" multiple style="display:none;">

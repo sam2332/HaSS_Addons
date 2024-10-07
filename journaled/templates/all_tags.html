@@ -101,7 +101,7 @@
 
             var startPoint = {
                 x: cloud.offsetWidth / 2,
-                y: cloud.offsetHeight / 2
+                y: cloud.offsetHeight / 2 - config.maxFontSize / 2
             };
 
             var wordsDown = [];
@@ -129,7 +129,9 @@
             function intersect(word, x, y) {
                 cloud.appendChild(word);
                 word.style.left = x - word.offsetWidth / 2 + "px";
-                word.style.top = y - word.offsetHeight / 2 + "px";
+                word.style.top = y - word.offsetHeight / 2 - 5 + "px";
+
+
 
                 var currentWord = word.getBoundingClientRect();
                 cloud.removeChild(word);
@@ -193,7 +195,11 @@
                 }
                 var newHeight = maxBottom - minTop;
                 cloud.style.height = newHeight + "px";
+
+                // Adjust the container to move upward if there's an unwanted offset
+                cloud.style.transform = `translateY(${-minTop}px)`;
             }
+
 
             adjustCloudHeight();
             /* ======================= EVENT LISTENERS ======================= */
@@ -210,6 +216,7 @@
                     y: cloud.offsetHeight / 2
                 };
                 placeWords();
+                adjustCloudHeight();
             });
             /* ======================= END EVENT LISTENERS ======================= */
         });

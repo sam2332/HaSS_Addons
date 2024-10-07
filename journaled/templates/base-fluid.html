@@ -6,23 +6,14 @@
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href='{{url_for("static",filename="css/bootstrap.min.css")}}'>
-    <!-- fontawesome -->
-    <link rel="stylesheet" href='{{url_for("static",filename="/font-awesome/5.15.1/css/all.min.css")}}'>
+    
+    <link rel="stylesheet" href='{{url_for("static",filename="css/main.css")}}'>
 
-
-    <style>
-        .navbar-nav .nav-item {
-            margin-right: 15px; /* Adds space between items on larger screens */
-        }
-        .navbar-brand {
-            font-size: 1.5rem;
-        }
-    </style>
     {% block extra_head %}{% endblock %}
 </head>
 <body>
 
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-light bg-light" style="max-height:56px; border-bottom: 1px solid lightgray;">
         <a class="navbar-brand">Journald</a>
         <ul class="navbar-nav d-flex flex-row">
             <li class="nav-item">

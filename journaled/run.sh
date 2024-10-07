@@ -2,7 +2,8 @@
 
 # Start Flask app
 echo "Starting Flask server..."
-python3 /app/app.py &
+cd /app
+gunicorn -k eventlet -b :5000 -w 20  --timeout 10000 --reload  app:app &
 
 # Start Nginx for ingress
 echo "Starting Nginx..."

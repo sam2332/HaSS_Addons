@@ -10,12 +10,16 @@ class FileAttachmentManager:
     def save_file(self, file, entry_id):
         if os.path.exists(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}") == False:
             os.makedirs(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}")
-
+            
+        img_ext = ['jpg','jpeg','png','gif']
+        if file.filename.split('.')[-1].lower() not in img_ext:
+            file.save(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{file.filename}")
+            return
         #resize image to 1024x1024
         image = Image.open(file)
-        image.thumbnail((1024,1024))
-        image.save(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{file.filename}.thumb.system.jpg")
-        file.save(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{file.filename}")
+        image.save(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{file.filename}.png")
+        image.thumbnail((256,256))
+        image.save(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{file.filename}.thumb.system.png")
         return file.filename
 
     def get_files(self, entry_id):
@@ -31,3 +35,8 @@ class FileAttachmentManager:
         os.remove(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{file_name}")
         if len(os.listdir(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}")) == 0:
             os.rmdir(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}")
+            
+    def delete_all_files(self,entry_id):
+        for file in os.listdir(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}"):
+            os.remove(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{file}")
+        os.rmdir(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}")
