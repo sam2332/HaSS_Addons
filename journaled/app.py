@@ -34,6 +34,12 @@ UPLOAD_FOLDER = f'{ADDON_FILES_DIR_PATH}/uploads'
 if os.path.exists(UPLOAD_FOLDER) == False:
     os.makedirs(UPLOAD_FOLDER)
 
+#max file size 500MB
+app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    return "File is too large. Maximum allowed size is 500 MB.", 413
+
 
 #static file cache prevent
 @app.after_request

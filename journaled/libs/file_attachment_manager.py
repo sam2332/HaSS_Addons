@@ -17,7 +17,10 @@ class FileAttachmentManager:
             return
         #resize image to 1024x1024
         image = Image.open(file)
-        image.save(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{file.filename}.png")
+        full_file_without_ext = file.filename.split('.')
+        full_file_without_ext.pop()
+        full_file_without_ext = '.'.join(full_file_without_ext)
+        image.save(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{full_file_without_ext}.png")
         image.thumbnail((256,256))
         image.save(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{file.filename}.thumb.system.png")
         return file.filename
@@ -37,6 +40,8 @@ class FileAttachmentManager:
             os.rmdir(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}")
             
     def delete_all_files(self,entry_id):
+        if not os.path.exists(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}"):
+            return
         for file in os.listdir(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}"):
             os.remove(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{file}")
         os.rmdir(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}")

@@ -164,8 +164,11 @@ def register_blueprint(app):
                 if tag not in entry.tags:
                     entry.tags.append(tag)
 
-            db.session.commit()
-            return redirect(session['return_url'] or app.wrapped_url_for('main.past'))
+            db.session.commit()    
+            return_url = session.get('return_url', app.wrapped_url_for('main.past'))
+            if return_url is None:
+                return_url = app.wrapped_url_for('main.past')   
+            return redirect(return_url)
         else:
             session['return_url'] = request.referrer
             entry_id = request.args.get('entry_id')
@@ -212,7 +215,10 @@ def register_blueprint(app):
         db.session.commit()
         
         file_attachment_manager.delete_all_files(entry_id)
-        return redirect(session['return_url'] or app.wrapped_url_for('main.past'))
+        return_url = session.get('return_url', app.wrapped_url_for('main.past'))
+        if return_url is None:
+            return_url = app.wrapped_url_for('main.past')   
+        return redirect(return_url)
     
     @bp.route('/past')
     def past():
