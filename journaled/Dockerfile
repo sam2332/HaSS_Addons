@@ -6,7 +6,7 @@ RUN apk add --no-cache \
     bash
 
 # Install Flask
-RUN pip install flask requests flask_sqlalchemy tzdata
+RUN pip install flask requests flask_sqlalchemy tzdata pillow
 
 # Copy the run script and Flask app
 COPY ./ /app

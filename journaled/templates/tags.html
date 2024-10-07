@@ -10,29 +10,17 @@
         padding: 10px;
         margin-bottom: 10px;
     }
+    .blurred_entry {
+        filter: blur(2px);
+    }
     </style>
 {% endblock %}
 {% block content %}
-<h3 class="mb-3 mt-2">{{date}}</h3>
-<ul>
-    {% for tag in tags %}
-    <li class="entry">
-        <div>{{ tag.entry.content| link_tags | nl2br | safe }}</div>
-        
-        {% if tag.entry.tags %}
-        <strong>Tags:</strong>
-        <ul class="list-inline d-inline ml-1">
-            {% for tag in tag.entry.tags %}
-            <li  class="list-inline-item"><a href="{{url_for('tags.tag_detail',tag_name=tag.name)}}">#{{tag.name|u2s|title}}</a></li>
-            {% endfor %}
-        </ul>
-        <br>
-        {% endif %}
-        <div>
-            <small>Written on: {{ tag.entry.timestamp|time_link|safe}}</small>
-            <a href="{{url_for('main.update_journal_entry',entry_id=tag.entry.id)}}">Edit</a>
-        </div>
-    </li>
+<h3 class="mb-3 mt-2">Tagged: #{{tag_name}}</h3>
+
+<ul class="pl-0">
+    {% for entry in entries %}
+    {% include 'partials/entry_row.html' with context %}
     {% endfor %}
 </ul>
 {% endblock %}

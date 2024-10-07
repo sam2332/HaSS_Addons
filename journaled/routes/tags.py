@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, request
-from libs.models import Tag, db
+from flask import Blueprint, render_template, request, abort
+from libs.models import Tag, JournalEntry, db
 from libs.utils import get_remote_user
 from collections import defaultdict
 from sqlalchemy import func
+
 def register_blueprint(app):
     bp = Blueprint('tags', __name__, url_prefix='/tags')
 
@@ -11,40 +12,43 @@ def register_blueprint(app):
         # Extract the user from request headers
         user = get_remote_user()
 
-        tag_name = tag_name.lower()
-        if '%20' in tag_name:
-            tag_name = tag_name.replace('%20', '_')
-            
-        if ' ' in tag_name:
-            tag_name = tag_name.replace(' ', '_')
-            
-        # Filter tags by name and user
-        tags = Tag.query.filter_by(name=tag_name, user=user).all()
-        return render_template('tags.html', tags=tags, tag_name=tag_name)
-    
-    
+        # Normalize the tag name
+        tag_name = tag_name.lower().replace('%20', '_').replace(' ', '_')
+
+        # Get the tag object for the user
+        tag = Tag.query.filter_by(name=tag_name, user=user).first()
+        if not tag:
+            # If the tag doesn't exist, return a 404 error
+            return render_template('tag_not_found.html', tag_name=tag_name), 404
+
+        # Get the journal entries associated with the tag, ordered by timestamp
+        entries = tag.entries.order_by(JournalEntry.timestamp.desc()).all()
+
+        return render_template('tags.html', tag=tag, entries=entries, tag_name=tag_name)
+
     @bp.route('/')
     def all_tags():
         user = get_remote_user()
 
-        # Fetch tag counts from the database
-        tags = (
-            db.session.query(Tag.name, func.count(Tag.name))
-            .filter_by(user=user)
-            .group_by(Tag.name)
+        # Fetch tags and their associated entry counts for the user
+        tags_with_counts = (
+            db.session.query(Tag, func.count(JournalEntry.id).label('entry_count'))
+            .outerjoin(Tag.entries)
+            .filter(Tag.user == user)
+            .group_by(Tag.id)
+            .order_by(func.count(JournalEntry.id).desc())
             .all()
         )
 
         # If no tags are found, render the template with an empty list
-        if not tags:
-            return render_template('all_tags.html', tags_with_size=[])
+        if not tags_with_counts:
+            return render_template('all_tags.html',word_cloud={}, table_items=[])
 
-        # Convert the list of tuples into a dictionary
-        word_cloud = {tag_name: count for tag_name, count in tags}
-
-        #table_items is sorted by count
+        # Prepare data for the word cloud and table
+        word_cloud = {tag.name: entry_count for tag, entry_count in tags_with_counts}
         table_items = sorted(word_cloud.items(), key=lambda x: x[1], reverse=True)
-        # Pass the word cloud data (tag name and count) to the template
-        return render_template('all_tags.html', word_cloud=word_cloud,table_items=table_items)
+        print(word_cloud)
+        # Pass the word cloud data and table items to the template
+        return render_template('all_tags.html', word_cloud=word_cloud, table_items=table_items)
 
     app.register_blueprint(bp)

@@ -10,36 +10,38 @@
         padding: 10px;
         margin-bottom: 10px;
     }
+    .blurred_entry {
+        filter: blur(2px);
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <h3 class="mb-3 mt-2">Date: {{ day }}</h3>
-<ul>
+<ul class="pl-0"></ul>
     {% for entry in entries %}
-    <li class="entry">
-        <!-- Render the content of the entry with linked tags and line breaks -->
-        <div>{{ entry.content | link_tags | nl2br | safe }}</div>
-        
-        {% if entry.tags %}
-        <!-- Render tags associated with the entry -->
-        <strong>Tags:</strong>
-        <ul class="list-inline d-inline ml-1">
-            {% for tag in entry.tags %}
-            <li class="list-inline-item">
-                <a href="{{ url_for('tags.tag_detail', tag_name=tag.name) }}">#{{ tag.name | u2s | title }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-        <br>
-        {% endif %}
-        
-        <!-- Show the timestamp and link to edit the entry -->
-        <div>
-            <small>Written on: {{ entry.timestamp | time_link |safe}}</small>
-            <a href="{{ url_for('main.update_journal_entry', entry_id=entry.id) }}">Edit</a>
-        </div>
-    </li>
+    {% include 'partials/entry_row.html' with context %}
     {% endfor %}
 </ul>
+{% endblock %}
+
+
+
+{% block extra_scripts %}
+<!-- Script to render markdown client-side -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Select all elements with class 'markdown-content'
+        document.querySelectorAll('.markdown-content').forEach(function(el) {
+            // Convert the text content from markdown to HTML
+            el.innerHTML = marked.parse(el.textContent);
+        });
+        //blurred_entry remove on click
+        document.querySelectorAll('.blurred_entry').forEach(function(el) {
+            el.addEventListener('click', function() {
+                el.classList.remove('blurred_entry');
+            });
+        });
+    });
+</script>
 {% endblock %}

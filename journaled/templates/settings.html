@@ -1,21 +1,31 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3>Per User Settings</h3>
-{% if user_settings.get("EnableAutoHasher",'false') == 'false' %}
-<a href = "{{ url_for('settings.enable_auto_hasher') }}">Enable Auto Hasher</a><br>
-{% else %}
-<a href = "{{ url_for('settings.disable_auto_hasher') }}">Disable Auto Hasher</a><br>
-{% endif %}
+<h3 class="mt-3 border-bottom">Per User Settings</h3>
 
-<hr>
-<h3 class="mb-3 mt-2">Settings</h3>
-<a href = "{{ url_for('settings.reindex_tags') }}">Reindex Tags</a><br>
-<a href = "{{ url_for('settings.export_csv') }}">Export Csv</a><br>
+<div class="border">
 
-<h4>Csv Import</h4>
-<form action="{{ url_for('settings.import_csv') }}" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" id="file">
-    <input type="submit">
-</form>
+    <p>This is a feature that will look at your used tags and try and match words to them based on longest underscored words first.</p>
+    {% if user_settings.get("EnableAutoHasher",'false') == 'false' %}
+    <a href = "{{ url_for('settings.enable_auto_hasher') }}">Enable Auto Hasher</a><br>
+    {% else %}
+    <a href = "{{ url_for('settings.disable_auto_hasher') }}">Disable Auto Hasher</a><br>
+    {% endif %}
+</div>
+
+<div class="mt-5 border">
+    <p>Where do you want to go after publishing a new journal entry</p>
+    <select id="post_journal_url">
+        <option value="journal" {% if user_settings.get("post_journal_url",'past') == 'journal' %}selected{% endif %}>New Journal Page</option>
+        <option value="past" {% if user_settings.get("post_journal_url",'past') == 'past' %}selected{% endif %}>Past Journal Entries</option>
+        <option value="tags" {% if user_settings.get("post_journal_url",'past') == 'tags' %}selected{% endif %}>Tags</option>
+    </select>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    document.getElementById("post_journal_url").addEventListener("change", function() {
+        fetch("{{url_for('settings.set_post_journal_url',page='')}}"+this.value)
+    });
+</script>
 {% endblock %}

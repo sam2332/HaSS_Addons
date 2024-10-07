@@ -7,8 +7,13 @@ class HashTagAdder():
         self.tag_word_sequences = self.process_tags()
 
     def get_tags(self):
-        # Fetch all tags from the database
-        return Tag.query.filter_by(user=self.user).all()
+        try:
+            return Tag.query.filter_by(user=self.user).all()
+        except Exception as e:
+            # Log the exception
+            print(f"Error fetching tags for user {self.user}: {e}")
+            return []
+
 
     def process_tags(self):
         # Build tag word sequences and index
@@ -24,28 +29,32 @@ class HashTagAdder():
         return tag_word_sequences
 
     def add_hashtags(self, text):
-        words = text.split()
-        n = len(words)
-        i = 0
-        result = []
-        while i < n:
-            word = words[i]
-            word_lower = word.lower()
-            longest_match = None
-            longest_match_length = 0
-            if word_lower in self.tag_word_sequences:
-                for tag_words, tag in self.tag_word_sequences[word_lower]:
-                    match_length = len(tag_words)
-                    if i + match_length <= n:
-                        words_to_compare = [w.lower() for w in words[i:i+match_length]]
-                        if words_to_compare == tag_words:
-                            if match_length > longest_match_length:
-                                longest_match = tag
-                                longest_match_length = match_length
-                if longest_match:
-                    result.append('#' + longest_match)
-                    i += longest_match_length
-                    continue
-            result.append(words[i])
-            i += 1
-        return ' '.join(result)
+        lines = text.splitlines()
+        out = []
+        for words in lines:
+            words = words.split()
+            n = len(words)
+            i = 0
+            result = []
+            while i < n:
+                word = words[i]
+                word_lower = word.lower()
+                longest_match = None
+                longest_match_length = 0
+                if word_lower in self.tag_word_sequences:
+                    for tag_words, tag in self.tag_word_sequences[word_lower]:
+                        match_length = len(tag_words)
+                        if i + match_length <= n:
+                            words_to_compare = [w.lower() for w in words[i:i+match_length]]
+                            if words_to_compare == tag_words:
+                                if match_length > longest_match_length:
+                                    longest_match = tag
+                                    longest_match_length = match_length
+                    if longest_match:
+                        result.append('#' + longest_match)
+                        i += longest_match_length
+                        continue
+                result.append(words[i])
+                i += 1
+            out.append(' '.join(result))
+        return '\n'.join(out)

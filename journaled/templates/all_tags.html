@@ -5,8 +5,10 @@
         .tag-cloud {
             position: relative;
             width: 100%;
-            height: 450px; /* Adjust the height as needed */
+            height: 500px; /* Adjust the height as needed */
             font-family: sans-serif;
+            margin-top: 50px;
+            margin-bottom: 50px;
         }
         .tag {
             position: absolute;
@@ -18,10 +20,12 @@
             transform: scale(1.1); /* Slightly enlarge the word on hover */
         }
     </style>
-
+    {% if word_cloud %}
     <div id="word-cloud" class="tag-cloud mx-auto"></div>
+    {% endif %}
    <!-- Table of Tags -->
    <div class="table-container">
+    {% if table_items %}
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
@@ -38,6 +42,9 @@
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+        <h1 class="text-center">No Tags Yet</h1>
+    {% endif %}
 </div>
 
     <script>
@@ -173,7 +180,22 @@
             }
             placeWords();
             /* ======================= END PLACE WORDS ======================= */
+            function adjustCloudHeight() {
+                var minTop = Infinity;
+                var maxBottom = -Infinity;
+                var tags = cloud.getElementsByClassName('tag');
+                for (var i = 0; i < tags.length; i++) {
+                    var tag = tags[i];
+                    var offsetTop = tag.offsetTop;
+                    var offsetHeight = tag.offsetHeight;
+                    if (offsetTop < minTop) minTop = offsetTop;
+                    if (offsetTop + offsetHeight > maxBottom) maxBottom = offsetTop + offsetHeight;
+                }
+                var newHeight = maxBottom - minTop;
+                cloud.style.height = newHeight + "px";
+            }
 
+            adjustCloudHeight();
             /* ======================= EVENT LISTENERS ======================= */
             cloud.addEventListener("click", function(event) {
                 if (event.target.classList.contains("tag")) {

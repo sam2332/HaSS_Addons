@@ -1,0 +1,37 @@
+<li class="entry {% if entry.visible == false %}> blurred_entry {% endif %}">
+    <!-- The content will be converted to markdown by marked.js -->
+    <p>{{ entry.content | link_tags | nl2br |safe}}</p>
+    <!-- Only show the tags section if there are tags -->
+    {% if entry.tags %}
+    <strong>Tags:</strong>
+    <ul class="list-inline d-inline ml-1">
+        {% for tag in entry.tags %}
+        <li class="list-inline-item">
+            <a href="{{ url_for('tags.tag_detail', tag_name=tag.name) }}">#{{ tag.name|u2s|title }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if attachments %}
+    <div class="attachments row">
+        {% for attachment in attachments %}
+        <div class="col-lg-1 mx-auto text-center">
+            {% if attachment.endswith('.thumb.system.jpg') %}
+            <img src="{{ url_for('main.download_attachment',entry_id=entry.id, file_name=attachment) }}" alt="{{ attachment }}">
+            {% endif %}
+            <a href="{{ url_for('main.download_attachment',entry_id=entry.id, file_name=attachment) }}">{{ attachment }}</a>
+        </div>
+        {% endfor %}
+
+    </div>
+    {% endif %}
+    <div>
+        <small>Written on: {{ entry.timestamp|time_link |safe}}</small>
+        <a href="{{ url_for('main.update_journal_entry', entry_id=entry.id) }}">Edit</a>
+        {% if entry.visible == true %}
+            <a href="{{ url_for('main.blur_journal_entry', entry_id=entry.id) }}">Blur</a>
+        {% else %}
+            <a href="{{ url_for('main.unblur_journal_entry', entry_id=entry.id) }}">Unblur</a>
+        {% endif %}
+    </div>
+</li>

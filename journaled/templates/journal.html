@@ -1,33 +1,40 @@
 {% extends 'base.html' %}
 
+{%block extra_head %}
+    <style>
+        #new_entry{
+            width: 67%;
+            height: 317px;
+            border-radius: 14px;
+            padding-top: 10px;
+            padding-left: 10px;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 <div class="container text-center">
     <h3 class="mb-3 mt-2">{{ saying }}, {{ user | title}}</h3>
-    <form method="POST">
-        <textarea id="markdown-editor" name="content" placeholder="What's on your mind?"></textarea>
-        <div class="form-group mt-2">
-            <label for="attachment">Attachment</label>
-            <input type="file" class="form-control-file" id="attachment" name="attachments" multiple>
+    <form method="POST" enctype="multipart/form-data">
+        <textarea id='new_entry' name="content" placeholder="What's on your mind?"></textarea>
+        <div class="form-group mt-2 col-3 mx-auto">
+            <label for="attachment text-decoration-underline" id="attachment_label">Attachment?</label>
+            <input type="file" class="form-control-file" id="attachment" name="attachments" multiple style="display:none;">
         </div>
         <button type="submit" class="btn btn-primary mt-2">Submit</button>
     </form>
 </div>
 
-<!-- SimpleMDE Markdown Editor -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+{% endblock %}
+{% block extra_scripts %}
 <script>
-    var simplemde = new SimpleMDE({ 
-        element: document.getElementById("markdown-editor"),
-        placeholder: "Write something amazing...",
-        spellChecker: true,
-        autosave: {
-            enabled: true,
-            uniqueId: "markdown-editor-{{ user }}-{{last_post_uuid}}",
-            delay: 1000,
-        },
-        status: false,
-        toolbar: ["bold", "italic", "heading", "|", "quote", "code", "link", "|", "preview", "guide"]
+    document.getElementById("attachment_label").addEventListener("click", function() {
+        document.getElementById("attachment").click();
     });
+    
+    document.getElementById("attachment").addEventListener("change", function() {
+        document.getElementById("attachment").style.display = "block";
+    });
+
 </script>
 {% endblock %}

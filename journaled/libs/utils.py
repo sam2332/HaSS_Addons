@@ -5,7 +5,7 @@ from flask import request, abort, url_for
 import logging
 import sys
 from datetime import timezone, datetime
-
+import time
 from zoneinfo import ZoneInfo  # Import ZoneInfo for timezone handling
 
 
@@ -14,6 +14,7 @@ def extract_tags(content):
     tags = re.findall(pattern, content)
     lowercased_tags = [tag.lower() for tag in tags]
     return lowercased_tags
+
 def link_tags(content):
     tag_pattern = r'#([\w()]+)'
     
@@ -26,11 +27,13 @@ def link_tags(content):
     return linked_content
 
 def get_remote_user():
-    user = request.headers.get('X-Remote-User-Name')
-    if not user:
-        user = 'DEV'
-        #abort(400, description="User not specified")
-    return user
+    if os.environ.get("local_dev_user"):
+        return os.environ.get("local_dev_user") 
+    else:
+        user = request.headers.get('X-Remote-User-Name')
+        if not user:
+            abort(400, description="User not specified")
+        return user
 
 def nl2br(value):
     return value.replace('\n', '<br>')
@@ -38,11 +41,10 @@ def nl2br(value):
 def u2s(value):
     return value.replace('_',' ')
 
-
 def time_link(timestamp):
     # Ensure TZ is set, fallback to UTC if not
-    tz_name = os.environ.get('TZ', 'UTC')
-    
+    tz_name = os.environ.get('TZ', 'EST')
+
     # Convert the timestamp from UTC to the local timezone
     local_timezone = ZoneInfo(tz_name)
     timestamp = timestamp.replace(tzinfo=timezone.utc).astimezone(local_timezone)
