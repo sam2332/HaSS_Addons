@@ -3,72 +3,101 @@
 {% block content %}
 <h3 class="mt-3 border-bottom">Per User Settings</h3>
 
-<div class="border p-2">
+<div class="accordion" id="settingsAccordion">
 
-    <p>This is a feature that will look at your used tags and try and match words to them based on longest underscored words first.</p>
-    {% if user_settings.get("autohasher_enabled",'false') == 'false' %}
-    <a href = "{{ url_for('settings.enable_auto_hasher') }}">Enable Auto Hasher</a><br>
-    {% else %}
-    <a href = "{{ url_for('settings.disable_auto_hasher') }}">Disable Auto Hasher</a><br>
-    {% endif %}
-</div>
+    <!-- Auto Hasher Setting -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingAutoHasher">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAutoHasher" aria-expanded="true" aria-controls="collapseAutoHasher">
+                Auto Hasher
+            </button>
+        </h2>
+        <div id="collapseAutoHasher" class="accordion-collapse collapse show" aria-labelledby="headingAutoHasher" data-bs-parent="#settingsAccordion">
+            <div class="accordion-body">
+                <p>This is a feature that will look at your used tags and try and match words to them based on longest underscored words first.</p>
+                {% if user_settings.get("autohasher_enabled",'false') == 'false' %}
+                <a href = "{{ url_for('settings.enable_auto_hasher') }}">Enable Auto Hasher</a><br>
+                {% else %}
+                <a href = "{{ url_for('settings.disable_auto_hasher') }}">Disable Auto Hasher</a><br>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
-<div class="mt-5 border p-2">
-    <p>Where do you want to go after publishing a new journal entry</p>
-    <select id="post_journal_url">
-        <option value="journal" {% if user_settings.get("post_journal_url",'past') == 'journal' %}selected{% endif %}>New Journal Page</option>
-        <option value="past" {% if user_settings.get("post_journal_url",'past') == 'past' %}selected{% endif %}>Past Journal Entries</option>
-        <option value="tags" {% if user_settings.get("post_journal_url",'past') == 'tags' %}selected{% endif %}>Tags</option>
-    </select>
-</div>
+    <!-- Post Journal URL Setting -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingPostJournalURL">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePostJournalURL" aria-expanded="false" aria-controls="collapsePostJournalURL">
+                After Publishing a New Journal Entry
+            </button>
+        </h2>
+        <div id="collapsePostJournalURL" class="accordion-collapse collapse" aria-labelledby="headingPostJournalURL" data-bs-parent="#settingsAccordion">
+            <div class="accordion-body">
+                <p>Where do you want to go after publishing a new journal entry</p>
+                <select id="post_journal_url">
+                    <option value="journal" {% if user_settings.get("post_journal_url",'past') == 'journal' %}selected{% endif %}>New Journal Page</option>
+                    <option value="past" {% if user_settings.get("post_journal_url",'past') == 'past' %}selected{% endif %}>Past Journal Entries</option>
+                    <option value="tags" {% if user_settings.get("post_journal_url",'past') == 'tags' %}selected{% endif %}>Tags</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
+    <!-- Auto Blur Mode Setting -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingAutoBlurMode">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAutoBlurMode" aria-expanded="false" aria-controls="collapseAutoBlurMode">
+                Auto Blur Mode
+            </button>
+        </h2>
+        <div id="collapseAutoBlurMode" class="accordion-collapse collapse" aria-labelledby="headingAutoBlurMode" data-bs-parent="#settingsAccordion">
+            <div class="accordion-body">
+                <p>List of Hashtags that will blur out journal entries on creation.</p>
+                <span>auto_blur_mode:</span>
+                <select id="auto_blur_mode">
+                    <option value="off" {% if user_settings.get("auto_blur_mode",'off') == 'off' %}selected{% endif %}>Off</option>
+                    <option value="partial match" {% if user_settings.get("auto_blur_mode",'partial match') == 'partial match' %}selected{% endif %}>Partial match</option>
+                    <option value="full match" {% if user_settings.get("auto_blur_mode",'full match') == 'full match' %}selected{% endif %}>Full Match Only</option>
+                </select>
+                
+                <table class="table table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Hashtag</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tag in user_settings.get("Hashtags",[]) %}
+                        <tr>
+                            <td>{{tag}}</td>
+                            <td><a href="{{url_for('settings.remove_hashtag',tag=tag)}}">Remove</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>
+                                <form action="{{url_for('settings.add_hashtag')}}" method="post">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">#</span>
+                                        </div>
+                                        <input type="text" name="tag" placeholder="Hashtag" class="form-control">
+                                    </div>
+                                    <input type="submit" value="Add" class="btn btn-primary mt-2">
+                                </form>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
 
-
-
-<div class="mt-5 border p-2">
-    <p>
-        List of Hashtags that will be blur out journal entries on creation.
-    </p>
-    <span>auto_blur_mode:</span>
-    <select id="post_journal_url">
-        <option value="off" {% if user_settings.get("auto_blur_mode",'off') == 'off' %}selected{% endif %}>Partial match</option>
-        <option value="partial match" {% if user_settings.get("auto_blur_mode",'partial match') == 'partial match' %}selected{% endif %}>Partial match</option>
-        <option value="full match" {% if user_settings.get("auto_blur_mode",'full match') == 'full match' %}selected{% endif %}>Full Match Only</option>
-    </select>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Hashtag</th>
-                <th>Remove</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for tag in user_settings.get("Hashtags",[]) %}
-            <tr>
-                <td>{{tag}}</td>
-                <td><a href="{{url_for('settings.remove_hashtag',tag=tag)}}">Remove</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        <tfoot>
-            <tr>
-                <td>
-                    <form action="{{url_for('settings.add_hashtag')}}" method="post">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">#</span>
-                            </div>
-                            <input type="text" name="tag" placeholder="Hashtag">
-                        </div>
-                            
-                        <input type="submit" value="Add">
-                    </form>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
 </div>
 {% endblock %}
+
 {% block extra_scripts %}
 <script>
     document.getElementById("post_journal_url").addEventListener("change", function() {

@@ -12,11 +12,15 @@ RUN pip install flask requests flask_sqlalchemy tzdata pillow gunicorn eventlet
 COPY ./ /app
 
 
-# Set executable permissions
-RUN chmod a+x /app/run.sh
 
-# Expose ingress port for Flask (5000 is default for Flask)
+RUN chmod a+x /app/update_nginx.py
+RUN python /app/update_nginx.py
+
+
+# Expose ingress port for Flask (80 for nginx)
 EXPOSE 5000
 
+# Set executable permissions
+RUN chmod a+x /app/run.sh
 # Start the service
 CMD ["/app/run.sh"]

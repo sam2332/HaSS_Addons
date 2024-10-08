@@ -92,8 +92,6 @@ def set_timezone():
         data = response.json()
         timezone = data['data']['timezone']
         os.environ['TZ'] = timezone
-        print(f"Timezone set to {timezone}")
     except Exception as e:
-        print(f"Failed to get timezone: {e}")
         os.environ['TZ'] = "UTC"  # Fallback to UTC if the request fails
 

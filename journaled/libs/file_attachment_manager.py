@@ -1,5 +1,6 @@
 import os
 from PIL import Image
+import logging
 class FileAttachmentManager:
     def __init__(self,app, user):
         self.user = user
@@ -13,8 +14,10 @@ class FileAttachmentManager:
             
         img_ext = ['jpg','jpeg','png','gif']
         if file.filename.split('.')[-1].lower() not in img_ext:
+            logging.info(f"Saving file {file.filename}")
             file.save(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{file.filename}")
             return
+        logging.info(f"Saving image {file.filename}")
         #resize image to 1024x1024
         image = Image.open(file)
         full_file_without_ext = file.filename.split('.')
@@ -22,6 +25,7 @@ class FileAttachmentManager:
         full_file_without_ext = '.'.join(full_file_without_ext)
         image.save(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{full_file_without_ext}.png")
         image.thumbnail((256,256))
+        logging.info(f"Saving thumbnail {file.filename}")
         image.save(f"{self.app.filesystem_paths['UPLOAD_FOLDER']}/{self.user}/{entry_id}/{file.filename}.thumb.system.png")
         return file.filename
 
