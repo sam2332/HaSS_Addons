@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, redirect, url_for,session, send_from_directory
 import os
+import logging
 import time
 import json
 import requests
@@ -17,6 +18,9 @@ app = Flask(
     "/static",
     "static"
 )  
+app.debug = True
+logging.basicConfig(level=logging.INFO)
+app.logger.setLevel(logging.INFO)
 # https://developers.home-assistant.io/docs/add-ons/communication
 # https://developers.home-assistant.io/docs/api/rest
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable default caching behavior for static files

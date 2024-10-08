@@ -1,103 +1,125 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3 class="mt-3 border-bottom">Per User Settings</h3>
-
-<div class="accordion" id="settingsAccordion">
-
-    <!-- Auto Hasher Setting -->
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingAutoHasher">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAutoHasher" aria-expanded="true" aria-controls="collapseAutoHasher">
-                Auto Hasher
-            </button>
-        </h2>
-        <div id="collapseAutoHasher" class="accordion-collapse collapse show" aria-labelledby="headingAutoHasher" data-bs-parent="#settingsAccordion">
-            <div class="accordion-body">
-                <p>This is a feature that will look at your used tags and try and match words to them based on longest underscored words first.</p>
-                {% if user_settings.get("autohasher_enabled",'false') == 'false' %}
-                <a href = "{{ url_for('settings.enable_auto_hasher') }}">Enable Auto Hasher</a><br>
-                {% else %}
-                <a href = "{{ url_for('settings.disable_auto_hasher') }}">Disable Auto Hasher</a><br>
-                {% endif %}
+<div class="container mt-3">
+    <h3 class="border-bottom pb-2">Per User Settings</h3>
+    <div class="accordion" id="settingsAccordion">
+        <!-- Auto Hasher Setting -->
+        <div class="card">
+            <div class="card-header" id="headingAutoHasher">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseAutoHasher" aria-expanded="true" aria-controls="collapseAutoHasher">
+                        Auto Hasher
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseAutoHasher" class="collapse show" aria-labelledby="headingAutoHasher" data-parent="#settingsAccordion">
+                <div class="card-body">
+                    <p>This is a feature that will look at your used tags and try to match words to them based on the longest underscored words first.</p>
+                    {% if user_settings.get("autohasher_enabled", 'false') == 'false' %}
+                    <a href="{{ url_for('settings.enable_auto_hasher') }}" class="btn btn-primary">Enable Auto Hasher</a>
+                    {% else %}
+                    <a href="{{ url_for('settings.disable_auto_hasher') }}" class="btn btn-primary">Disable Auto Hasher</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Post Journal URL Setting -->
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingPostJournalURL">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePostJournalURL" aria-expanded="false" aria-controls="collapsePostJournalURL">
-                After Publishing a New Journal Entry
-            </button>
-        </h2>
-        <div id="collapsePostJournalURL" class="accordion-collapse collapse" aria-labelledby="headingPostJournalURL" data-bs-parent="#settingsAccordion">
-            <div class="accordion-body">
-                <p>Where do you want to go after publishing a new journal entry</p>
-                <select id="post_journal_url">
-                    <option value="journal" {% if user_settings.get("post_journal_url",'past') == 'journal' %}selected{% endif %}>New Journal Page</option>
-                    <option value="past" {% if user_settings.get("post_journal_url",'past') == 'past' %}selected{% endif %}>Past Journal Entries</option>
-                    <option value="tags" {% if user_settings.get("post_journal_url",'past') == 'tags' %}selected{% endif %}>Tags</option>
-                </select>
+        <!-- Post Journal URL Setting -->
+        <div class="card">
+            <div class="card-header" id="headingPostJournalURL">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapsePostJournalURL" aria-expanded="false" aria-controls="collapsePostJournalURL">
+                        After Publishing a New Journal Entry
+                    </button>
+                </h2>
+            </div>
+            <div id="collapsePostJournalURL" class="collapse" aria-labelledby="headingPostJournalURL" data-parent="#settingsAccordion">
+                <div class="card-body">
+                    <p>Where do you want to go after publishing a new journal entry?</p>
+                    <select id="post_journal_url" class="form-control">
+                        <option value="journal" {% if user_settings.get("post_journal_url", 'past') == 'journal' %}selected{% endif %}>New Journal Page</option>
+                        <option value="past" {% if user_settings.get("post_journal_url", 'past') == 'past' %}selected{% endif %}>Past Journal Entries</option>
+                        <option value="tags" {% if user_settings.get("post_journal_url", 'past') == 'tags' %}selected{% endif %}>Tags</option>
+                    </select>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Auto Blur Mode Setting -->
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingAutoBlurMode">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAutoBlurMode" aria-expanded="false" aria-controls="collapseAutoBlurMode">
-                Auto Blur Mode
-            </button>
-        </h2>
-        <div id="collapseAutoBlurMode" class="accordion-collapse collapse" aria-labelledby="headingAutoBlurMode" data-bs-parent="#settingsAccordion">
-            <div class="accordion-body">
-                <p>List of Hashtags that will blur out journal entries on creation.</p>
-                <span>auto_blur_mode:</span>
-                <select id="auto_blur_mode">
-                    <option value="off" {% if user_settings.get("auto_blur_mode",'off') == 'off' %}selected{% endif %}>Off</option>
-                    <option value="partial match" {% if user_settings.get("auto_blur_mode",'partial match') == 'partial match' %}selected{% endif %}>Partial match</option>
-                    <option value="full match" {% if user_settings.get("auto_blur_mode",'full match') == 'full match' %}selected{% endif %}>Full Match Only</option>
-                </select>
-                
-                <table class="table table-striped mt-3">
-                    <thead>
-                        <tr>
-                            <th>Hashtag</th>
-                            <th>Remove</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for tag in user_settings.get("Hashtags",[]) %}
-                        <tr>
-                            <td>{{tag}}</td>
-                            <td><a href="{{url_for('settings.remove_hashtag',tag=tag)}}">Remove</a></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td>
-                                <form action="{{url_for('settings.add_hashtag')}}" method="post">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">#</span>
+        <!-- Auto Blur Mode Setting -->
+        <div class="card">
+            <div class="card-header" id="headingAutoBlurMode">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseAutoBlurMode" aria-expanded="false" aria-controls="collapseAutoBlurMode">
+                        Auto Blur Mode
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseAutoBlurMode" class="collapse" aria-labelledby="headingAutoBlurMode" data-parent="#settingsAccordion">
+                <div class="card-body">
+                    <p>List of Hashtags that will blur out journal entries on creation.</p>
+                    <span>Auto blur mode:</span>
+                    <select id="auto_blur_mode" class="form-control">
+                        <option value="off" {% if user_settings.get("auto_blur_mode", 'off') == 'off' %}selected{% endif %}>Off</option>
+                        <option value="partial match" {% if user_settings.get("auto_blur_mode", 'partial match') == 'partial match' %}selected{% endif %}>Partial Match</option>
+                        <option value="full match" {% if user_settings.get("auto_blur_mode", 'full match') == 'full match' %}selected{% endif %}>Full Match Only</option>
+                    </select>
+                    <!-- Table of hashtags -->
+                    <table class="table table-striped mt-3">
+                        <thead>
+                            <tr>
+                                <th>Hashtag</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tag in user_settings.get("Hashtags", []) %}
+                            <tr>
+                                <td>{{ tag }}</td>
+                                <td><a href="{{ url_for('settings.remove_hashtag', tag=tag) }}" class="btn btn-danger">Remove</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">
+                                    <form action="{{ url_for('settings.add_hashtag') }}" method="post" class="form-inline">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">#</span>
+                                            </div>
+                                            <input type="text" name="tag" placeholder="Hashtag" class="form-control">
                                         </div>
-                                        <input type="text" name="tag" placeholder="Hashtag" class="form-control">
-                                    </div>
-                                    <input type="submit" value="Add" class="btn btn-primary mt-2">
-                                </form>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+                                        <button type="submit" class="btn btn-primary ml-2">Add</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 
+        <!-- Keyword Helper Manager -->
+        <div class="card">
+            <div class="card-header" id="headingKeywordHelperManager">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseKeywordHelperManager" aria-expanded="false" aria-controls="collapseKeywordHelperManager">
+                        Keyword Last Use Broadcaster
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseKeywordHelperManager" class="collapse" aria-labelledby="headingKeywordHelperManager" data-parent="#settingsAccordion">
+                <div class="card-body">
+                    <p>When you use a keyword, it will be broadcasted to Home Assistant input.datetime helpers.</p>
+                    <a href="{{ url_for('settings.keyword_helper_manager') }}" class="btn btn-primary">Manage Keywords</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 {% endblock %}
-
 {% block extra_scripts %}
 <script>
     document.getElementById("post_journal_url").addEventListener("change", function() {

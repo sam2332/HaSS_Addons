@@ -1,5 +1,5 @@
 name: "Journaled"
-version: "0.0.152"
+version: "0.0.190"
 slug: "journaled"
 description: "Journaled is a multi user journaling app for Home Assistant."
 startup: "application"
@@ -8,6 +8,7 @@ hassio_api: true
 homeassistant_api: true
 ingress: true
 ingress_port: 5000
+ingress_stream: true
 ingress_entry: "/"
 ingress_user: true
 arch:

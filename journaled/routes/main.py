@@ -3,10 +3,12 @@ from libs.models import db, JournalEntry, Tag
 from libs.utils import extract_tags
 from libs.utils import get_remote_user
 from libs.HashTagAdder import HashTagAdder
+from libs.ha_datetime_helpers import update_datetime_helper
 from libs.ConfigFile import ConfigFile
 import random
 from CONST import SAYINGS,PAST_SAYINGS
 import time
+import logging
 import uuid
 from datetime import datetime, timedelta
 from libs.file_attachment_manager import FileAttachmentManager
@@ -27,7 +29,8 @@ def register_blueprint(app):
             user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
             if bool(user_settings.get("autohasher_enabled",'false')):
                 content = ah.add_hashtags(content)
-            auto_blur_tags = user_settings.get("Hashtags", [])
+            auto_blur_tags = user_settings.get("Hashtags", [])  
+            keyword_datetime_helpers = user_settings.get("keyword_datetime_helpers", {})
             tags_in_content = extract_tags(content)
 
             # Save journal entry with user
@@ -45,20 +48,20 @@ def register_blueprint(app):
             db.session.add(entry)
             db.session.commit()
 
-            # Save attachments with user
-            for attachment in attachments:
-                if attachment.filename == '':
-                    continue  # Skip empty files
-                file_attachment_manager.save_file(attachment, entry.id)
-
             # Save tags with user, avoiding duplicates
             for tag_name in tags_in_content:
+                logging.info(f"Found Tag: {tag_name}")
+                if keyword_datetime_helpers.get(tag_name):
+                    logging.info(f"Updating datetime helper for {tag_name}")
+                    update_datetime_helper(keyword_datetime_helpers.get(tag_name))
                 tag = Tag.query.filter_by(name=tag_name, user=user).first()
                 if not tag:
+                    logging.info(f"Creating new tag: {tag_name}")
                     tag = Tag(name=tag_name, user=user)
                     db.session.add(tag)
                     db.session.commit()  # Commit here to ensure tag.id is available
                 else:
+                    logging.info(f"Updating last used for tag: {tag_name}")
                     tag.last_used = datetime.now()
 
                 # Check if the tag is already associated with the entry
@@ -66,7 +69,16 @@ def register_blueprint(app):
                     entry.tags.append(tag)
 
             db.session.commit()
+            # Save attachments with user
+            logging.info(f"Attachments: {len(attachments)}")
+            for attachment in attachments:
+                if attachment.filename == '':
+                    continue  # Skip empty files
+                logging.info(f"Saving attachment: {attachment.filename}")
+                file_attachment_manager.save_file(attachment, entry.id)
 
+
+            db.session.commit()
             last_post_uuid = uuid.uuid4()
             session['last_post_uuid'] = last_post_uuid
 

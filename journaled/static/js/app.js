@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
+
+
+
+
+    // BLURING AND UNBLURING ENTRIES
     $(document).on('click', '.blurred_entry', function(e) {
         // Remove the blurred_entry class on click
         $(this).removeClass('blurred_entry');
@@ -6,8 +11,6 @@ document.addEventListener("DOMContentLoaded", function() {
         // Stop the initial click from interacting with the children, but allow future clicks
         e.stopPropagation();
     });
-
-
 
     $(document).on('click', '.unblur-entry', function(e) {
         var url = $(this).attr('href');
@@ -57,4 +60,21 @@ document.addEventListener("DOMContentLoaded", function() {
         e.preventDefault();
     });
     
+
+
+
+
+    window.openModalWithImage = function(src) {
+        $('#thumbnail_image').attr('src', src);  // Set the source of the modal image
+        $('#thumbnail_modal').modal('show');  // Use Bootstrap's modal method to show the modal
+    };
+
+    // Optional: If you want to clear the image src when the modal is closed
+    $('#thumbnail_modal').on('hidden.bs.modal', function (e) {
+        $('#thumbnail_image').attr('src', '');  // Clear the image source
+    });
+
+
+
+
 });

@@ -4,12 +4,18 @@ import time
 import uuid
 import io
 import csv
+import logging
 from libs.ConfigFile import ConfigFile
 from libs.HashTagAdder import HashTagAdder
 from libs.models import db, JournalEntry, Tag
 from libs.utils import get_remote_user
 from collections import defaultdict
 from libs.utils import extract_tags
+from libs.ha_datetime_helpers import  list_datetime_helpers, update_datetime_helper
+import requests
+import os
+from datetime import datetime
+
 def register_blueprint(app):
     bp = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -71,6 +77,34 @@ def register_blueprint(app):
 
 
 
+    @bp.route('/keyword_helper_manager')
+    def keyword_helper_manager():
+        user = get_remote_user()
+        input_helpers = list_datetime_helpers()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
+        keyword_datetime_helpers = user_settings.get("keyword_datetime_helpers", {})
+        logging.info(input_helpers)  
+        return render_template('keyword_helper_manager.html', keyword_datetime_helpers=keyword_datetime_helpers,input_helpers=input_helpers)
 
+    @bp.route('/add_keyword_datetime_helper', methods=['POST'])
+    def add_keyword_datetime_helper():
+        user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
+        hashtag = request.form['hashtag']
+        helper = request.form['helper']
+        keyword_datetime_helpers = user_settings.get("keyword_datetime_helpers", {})
+        keyword_datetime_helpers[hashtag] = helper
+        user_settings.set("keyword_datetime_helpers", keyword_datetime_helpers)
+        return redirect(app.wrapped_url_for('settings.keyword_helper_manager'))
 
+    @bp.route('/remove_keyword_datetime_helper/<hashtag>')
+    def remove_keyword_datetime_helper(hashtag):
+        user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
+        keyword_datetime_helpers = user_settings.get("keyword_datetime_helpers", {})
+        if hashtag in keyword_datetime_helpers:
+            # Optional: Add API call to remove the helper from Home Assistant
+            keyword_datetime_helpers.pop(hashtag)
+            user_settings.set("keyword_datetime_helpers", keyword_datetime_helpers)
+        return redirect(app.wrapped_url_for('settings.keyword_helper_manager'))
     app.register_blueprint(bp)

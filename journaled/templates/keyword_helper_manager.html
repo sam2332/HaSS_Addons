@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Broadcast Keyword Helpers Management</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Add a New Helper</h4>
+            <form method="POST" action="{{ url_for('settings.add_keyword_datetime_helper') }}">
+                <div class="form-group">
+                    <label for="hashtag">Keyword</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">#</span>
+                        </div>
+                        <input type="text" id="hashtag" name="hashtag" placeholder="Hashtag" class="form-control" required>
+                    </div>
+                </div>
+                <select class="form-control" name="helper" required>
+                    <option value="">Select a datetime helper</option>
+                    {% for helper in input_helpers %}
+                    <option value="{{ helper['entity_id'] }}">{{ helper['attributes']['friendly_name'] }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary">Add Helper</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <h4>Current Helpers</h4>
+            <ul class="list-group">
+                {% if keyword_datetime_helpers %}
+                    {% for hashtag, helper in keyword_datetime_helpers.items() %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ hashtag }} <small>- {{ helper }}</small>
+                        <a href="{{ url_for('settings.remove_keyword_datetime_helper', hashtag=hashtag) }}" class="btn btn-danger btn-sm">Remove</a>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                <li class="list-group-item">No keyword helpers defined.</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

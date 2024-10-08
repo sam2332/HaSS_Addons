@@ -16,12 +16,10 @@ Welcome to the Journal Application! This web-based app allows you to record your
 - **Hashtag Support**: Automatically extract hashtags from your entries to create tags.
 - **Tag Cloud Visualization**: View a word cloud of all your tags, with sizes indicating frequency.
 - **View Entries by Tag**: Click on any tag to see all related entries.
-- **Reindex Tags**: Re-scan all entries to update and correct tag associations.
 - **AutoHashAdder**: The application automatically converts matching phrases in your entries into hashtags based on your existing tags. This feature simplifies tagging and improves content discoverability.
+- **Home Assisant Public Tag**: publish the last used date of a tag on user request
 
 ### Additional Features
-
-- **Export Entries to CSV**: Export all your journal entries into a CSV file for backup or sharing.
 - **Random Motivational Sayings**: Enjoy random sayings displayed on various pages to keep you inspired.
 - **User Authentication**: Secure access to your journal entries and personalized content.
 - **Responsive Design**: Accessible and fully functional on all devices.
