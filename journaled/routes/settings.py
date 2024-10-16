@@ -61,18 +61,19 @@ def register_blueprint(app):
         user = get_remote_user()
         user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
         tag = request.form['tag']
-        tags = user_settings.get("Hashtags", [])
+        tag = tag.lower()
+        tags = user_settings.get("auto_blur_tags", [])
         tags.append(tag)
-        user_settings.set("Hashtags", tags)
+        user_settings.set("auto_blur_tags", tags)
         return redirect(app.wrapped_url_for('settings.main'))
     
     @bp.route('/remove_hashtag/<tag>')
     def remove_hashtag(tag):
         user = get_remote_user()
         user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
-        tags = user_settings.get("Hashtags", [])
+        tags = user_settings.get("auto_blur_tags", [])
         tags.remove(tag)
-        user_settings.set("Hashtags", tags)
+        user_settings.set("auto_blur_tags", tags)
         return redirect(app.wrapped_url_for('settings.main'))
 
 
@@ -107,4 +108,36 @@ def register_blueprint(app):
             keyword_datetime_helpers.pop(hashtag)
             user_settings.set("keyword_datetime_helpers", keyword_datetime_helpers)
         return redirect(app.wrapped_url_for('settings.keyword_helper_manager'))
+
+
+
+
+    @bp.route('/set_max_word_cloud_count', methods=['POST', 'GET'])
+    def set_max_word_cloud_count(count):
+        user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
+        count = request.form['count']
+        user_settings.set("max_word_cloud_count", count)
+        return redirect(request.referrer or app.wrapped_url_for('settings.main'))
+
+
+    #toggle_inspirational_quotes
+    @bp.route('/toggle_inspirational_quotes')
+    def toggle_inspirational_quotes():
+        user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
+        if user_settings.get("inspirational_quotes_enabled",'false') == 'true':
+            user_settings.set("inspirational_quotes_enabled", 'false')
+        else:
+            user_settings.set("inspirational_quotes_enabled", 'true')
+        return redirect(request.referrer or app.wrapped_url_for('settings.main'))
+    
+                    
+    @bp.route('/set_name_override', methods=['POST'])
+    def set_name_override():
+        user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
+        name_override = request.form['name_override']
+        user_settings.set("name_override", name_override)
+        return redirect(app.wrapped_url_for('settings.main'))
     app.register_blueprint(bp)

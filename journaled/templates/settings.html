@@ -4,6 +4,47 @@
 <div class="container mt-3">
     <h3 class="border-bottom pb-2">Per User Settings</h3>
     <div class="accordion" id="settingsAccordion">
+
+        <!-- name override -->
+        <div class="card">
+            <div class="card-header" id="headingNameOverride">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseNameOverride" aria-expanded="false" aria-controls="collapseNameOverride">
+                        Name Override
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseNameOverride" class="collapse" aria-labelledby="headingNameOverride" data-parent="#settingsAccordion">
+                <div class="card-body">
+                    <p>Would you like to override your name?</p>
+                    <form action="{{ url_for('settings.set_name_override') }}" method="post">
+                        <div class="form-group
+                        ">
+                        <input type="text" name="name_override" class="form-control" value="{{ user_settings.get('name_override', '') }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Set Name Override</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- show/hide inspirational quotes -->
+        <div class="card">
+            <div class="card-header" id="headingInspirationalQuotes">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseInspirationalQuotes" aria-expanded="false" aria-controls="collapseInspirationalQuotes">
+                        Inspirational Quotes
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseInspirationalQuotes" class="collapse" aria-labelledby="headingInspirationalQuotes" data-parent="#settingsAccordion">
+                <div class="card-body">
+                    <p>Would you like to see inspirational quotes on the main page?</p>
+                    <a href="{{ url_for('settings.toggle_inspirational_quotes') }}" class="btn btn-primary">Toggle Inspirational Quotes</a>
+                </div>
+            </div>
+        </div>
+
         <!-- Auto Hasher Setting -->
         <div class="card">
             <div class="card-header" id="headingAutoHasher">
@@ -45,6 +86,30 @@
                 </div>
             </div>
         </div>
+        <!-- Word cloud settings -->
+         
+        <div class="card">
+            <div class="card-header" id="headingWordCloud">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseWordCloud" aria-expanded="false" aria-controls="collapseWordCloud">
+                        Word Cloud Settings
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseWordCloud" class="collapse" aria-labelledby="headingWordCloud" data-parent="#settingsAccordion">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="max_word_cloud_count">Word Cloud Entries Count</label>
+                        <input type="number" id="max_word_cloud_count" class="form-control" value="{{ user_settings.get('max_word_cloud_count', 20) }}">
+                        <!--disable -->
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="disable_word_cloud" {% if user_settings.get('disable_word_cloud', False) %}checked{% endif %}>
+                            <label class="form-check" for="disable_word_cloud">Disable Word Cloud</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Auto Blur Mode Setting -->
         <div class="card">
@@ -73,7 +138,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for tag in user_settings.get("Hashtags", []) %}
+                            {% for tag in user_settings.get("auto_blur_tags", []) %}
                             <tr>
                                 <td>{{ tag }}</td>
                                 <td><a href="{{ url_for('settings.remove_hashtag', tag=tag) }}" class="btn btn-danger">Remove</a></td>
@@ -99,7 +164,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Keyword Helper Manager -->
         <div class="card">
             <div class="card-header" id="headingKeywordHelperManager">
@@ -128,6 +192,10 @@
 
     document.getElementById("auto_blur_mode").addEventListener("change", function() {
         fetch("{{url_for('settings.set_auto_blur_mode',mode='')}}"+this.value)
+    });
+
+    document.getElementById("max_word_cloud_count").addEventListener("change", function() {
+        fetch("{{url_for('settings.set_max_word_cloud_count',count='')}}"+this.value)
     });
 </script>
 {% endblock %}

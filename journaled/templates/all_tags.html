@@ -1,6 +1,7 @@
 {% extends 'base-fluid.html' %}
 
 {% block content %}
+    {% if word_cloud %}
     <style>
         .tag-cloud {
             position: relative;
@@ -20,7 +21,22 @@
             transform: scale(1.1); /* Slightly enlarge the word on hover */
         }
     </style>
-    {% if word_cloud %}
+    <!-- command bar with dropdown to select word cloud tag count-->
+    <div class="command-bar">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Word Count
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="{{ url_for('settings.set_max_word_cloud_count', count=10) }}">10</a>
+                <a class="dropdown-item" href="{{ url_for('settings.set_max_word_cloud_count', count=20) }}">20</a>
+                <a class="dropdown-item" href="{{ url_for('settings.set_max_word_cloud_count', count=30) }}">30</a>
+                <a class="dropdown-item" href="{{ url_for('settings.set_max_word_cloud_count', count=40) }}">40</a>
+                <a class="dropdown-item" href="{{ url_for('settings.set_max_word_cloud_count', count=50) }}">50</a>
+            </div>
+        </div>
+    </div>
+    
     <div id="word-cloud" class="tag-cloud mx-auto"></div>
     {% endif %}
    <!-- Table of Tags -->
@@ -46,7 +62,13 @@
         <h1 class="text-center">No Tags Yet</h1>
     {% endif %}
 </div>
+{% endblock %}
 
+
+
+
+{% if word_cloud %}
+{% block extra_scripts %}
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             /* ======================= SETUP ======================= */
@@ -180,7 +202,6 @@
                     }
                 }
             }
-            placeWords();
             /* ======================= END PLACE WORDS ======================= */
             function adjustCloudHeight() {
                 var minTop = Infinity;
@@ -201,6 +222,7 @@
             }
 
 
+            placeWords();
             adjustCloudHeight();
             /* ======================= EVENT LISTENERS ======================= */
             cloud.addEventListener("click", function(event) {
@@ -222,3 +244,4 @@
         });
     </script>
 {% endblock %}
+{% endif %}

@@ -6,7 +6,7 @@ from libs.HashTagAdder import HashTagAdder
 from libs.ha_datetime_helpers import update_datetime_helper
 from libs.ConfigFile import ConfigFile
 import random
-from CONST import SAYINGS,PAST_SAYINGS
+from CONST import get_random_saying, get_random_past_saying, get_random_inspirational_quote
 import time
 import logging
 import uuid
@@ -20,16 +20,16 @@ def register_blueprint(app):
     @bp.route('/', methods=['GET', 'POST'])
     def journal():
         user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
         file_attachment_manager = FileAttachmentManager(app,user)
         if request.method == 'POST':
             content = request.form['content']
             attachments = request.files.getlist('attachments')
             
             ah = HashTagAdder()
-            user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
             if bool(user_settings.get("autohasher_enabled",'false')):
                 content = ah.add_hashtags(content)
-            auto_blur_tags = user_settings.get("Hashtags", [])  
+            auto_blur_tags = user_settings.get("auto_blur_tags", [])  
             keyword_datetime_helpers = user_settings.get("keyword_datetime_helpers", {})
             tags_in_content = extract_tags(content)
 
@@ -93,12 +93,12 @@ def register_blueprint(app):
 
         if session.get('saying'):
             if session.get('saying_set_time') + 15 < time.time():
-                saying = random.choice(SAYINGS)
+                saying = get_random_saying()
                 session['saying'] = saying
                 session['saying_set_time'] = time.time()
             saying = session.get('saying')
         else:   
-            saying = random.choice(SAYINGS)
+            saying = get_random_saying()
             session['saying'] = saying
             session['saying_set_time'] = time.time()
             
@@ -109,8 +109,19 @@ def register_blueprint(app):
         else:
             last_post_uuid = uuid.uuid4()
             session['last_post_uuid'] = last_post_uuid
-
-        return render_template('journal.html', user = user,saying=saying, last_post_uuid =last_post_uuid)
+        inspirational_quote=None
+        if user_settings.get("inspirational_quotes_enabled",'false') == 'true':
+            inspirational_quote = get_random_inspirational_quote()
+            
+        if user_settings.get("name_override","") != "":
+            user = user_settings.get("name_override")
+            
+        return render_template('journal.html',
+            user = user,
+            saying=saying,
+            last_post_uuid =last_post_uuid,
+            inspirational_quote=inspirational_quote
+        )
     
     #delete file
     @bp.route('/delete_file', methods=['GET'])
@@ -126,18 +137,19 @@ def register_blueprint(app):
     @bp.route('/update_journal_entry', methods=['GET', 'POST'])
     def update_journal_entry():
         user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
+            
         file_attachment_manager = FileAttachmentManager(app,user)
         if request.method == 'POST':
             entry_id = request.form['entry_id']
             content = request.form['content']
             ah = HashTagAdder()
-            user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
             if bool(user_settings.get("autohasher_enabled",'false')):
                 content = ah.add_hashtags(content)
             tags_in_content = extract_tags(content)
             attachments = request.files.getlist('attachements')
 
-            auto_blur_tags = user_settings.get("Hashtags", [])
+            auto_blur_tags = user_settings.get("auto_blur_tags", [])
             # Save journal entry with user
             entry = JournalEntry.query.filter_by(id=entry_id).first()
             entry.content = content
@@ -145,7 +157,7 @@ def register_blueprint(app):
             if user_settings.get("auto_blur_mode","off") == 'partial match':
                 if any(blocked_tag in tag for blocked_tag in auto_blur_tags for tag in tags_in_content):
                     entry.visible = False
-                    
+
             elif user_settings.get("auto_blur_mode","off") == 'full match':
                 if set(tag.lower() for tag in tags_in_content) & set(tag.lower() for tag in auto_blur_tags):
                     entry.visible = False
@@ -160,9 +172,14 @@ def register_blueprint(app):
                 entry.tags.remove(tag)
             db.session.commit()
             
-           
-              # Save tags with user, avoiding duplicates
+            keyword_datetime_helpers = user_settings.get("keyword_datetime_helpers", {})
+            # Save tags with user, avoiding duplicates
             for tag_name in tags_in_content:
+                
+                logging.info(f"Found Tag: {tag_name}")
+                if keyword_datetime_helpers.get(tag_name):
+                    logging.info(f"Updating datetime helper for {tag_name}")
+                    update_datetime_helper(keyword_datetime_helpers.get(tag_name))
                 tag = Tag.query.filter_by(name=tag_name, user=user).first()
                 if not tag:
                     tag = Tag(name=tag_name, user=user)
@@ -185,6 +202,9 @@ def register_blueprint(app):
             session['return_url'] = request.referrer
             entry_id = request.args.get('entry_id')
             entry = JournalEntry.query.filter_by(id=entry_id).first()
+            
+            if user_settings.set("name_override","") != "":
+                user = user_settings.get("name_override")
             return render_template('update_journal_entry.html', entry = entry, user = user,entry_id=entry_id)
     
     #show_journal_entry
@@ -236,15 +256,15 @@ def register_blueprint(app):
     def past():
         user = get_remote_user()
         file_attachment_manager = FileAttachmentManager(app, user)
-
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
         if session.get('past_saying'):
             if session.get('past_saying_set_time') + 15 < time.time():
-                past_saying= random.choice(PAST_SAYINGS)
+                past_saying= get_random_past_saying()
                 session['past_saying'] = past_saying
                 session['past_saying_set_time'] = time.time()
             past_saying = session.get('past_saying')
         else:   
-            past_saying = random.choice(PAST_SAYINGS)
+            past_saying = get_random_past_saying()
             session['past_saying'] = past_saying
             session['past_saying_set_time'] = time.time()
         entries = JournalEntry.query.options(joinedload(JournalEntry.tags)).filter_by(user=user).order_by(JournalEntry.timestamp.desc()).all()
@@ -253,6 +273,10 @@ def register_blueprint(app):
         for entry in entries:
             attachements = file_attachment_manager.get_files(entry.id)
             entries_with_attachements.append((entry,attachements))
+            
+            
+        if user_settings.get("name_override","") != "":
+            user = user_settings.get("name_override")
         return render_template('past.html', entries_with_attachements=entries_with_attachements, user = user,past_saying=past_saying)
     from flask import send_file, make_response
 
@@ -278,6 +302,7 @@ def register_blueprint(app):
     @bp.route('/on_day/<day>')
     def on_day(day):
         user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
         
         # Convert day string (e.g., '2024-10-04') into a date object
         day_start = datetime.strptime(day, '%Y-%m-%d')
@@ -292,7 +317,8 @@ def register_blueprint(app):
             .order_by(JournalEntry.timestamp.desc())
             .all()
         )
-
+        if user_settings.get("name_override","") != "":
+            user = user_settings.get("name_override")
         return render_template('on_day.html', entries=entries, user=user, day=day)
     
     app.register_blueprint(bp)
