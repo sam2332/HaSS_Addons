@@ -21,7 +21,7 @@
     <!-- Mood Selector -->
     <div class="mt-3">
         <h5>How are you feeling today?</h5>
-        <select class="form-control" name="mood">
+        <select class="form-control" id="mood_selector">
             <option value="" disabled selected>Select your mood</option>
             <optgroup label="Positive Moods">
                 <option class='mood_happy' value="happy">Happy</option>
@@ -57,9 +57,12 @@
         document.getElementById("attachment").style.display = "block";
     });
 
-    document.getElementById("mood").addEventListener("change", function() {
-        document.getElementById("mood").value = document.getElementById("mood").value;
+    var ele = document.getElementById("mood_selector")
+    ele.addEventListener("change", function() {
+        document.getElementById("mood").value = ele.value;
+        ele.classList = "form-control mood_" + ele.value;
     });
+
 
     var textarea = document.getElementById('entry_input')
     textarea.style.height = 'auto';  

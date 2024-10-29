@@ -10,6 +10,7 @@ Welcome to the Journal Application! This web-based app allows you to record your
 - **Update and Delete Entries**: Edit or remove entries as needed.
 - **View Past Entries**: Browse all your past entries in reverse chronological order.
 - **View Entries by Date**: Use the `on_day` feature to view entries from a specific date.
+- ** Mood Tracking **: select moods for your entries and it will follow the posts though the program
 
 ### Tagging System
 

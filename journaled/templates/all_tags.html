@@ -31,6 +31,57 @@
             transform: scale(1.1); /* Slightly enlarge the word on hover */
         }
 
+
+        .wc_mood_happy {
+                color: #fffc4a; /* Bright Yellow */
+            }
+
+            .wc_mood_sad {
+                color: #4d43ac; /* Deep Purple */
+            }
+
+            .wc_mood_angry {
+                color: #d83131; /* Vivid Red */
+            }
+
+            .wc_mood_anxious {
+                color: #f7b731; /* Light Orange */
+            }
+
+            .wc_mood_excited {
+                color: #e74094; /* Vibrant Pink */
+            }
+
+            .wc_mood_calm {
+                color: #3183bd; /* Soft Blue */
+            }
+
+            .wc_mood_tired {
+                color: #424446; /* Dark Gray */
+            }
+
+            .wc_mood_confused {
+                color: #156e53; /* Teal */
+            }
+
+
+            .wc_mood_hopeful {
+                color: #a4de02; /* Lime Green */
+            }
+
+            .wc_mood_neutral {
+                color: #bfbfbf; /* Light Gray */
+            }
+
+            .wc_mood_indifferent {
+                color: #474747; /* Medium Gray */
+            }
+
+            .wc_mood_stressed {
+                color: #ff0156; /* Coral */
+            }
+
+
     </style>
     <!-- command bar with dropdown to select word cloud tag count-->
     
@@ -45,7 +96,8 @@
         <thead>
             <tr>
                 <th>Tag</th>
-                <th>Count</th>
+                <th>Moods</th>
+                <th>Occurances</th>
             </tr>
         </thead>
         <tbody>
@@ -87,8 +139,8 @@
                 xWordPadding: 0,
                 yWordPadding: 3,
                 font: "sans-serif",
-                minFontSize: 10, // Minimum font size in pixels
-                maxFontSize: 64  // Maximum font size in pixels
+                minFontSize: 14, // Minimum font size in pixels
+                maxFontSize: 50  // Maximum font size in pixels
             };
 
             // Convert the word_cloud from your backend into a JavaScript array
@@ -96,7 +148,7 @@
                 {% for tag, count in word_cloud.items() %}
                     { word: "{{ tag.name | u2s |title}}",
                      freq: {{ count }},
-                     class_name:"mood_{{tag.get_most_common_mood()}}"
+                     class_name:"wc_mood_{{tag.get_most_common_mood()}}"
                     },
                 {% endfor %}
             ];

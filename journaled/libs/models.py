@@ -42,8 +42,13 @@ class Tag(db.Model):
             if entry.mood:
                 if entry.mood != "" and entry.mood != "None":
                     moods[entry.mood] += 1
+        #if all moods are same level of commonality, return None
+        if len(moods) > 1 and len(set(moods.values())) == 1:
+            return None
         if moods:
             return max(moods, key=moods.get)
+        
+        
         return None
     def get_mood_counts(self):
         moods = defaultdict(int)
@@ -51,5 +56,6 @@ class Tag(db.Model):
             if entry.mood:
                 if entry.mood != "" and entry.mood != "None":
                     moods[entry.mood] += 1
+        moods = sorted(moods.items(), key=lambda x: x[1], reverse=True)
         return dict(moods)
     
