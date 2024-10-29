@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="row">
+    <div class="col-6">
+        <h3 class="mb-3 mt-2 d-inline-block">Search: #{{q}}</h3>
+    </div>
+</div>
+
+<div class=" row pl-0">
+    {% for entry in entries %}
+    {% include 'partials/entry_row.html' with context %}
+    {% endfor %}
+</div>
+{% endblock %}
+

@@ -1,7 +1,7 @@
 <div class="col-lg-12 entry {% if entry.visible == false %} blurred_entry {% endif %}">
     <div class="  entry-content">
         <!-- The content will be converted to markdown by marked.js -->
-        <p>{{ entry.content | link_tags | nl2br |safe}}</p>
+        <p>{{ entry.content | link_tags |basic_markdown| nl2br |dbl_br_remover|safe}}</p>
         <!-- Only show the tags section if there are tags -->
     </div>
     <div class="entry-attachments">
@@ -11,7 +11,7 @@
                 {% for attachment in attachments %}
                 {% if attachment.endswith('.thumb.system.png') %}
                 <div class="col-md-4 text-center"> <!-- Change col-lg-12 to col-md-4 to show images side-by-side -->
-                    <img src="{{ url_for('main.download_attachment', entry_id=entry.id, file_name=attachment) }}" class='img-fluid thumbnail' alt="{{ attachment }}" onclick="openModalWithImage('{{ url_for('main.download_attachment', entry_id=entry.id, file_name=attachment.replace('.thumb.system.png','')) }}')">
+                    <img src="{{ url_for('main.download_attachment', entry_id=entry.id, file_name=attachment) }}" loading="lazy" class='img-fluid thumbnail' alt="{{ attachment }}" onclick="openModalWithImage('{{ url_for('main.download_attachment', entry_id=entry.id, file_name=attachment.replace('.thumb.system.png','')) }}')">
                 </div>
                 {% endif %}
                 {% endfor %}
@@ -36,6 +36,9 @@
         <div class="row">
             <div class="col-sm-6">
                 <small>Written on: {{ entry.timestamp | time_link | safe }}</small>
+                {% if entry.mood %}
+                <small class="ml-2 badge badge-pill badge-info mood_{{entry.mood}}">{{ entry.mood }}</small>
+                {% endif %}
             </div>
             <div class="col-sm-6 text-right">
                 <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('main.update_journal_entry', entry_id=entry.id) }}">Edit</a>

@@ -13,22 +13,24 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-light bg-light" style="max-height:56px; border-bottom: 1px solid lightgray;">
-        <a class="my-navbar-brand">Journald</a>
-        <ul class="navbar-nav d-flex flex-row">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('main.journal') }}">Add</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('main.past') }}">The Past</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('tags.all_tags') }}">Tags</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('settings.main') }}">Settings</a>
-            </li>
-        </ul>
+    <nav id="mynavbar" class="navbar navbar-light bg-light">
+        <div class="container-fluid d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <span class="navbar-brand mb-2 mb-md-0 d-none d-md-block">Journald</span>
+            <ul class="navbar-nav d-flex flex-row flex-wrap">
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="{{ url_for('main.journal') }}">Add</a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="{{ url_for('main.past') }}">The Past</a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="{{ url_for('tags.all_tags') }}">Tags</a>
+                </li>
+                <li class="nav-item mx-2 nav-right-border">
+                    <a class="nav-link" href="{{ url_for('settings.main') }}">Settings</a>
+                </li>
+            </ul>
+        </div>
     </nav>
     
     <div class="fluid-container">

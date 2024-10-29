@@ -20,10 +20,16 @@
                 <select class="form-control" name="helper" required>
                     <option value="">Select a datetime helper</option>
                     {% for helper in input_helpers %}
-                    <option value="{{ helper['entity_id'] }}">{{ helper['attributes']['friendly_name'] }}</option>
+                    <option value="{{ helper['entity_id'] }}">
+                        {% if helper['attributes']['friendly_name'] %}  
+                            {{ helper['attributes']['friendly_name'] }}
+                        {% else %}
+                            {{ helper['entity_id'] }}
+                        {% endif %}
+                        </option>
                     {% endfor %}
                 </select>
-                <button type="submit" class="btn btn-primary">Add Helper</button>
+                <button type="submit" class="btn btn-primary mt-2">Add Helper</button>
             </form>
         </div>
         <div class="col-md-6">

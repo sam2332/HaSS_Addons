@@ -27,7 +27,27 @@
                 </div>
             </div>
         </div>
-
+        <!--writing prompt count to fill blank journal with-->
+        <div class="card">
+            <div class="card-header" id="headingWritingPromptCount">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseWritingPromptCount" aria-expanded="false" aria-controls="collapseWritingPromptCount">
+                        Writing Prompt Count
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseWritingPromptCount" class="collapse" aria-labelledby="headingWritingPromptCount" data-parent="#settingsAccordion">
+                <div class="card-body">
+                    <p>How many writing prompts would you like to see?</p>
+                    <form action="{{ url_for('settings.set_writing_prompt_count') }}" method="post">
+                        <div class="form-group">
+                            <input type="number" name="writing_prompt_count" class="form-control" value="{{ user_settings.get('writing_prompt_count', 0) }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Set Writing Prompt Count</button>
+                    </form>
+                </div>
+            </div>
+        </div>
         <!-- show/hide inspirational quotes -->
         <div class="card">
             <div class="card-header" id="headingInspirationalQuotes">
@@ -49,12 +69,12 @@
         <div class="card">
             <div class="card-header" id="headingAutoHasher">
                 <h2 class="mb-0">
-                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseAutoHasher" aria-expanded="true" aria-controls="collapseAutoHasher">
+                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseAutoHasher" aria-expanded="true" aria-controls="collapseAutoHasher">
                         Auto Hasher
                     </button>
                 </h2>
             </div>
-            <div id="collapseAutoHasher" class="collapse show" aria-labelledby="headingAutoHasher" data-parent="#settingsAccordion">
+            <div id="collapseAutoHasher" class="collapse" aria-labelledby="headingAutoHasher" data-parent="#settingsAccordion">
                 <div class="card-body">
                     <p>This is a feature that will look at your used tags and try to match words to them based on the longest underscored words first.</p>
                     {% if user_settings.get("autohasher_enabled", 'false') == 'false' %}

@@ -1,4 +1,6 @@
 #!/bin/bash
+echo "Upgrading database..."
+python /app/check_and_upgrade_db.py
 
 # Start Flask app
 echo "Starting Flask server..."

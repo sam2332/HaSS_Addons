@@ -7,8 +7,61 @@ import sys
 from datetime import timezone, datetime
 import time
 from zoneinfo import ZoneInfo  # Import ZoneInfo for timezone handling
+from CONST import STOPWORDS
+import re
+
+from nltk import RegexpParser, pos_tag, word_tokenize
+
+def extract_phrases(text):
+    # Tokenize and tag parts of speech
+    words = word_tokenize(text)
+    tagged_words = pos_tag(words)
+    
+    # Define multiple grammars for extracting phrases
+    grammars = [
+        # Verb followed by a determiner, adjective, and noun(s)
+        r"""
+        VP1: {<VB.*><DT>?<JJ>*<NN.*>+}
+        """,
+        # Verb followed by a preposition and noun (e.g., "spent time with Mitch")
+        r"""
+        VP2: {<VB.*><IN><NNP|NN.*>+}
+        """,
+        # Verb followed by a cardinal number and a noun (e.g., "took two walks")
+        r"""
+        VP3: {<VB.*><CD><NN.*>+}
+        """,
+        # Adjective followed by noun (e.g., "great time")
+        r"""
+        AP1: {<JJ><NN.*>+}
+        """,
+        # Verb followed by gerund (e.g., "went shopping")
+        r"""
+        VP4: {<VB.*><VBG>}
+        """
+    ]
+    
+    # Extract phrases using each grammar
+    phrases = []
+    for grammar in grammars:
+        parser = RegexpParser(grammar)
+        tree = parser.parse(tagged_words)
+        
+        # Extract continuous phrases from the tree
+        for subtree in tree.subtrees():
+            if subtree.label() in ['VP1', 'VP2', 'VP3', 'AP1', 'VP4']:
+                phrases.append(' '.join(word for word, tag in subtree.leaves()))
+    
+    
+    #remove phrases that are just a single word
+    phrases = [phrase for phrase in phrases if len(phrase.split()) > 1]
+    return phrases
 
 
+def extract_words(text):
+    # Extract words from text
+    return [word.lower() for word in re.findall(r'\b\w+\b', text) if word.lower() not in STOPWORDS]
+    
 def extract_tags(content):
     pattern = r'#([\w()]+)'
     tags = re.findall(pattern, content)

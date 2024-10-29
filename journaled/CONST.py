@@ -177,8 +177,113 @@ IMPORTANT_DATES = {
 }
 
 
+
+
+WRITING_PROMPTS = [
+    "What was something small that made you smile today?",
+    "Describe something that made you feel cozy.",
+    "What’s one fun thing you did today?",
+    "Did you learn something new today?",
+    "What’s a favorite song or show from today?",
+    "Who did you talk to today, and what did you chat about?",
+    "Describe something you enjoyed doing this morning.",
+    "What’s a small thing you’re grateful for?",
+    "Did anything surprise you today?",
+    "What’s a food or drink you enjoyed today?",
+    "Where did you go today?",
+    "What’s one thing that went well today?",
+    "How did you relax or take a break?",
+    "What’s something interesting you saw today?",
+    "Did you spend time outside today?",
+    "What’s something you’d like to do tomorrow?",
+    "What was your favorite part of today?",
+    "What made today different from yesterday?",
+    "Describe something you noticed around you.",
+    "How did you enjoy your free time today?",
+    "What’s a little moment you want to remember from today?",
+    "Did you laugh today? What made you laugh?",
+    "What’s something nice you did for yourself today?",
+    "How did you stay active today?",
+    "What’s a hobby or activity you enjoyed today?",
+    "Did you feel proud of anything today?",
+    "What did you look forward to today?",
+    "What’s something you’d like to do more often?",
+    "How did you start your day?",
+    "What’s a thought or idea you enjoyed thinking about today?",
+    "Did you listen to any good music today?",
+    "What’s something you felt excited about?",
+    "How did you spend your evening?",
+    "Did you get a chance to relax today?",
+    "What’s something simple that you enjoyed?",
+    "How did you connect with a friend or family member?",
+    "Did you try something new today?",
+    "What’s a goal you thought about today?",
+    "Describe a way you felt calm today.",
+    "What’s a favorite place you went to today?",
+    "Did you enjoy something creative today?",
+    "What’s a small accomplishment from today?",
+    "Describe something you felt curious about.",
+    "What’s something you appreciated about today’s weather?",
+    "How did you spend a quiet moment today?",
+    "What’s a favorite snack you had today?",
+    "How did you unwind at the end of the day?",
+    "What’s something you found interesting today?",
+    "Did you take any photos today? What were they of?",
+    "What’s a new idea you had today?",
+    "What’s something small that made you feel content?",
+    "How did you enjoy a routine today?",
+    "Describe something that made you feel peaceful.",
+    "Did you have a good conversation today?",
+    "What’s something you looked forward to today?",
+    "What’s a place you’d like to visit someday?",
+    "How did you take care of yourself today?",
+    "Describe something that felt satisfying.",
+    "What’s something beautiful you noticed?",
+    "Did you find something to laugh about today?",
+    "What’s a cozy place you enjoyed today?",
+    "Did you try anything different today?",
+    "What’s a nice way you treated yourself?",
+    "How did you wind down before bed?"
+]
+
+
+STOPWORDS = set([
+    'i',  'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll", "you'd",
+    'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 'hers',
+    'herself', 'it', "it's", 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which',
+    'who', 'whom', 'this', 'that', "that'll", 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been',
+    'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if',
+    'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between',
+    'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out',
+    'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why',
+    'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not',
+    'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', "don't",
+    'should', "should've", 'now', 'd', 'll', 'm', 'o', 're', 've', 'y', 'ain', 'aren', "aren't", 'couldn',
+    "couldn't", 'didn', "didn't", 'doesn', "doesn't"
+    ])
+
+
+
 from datetime import datetime
 import random
+
+class WritingPromptGenerator:
+    def __init__(self):
+        self.original_prompts = WRITING_PROMPTS.copy()
+        self.prompts = WRITING_PROMPTS.copy()
+        random.shuffle(self.prompts)
+
+    def get_next_prompt(self):
+        if not self.prompts:
+            self.prompts = self.original_prompts.copy()
+            random.shuffle(self.prompts)
+        prompt = self.prompts.pop()
+        
+        prompt = prompt[0].upper() + prompt[1:]
+        
+        return prompt
+
+
 
 
 def get_important_date(date=None):

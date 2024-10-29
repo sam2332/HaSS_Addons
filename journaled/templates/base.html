@@ -7,14 +7,131 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href='{{url_for("static",filename="css/bootstrap.min.css")}}'>
     <link rel="stylesheet" href='{{url_for("static",filename="css/main.css")}}'>
-
+    <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+  >
+  
     <style>
+        #entry_input{
+            width: 100%;
+            height: 317px;
+            border-radius: 14px;
+            padding-top: 10px;
+            padding-left: 10px;
+        }
         #mynavbar{
             padding-bottom: 0px;
             padding-top: 0px;
             border-bottom: 1px solid lightgray;
+            height:56px;
         }
-        
+        .nav-right-border{
+            border-right: 1px solid lightgray;
+        }
+        .blockquote{
+
+            border-left: 8px solid lightgray;
+            padding-left: 8px;
+            
+        }
+        .text-black
+        {
+            color:black;
+        }
+        .back-to-top{
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            color: rgb(50, 113, 230);
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        @keyframes pulse-color {
+            0%, 100% {
+                filter: brightness(1);
+            }
+            50% {
+                filter: brightness(1.2); /* Slightly brightens the color */
+            }
+        }
+
+        .mood_set.selected {
+            border: 1px solid #797979;
+            font-weight: bold;
+            border-bottom: 5px solid gold;
+            border-top: 5px solid gold;
+            animation:  pulse-color 1s infinite;
+            animation-timing-function: ease-in-out;
+        }
+        .mood_happy {
+                background-color: #fffc4a; /* Bright Yellow */
+                color: black;
+            }
+
+            .mood_sad {
+                background-color: #4d43ac; /* Deep Purple */
+                color: white;
+            }
+
+            .mood_angry {
+                background-color: #d83131; /* Vivid Red */
+                color: white;
+            }
+
+            .mood_anxious {
+                background-color: #f7b731; /* Light Orange */
+                color: black;
+            }
+
+            .mood_excited {
+                background-color: #e74094; /* Vibrant Pink */
+                color: white;
+            }
+
+            .mood_calm {
+                background-color: #3183bd; /* Soft Blue */
+                color: white;
+            }
+
+            .mood_tired {
+                background-color: #424446; /* Dark Gray */
+                color: white;
+            }
+
+            .mood_confused {
+                background-color: #156e53; /* Teal */
+                color: white;
+            }
+
+            /* Additional Moods */
+
+            .mood_hopeful {
+                background-color: #a4de02; /* Lime Green */
+                color: black;
+            }
+
+            .mood_neutral {
+                background-color: #bfbfbf; /* Light Gray */
+                color: black;
+            }
+
+            .mood_indifferent {
+                background-color: #474747; /* Medium Gray */
+                color: white;
+            }
+
+            .mood_stressed {
+                background-color: #ff0156; /* Coral */
+                color: white;
+            }
+
     </style>
     
     {% include 'partials/magic_url_link_block.html' with context %}
@@ -34,23 +151,48 @@
                 <li class="nav-item mx-2">
                     <a class="nav-link" href="{{ url_for('tags.all_tags') }}">Tags</a>
                 </li>
-                <li class="nav-item mx-2">
+                <li class="nav-item mx-2 nav-right-border">
                     <a class="nav-link" href="{{ url_for('settings.main') }}">Settings</a>
                 </li>
             </ul>
         </div>
     </nav>
     
+      
     
+    {% if fluid_layout %}
+    <div class="container-fluid">
+    {% else %}
     <div class="container">
+    {% endif %}
         {% block content %}{% endblock %}
     </div>
     {% include 'partials/thumbnail_model.html' %}
 
+
+    <!-- goto top-->
+    <a href="#" class="back-to-top" style="display: none;">
+        <i class="bi bi-arrow-up-short"></i>
+    </a>
     <!-- Bootstrap and JS dependencies -->
     <script src='{{url_for("static",filename="js/jquery-3.7.1.min.js")}}'></script>
     <script src='{{url_for("static",filename="js/bootstrap.min.js")}}'></script>
     <script src='{{url_for("static",filename="js/app.js")}}'></script>
+    <script>
+        $(document).ready(function(){
+            $(window).scroll(function(){
+                if ($(this).scrollTop() > 100) {
+                    $('.back-to-top').fadeIn();
+                } else {
+                    $('.back-to-top').fadeOut();
+                }
+            });
+            $('.back-to-top').click(function(){
+                $('html, body').animate({scrollTop : 0},800);
+                return false;
+            });
+        });
+    </script>
     {% block extra_scripts %}{% endblock %}
 </body>
 

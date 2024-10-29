@@ -1,10 +1,40 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3 class="mb-3 mt-2">{{ past_saying }}, {{ user | title}}</h3>
+<h3 class="mb-3 mt-2 pb-2 border-bottom">{{ past_saying }}, {{ user | title}}</h3>
+<form class="d-flex" method="get" action="{{ url_for('main.search') }}">
+    <div class="input-group">
+      <input
+        type="search"
+        class="form-control"
+        placeholder="Search"
+        aria-label="Search"
+        name="q"
+        value="{{ request.args.get('q', '') }}"
+      >
+      <button class="btn btn-outline-primary" type="submit">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </form>
+
+{% if mood_tally %}
+<!--small badges with counts-->
+
+<div class="row mt-3 mb-3">
+    <div class="col-3">
+        <small class="text-muted">Over the last 10 days, you've been feeling:</small>
+    </div>
+    <div class="col-9">
+    {% for mood,count in mood_tally.items() %}
+        <span class="badge badge-pill mood_{{mood}}">{{ mood }}: {{ count }}</span>
+    {% endfor %}
+    </div>
+</div>
+{% endif %}
 
 {% if entries_with_attachements %}
-    <div class=' row pl-0 list-group'>
+    <div class='row pl-0 list-group'>
         {% for entry,attachments in entries_with_attachements %}
             {% include 'partials/entry_row.html' with context %}
         {% endfor %}
@@ -12,9 +42,5 @@
 {% else %}
     <p>No journal entries found. Start journaling today!</p>
 {% endif %}
-
-{% endblock %}
-{% block extra_scripts %}
-<!-- Script to render markdown client-side -->
 
 {% endblock %}

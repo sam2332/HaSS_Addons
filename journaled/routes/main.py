@@ -1,13 +1,15 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from libs.models import db, JournalEntry, Tag
-from libs.utils import extract_tags
+from libs.utils import extract_tags, extract_phrases
 from libs.utils import get_remote_user
 from libs.HashTagAdder import HashTagAdder
 from libs.ha_datetime_helpers import update_datetime_helper
+from flask import send_file, make_response
 from libs.ConfigFile import ConfigFile
 import random
-from CONST import get_random_saying, get_random_past_saying, get_random_inspirational_quote
+from CONST import get_random_saying, get_random_past_saying, get_random_inspirational_quote,WritingPromptGenerator
 import time
+from collections import defaultdict
 import logging
 import uuid
 from datetime import datetime, timedelta
@@ -17,6 +19,24 @@ from sqlalchemy.orm import joinedload
 def register_blueprint(app):
     bp = Blueprint('main', __name__)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @bp.route('/', methods=['GET', 'POST'])
     def journal():
         user = get_remote_user()
@@ -24,6 +44,7 @@ def register_blueprint(app):
         file_attachment_manager = FileAttachmentManager(app,user)
         if request.method == 'POST':
             content = request.form['content']
+            mood = request.form['mood']
             attachments = request.files.getlist('attachments')
             
             ah = HashTagAdder()
@@ -34,7 +55,7 @@ def register_blueprint(app):
             tags_in_content = extract_tags(content)
 
             # Save journal entry with user
-            entry = JournalEntry(content=content, user=user)
+            entry = JournalEntry(content=content, user=user,mood=mood)
             #if any tags_in_content in auto_blur_tags then set visible to False
             
             if user_settings.get("auto_blur_mode","off") == 'partial match':
@@ -115,23 +136,45 @@ def register_blueprint(app):
             
         if user_settings.get("name_override","") != "":
             user = user_settings.get("name_override")
-            
+        wpg = WritingPromptGenerator()
+        writing_prompt = ""
+        if user_settings.get("writing_prompt_count",0) > 0:
+            writing_prompt_count = int(user_settings.get("writing_prompt_count",0))
+            for i in range(writing_prompt_count):
+                writing_prompt +=  wpg.get_next_prompt() + "\n>\n\n"
+                
+                
         return render_template('journal.html',
             user = user,
             saying=saying,
             last_post_uuid =last_post_uuid,
-            inspirational_quote=inspirational_quote
+            inspirational_quote=inspirational_quote,
+            writing_prompt=writing_prompt
         )
     
-    #delete file
-    @bp.route('/delete_file', methods=['GET'])
-    def delete_file():
-        user = get_remote_user()
-        entry_id = request.args.get('entry_id')
-        file_name = request.args.get('file_name')
-        file_attachment_manager = FileAttachmentManager(app, user)
-        file_attachment_manager.delete_file(entry_id, file_name)
-        return redirect(app.wrapped_url_for('main.update_journal_entry', entry_id=entry_id))
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     #update_journal_entry
     @bp.route('/update_journal_entry', methods=['GET', 'POST'])
@@ -143,6 +186,7 @@ def register_blueprint(app):
         if request.method == 'POST':
             entry_id = request.form['entry_id']
             content = request.form['content']
+            mood = request.form['mood']
             ah = HashTagAdder()
             if bool(user_settings.get("autohasher_enabled",'false')):
                 content = ah.add_hashtags(content)
@@ -153,7 +197,7 @@ def register_blueprint(app):
             # Save journal entry with user
             entry = JournalEntry.query.filter_by(id=entry_id).first()
             entry.content = content
-            
+            entry.mood = mood
             if user_settings.get("auto_blur_mode","off") == 'partial match':
                 if any(blocked_tag in tag for blocked_tag in auto_blur_tags for tag in tags_in_content):
                     entry.visible = False
@@ -192,7 +236,7 @@ def register_blueprint(app):
                 # Check if the tag is already associated with the entry
                 if tag not in entry.tags:
                     entry.tags.append(tag)
-
+            
             db.session.commit()    
             return_url = session.get('return_url', app.wrapped_url_for('main.past'))
             if return_url is None:
@@ -207,6 +251,13 @@ def register_blueprint(app):
                 user = user_settings.get("name_override")
             return render_template('update_journal_entry.html', entry = entry, user = user,entry_id=entry_id)
     
+    
+    
+    
+    
+    
+    
+    
     #show_journal_entry
     @bp.route('/unblur_journal_entry', methods=['GET'])
     def unblur_journal_entry():
@@ -216,6 +267,17 @@ def register_blueprint(app):
         entry.visible = True
         db.session.commit()
         return redirect(request.referrer or app.wrapped_url_for('main.past'))
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     #hide_journal_entry
     @bp.route('/blur_journal_entry', methods=['GET'])
@@ -227,6 +289,30 @@ def register_blueprint(app):
         db.session.commit()
         return redirect(request.referrer or app.wrapped_url_for('main.past'))
         
+
+
+
+
+    
+    
+    
+    
+    
+    #delete file
+    @bp.route('/delete_file', methods=['GET'])
+    def delete_file():
+        user = get_remote_user()
+        entry_id = request.args.get('entry_id')
+        file_name = request.args.get('file_name')
+        file_attachment_manager = FileAttachmentManager(app, user)
+        file_attachment_manager.delete_file(entry_id, file_name)
+        return redirect(app.wrapped_url_for('main.update_journal_entry', entry_id=entry_id))
+    
+    
+    
+    
+    
+
 
 
     @bp.route('/delete_journal_entry', methods=['GET'])
@@ -252,6 +338,23 @@ def register_blueprint(app):
             return_url = app.wrapped_url_for('main.past')   
         return redirect(return_url)
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     @bp.route('/past')
     def past():
         user = get_remote_user()
@@ -268,6 +371,15 @@ def register_blueprint(app):
             session['past_saying'] = past_saying
             session['past_saying_set_time'] = time.time()
         entries = JournalEntry.query.options(joinedload(JournalEntry.tags)).filter_by(user=user).order_by(JournalEntry.timestamp.desc()).all()
+        
+        tally_entries = [f if f.timestamp > datetime.now() - timedelta(days=10) else None for f in entries]
+        #over the last 10 days, tally up the moods
+        mood_tally = defaultdict(int)
+        for entry in tally_entries:
+            if entry is not None:
+                if entry.mood is not None and entry.mood != "":
+                    mood_tally[entry.mood]+=1
+        mood_tally = dict(sorted(mood_tally.items(), key=lambda item: item[1],reverse=True))
 
         entries_with_attachements = []
         for entry in entries:
@@ -277,8 +389,20 @@ def register_blueprint(app):
             
         if user_settings.get("name_override","") != "":
             user = user_settings.get("name_override")
-        return render_template('past.html', entries_with_attachements=entries_with_attachements, user = user,past_saying=past_saying)
-    from flask import send_file, make_response
+        return render_template('past.html', entries_with_attachements=entries_with_attachements, user = user,past_saying=past_saying,mood_tally=mood_tally)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @bp.route('/download_attachment', methods=['GET'])
     def download_attachment():
@@ -320,5 +444,51 @@ def register_blueprint(app):
         if user_settings.get("name_override","") != "":
             user = user_settings.get("name_override")
         return render_template('on_day.html', entries=entries, user=user, day=day)
+    
+    
+    @bp.route('/phrases')
+    def phrases():
+        user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
+        if user_settings.get("name_override","") != "":
+            user = user_settings.get("name_override")
+        
+        
+        entries = JournalEntry.query.filter_by(user=user).all()
+        phrases = defaultdict(int)
+        for entry in entries:
+            c_phrases = extract_phrases(entry.content)
+            for phrase in c_phrases:
+                phrases[phrase]+=1
+                
+        #sort descending
+        phrases = dict(sorted(phrases.items(), key=lambda item: item[1],reverse=True))
+        
+        #remove symbols with only spaces around them from phrases
+        for item in phrases:
+            p_words = item.split()
+            for word in p_words:
+                if word in ['.',',','!','?',';',':','(',')','[',']','{','}','-','_','"','\'','’','‘','“','”','…','—','–','*','+','/','\\','|','<','>']:
+                    phrases[item] = 0
+                    
+        #dont show phrases that occures only once
+        phrases = {k: v for k, v in phrases.items() if v > 1}
+        return render_template('phrases.html', user=user,phrases=phrases,fluid_layout=True)
+    
+    
+    
+    #search get=q
+    @bp.route('/search')
+    def search():
+        user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
+        if user_settings.get("name_override","") != "":
+            user = user_settings.get("name_override")
+        q = request.args.get('q')
+        entries = JournalEntry.query.filter(JournalEntry.content.contains(q),JournalEntry.user == user).all()
+        return render_template('search.html', entries=entries, user=user, q=q)
+    
+    
+    
     
     app.register_blueprint(bp)

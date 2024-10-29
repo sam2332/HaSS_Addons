@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <div class="container text-center">
     <h3>Updating Entry</h3>
@@ -7,10 +6,45 @@
     <form method="POST">
         <input type="hidden" name="entry_id" value="{{entry_id}}">
         <textarea id="entry_input"  name="content" rows="10" cols="50" >{{entry.content}}</textarea><br>
+        <input type="hidden" name="mood" id="mood" value="{{entry.mood}}">
         <button type="submit">Update</button>
     </form>
+    <!-- Mood Selector -->
+    <div class="mt-3">
+        <h5>How are you feeling today?</h5>
+        <select class="form-control" name="mood">
+            <option value="" disabled selected>Select your mood</option>
+            <optgroup label="Positive Moods">
+                <option class='mood_happy' value="happy">Happy</option>
+                <option class='mood_excited' value="excited">Excited</option>
+                <option class='mood_calm' value="calm">Calm</option>
+                <option class='mood_hopeful' value="hopeful">Hopeful</option>
+            </optgroup>
+            <optgroup label="Neutral Moods">
+                <option class='mood_neutral' value="neutral">Neutral</option>
+                <option class='mood_indifferent' value="indifferent">Indifferent</option>
+            </optgroup>
+            <optgroup label="Negative Moods">
+                <option class='mood_sad' value="sad">Sad</option>
+                <option class='mood_angry' value="angry">Angry</option>
+                <option class='mood_anxious' value="anxious">Anxious</option>
+                <option class='mood_stressed' value="stressed">Stressed</option>
+                <option class='mood_tired' value="tired">Tired</option>
+                <option class='mood_confused' value="confused">Confused</option>
+            </optgroup>
+        </select>
+    </div>
 </div>
 
-<!-- SimpleMDE Markdown Editor -->
 
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.getElementById("mood").value = "{{entry.mood}}";
+    document.getElementById("mood").addEventListener("change", function() {
+        document.getElementById("mood").value = this.value;
+    });
+
+</script>
 {% endblock %}

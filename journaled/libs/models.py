@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
+from collections import defaultdict
 
 db = SQLAlchemy()
 
@@ -14,8 +15,13 @@ class JournalEntry(db.Model):
     user = db.Column(db.String(50), nullable=False)
     timestamp = db.Column(db.DateTime, server_default=db.func.now())
     tags = db.relationship('Tag', secondary=tags, backref=db.backref('entries', lazy='dynamic'))
+    mood = db.Column(db.String(50))
     visible = db.Column(db.Boolean, default=True)
-
+    def get_mood(self):
+        if self.mood:
+            if self.mood != "" and self.mood != "None":
+                return self.mood
+        return None
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False, index=True)
@@ -30,3 +36,20 @@ class Tag(db.Model):
             # Assuming `when_removing` is an instance of JournalEntry
             query = query.filter(JournalEntry.id != when_removing.id)
         return query.count() == 0
+    def get_most_common_mood(self):
+        moods = defaultdict(int)
+        for entry in self.entries:
+            if entry.mood:
+                if entry.mood != "" and entry.mood != "None":
+                    moods[entry.mood] += 1
+        if moods:
+            return max(moods, key=moods.get)
+        return None
+    def get_mood_counts(self):
+        moods = defaultdict(int)
+        for entry in self.entries:
+            if entry.mood:
+                if entry.mood != "" and entry.mood != "None":
+                    moods[entry.mood] += 1
+        return dict(moods)
+    

@@ -113,11 +113,16 @@ def register_blueprint(app):
 
 
     @bp.route('/set_max_word_cloud_count', methods=['POST', 'GET'])
-    def set_max_word_cloud_count(count):
+    def set_max_word_cloud_count():
         user = get_remote_user()
         user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
-        count = request.form['count']
-        user_settings.set("max_word_cloud_count", count)
+        if request.method == 'POST':
+            count = request.form['count']
+        else:
+            count = request.args.get('count')
+        if count:
+            count = int(count)
+            user_settings.set("max_word_cloud_count", count)
         return redirect(request.referrer or app.wrapped_url_for('settings.main'))
 
 
@@ -140,4 +145,27 @@ def register_blueprint(app):
         name_override = request.form['name_override']
         user_settings.set("name_override", name_override)
         return redirect(app.wrapped_url_for('settings.main'))
+
+
+
+
+
+    @bp.route('/set_writing_prompt_count', methods=['POST', 'GET'])
+    def set_writing_prompt_count():
+        user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
+        if request.method == 'POST':
+            count = request.form['writing_prompt_count']
+        else:
+            count = request.args.get('writing_prompt_count')
+        if count:
+            count = int(count)
+            user_settings.set("writing_prompt_count", count)
+        return redirect(request.referrer or app.wrapped_url_for('settings.main'))
+
+
+
+
+
+
     app.register_blueprint(bp)

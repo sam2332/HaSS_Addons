@@ -1,16 +1,26 @@
-{% extends 'base-fluid.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
     {% if word_cloud %}
     <style>
+        .word-cloud-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 160px;
+            margin-bottom: 50px;
+            min-height: 180px; /* Set a reasonable base height, but allow it to grow */
+        }
+
         .tag-cloud {
             position: relative;
             width: 100%;
-            height: 500px; /* Adjust the height as needed */
+            max-width: 800px; /* To prevent expanding beyond the desired width */
+            min-height: 100px; /* A small base height to start with */
             font-family: sans-serif;
-            margin-top: 50px;
-            margin-bottom: 50px;
         }
+
         .tag {
             position: absolute;
             cursor: pointer;
@@ -20,24 +30,13 @@
             color: #ff6600; /* Change the text color on hover */
             transform: scale(1.1); /* Slightly enlarge the word on hover */
         }
+
     </style>
     <!-- command bar with dropdown to select word cloud tag count-->
-    <div class="command-bar">
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Word Count
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="{{ url_for('settings.set_max_word_cloud_count', count=10) }}">10</a>
-                <a class="dropdown-item" href="{{ url_for('settings.set_max_word_cloud_count', count=20) }}">20</a>
-                <a class="dropdown-item" href="{{ url_for('settings.set_max_word_cloud_count', count=30) }}">30</a>
-                <a class="dropdown-item" href="{{ url_for('settings.set_max_word_cloud_count', count=40) }}">40</a>
-                <a class="dropdown-item" href="{{ url_for('settings.set_max_word_cloud_count', count=50) }}">50</a>
-            </div>
-        </div>
-    </div>
     
+    <div class="word-cloud-container mx-auto">
     <div id="word-cloud" class="tag-cloud mx-auto"></div>
+    </div>
     {% endif %}
    <!-- Table of Tags -->
    <div class="table-container">
@@ -52,7 +51,10 @@
         <tbody>
             {% for tag, count in table_items %}
                 <tr>
-                    <td><a href="{{ url_for('tags.tag_detail', tag_name=tag) }}">{{ tag | u2s | title}}</a></td>
+                    <td><a href="{{ url_for('tags.tag_detail', tag_name=tag.name) }}">{{ tag.name | u2s | title}}</a></td>
+                    <td>{% for mood,count in tag.get_mood_counts().items() %}
+                        <span class="badge badge-pill mood_{{mood}}">{{ mood }}: {{ count }}</span>
+                        {% endfor %}</td> 
                     <td>{{ count }}</td>
                 </tr>
             {% endfor %}
@@ -61,7 +63,13 @@
     {% else %}
         <h1 class="text-center">No Tags Yet</h1>
     {% endif %}
-</div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center">
+            <a href="{{ url_for('tags.suggested_tags') }}" class="btn btn-primary">Find More Tags</a>
+            <a href="{{ url_for('main.phrases') }}" class="btn btn-primary">View Phrases</a>
+        </div>
+    </div>
 {% endblock %}
 
 
@@ -86,7 +94,10 @@
             // Convert the word_cloud from your backend into a JavaScript array
             var words = [
                 {% for tag, count in word_cloud.items() %}
-                    { word: "{{ tag | u2s |title}}", freq: {{ count }} },
+                    { word: "{{ tag.name | u2s |title}}",
+                     freq: {{ count }},
+                     class_name:"mood_{{tag.get_most_common_mood()}}"
+                    },
                 {% endfor %}
             ];
 
@@ -130,9 +141,9 @@
             /* ======================= END SETUP ======================= */
 
             /* ======================= PLACEMENT FUNCTIONS ======================= */
-            function createWordObject(word, freq) {
+            function createWordObject(word, freq,class_name) {
                 var wordContainer = document.createElement("div");
-                wordContainer.className = "tag";
+                wordContainer.className = "tag " + class_name;
                 wordContainer.style.fontSize = getFontSize(freq) + "px";
                 wordContainer.style.lineHeight = config.lineHeight;
                 wordContainer.dataset.url = "{{ url_for('tags.tag_detail', tag_name='') }}" + encodeURIComponent(word);
@@ -182,11 +193,13 @@
             }
             /* ======================= END PLACEMENT FUNCTIONS ======================= */
 
-            /* ======================= PLACE WORDS ======================= */
             function placeWords() {
+                let minTop = Infinity;
+                let maxBottom = -Infinity;
+
                 for (var i = 0; i < words.length; i++) {
                     var wordObj = words[i];
-                    var wordEl = createWordObject(wordObj.word, wordObj.freq);
+                    var wordEl = createWordObject(wordObj.word, wordObj.freq,wordObj.class_name);
 
                     for (var j = 0; j < config.spiralLimit; j++) {
                         if (spiral(j, function(x, y) {
@@ -194,6 +207,13 @@
                             var ny = startPoint.y + y;
                             if (!intersect(wordEl, nx, ny)) {
                                 placeWord(wordEl, nx, ny);
+                                
+                                // Update minTop and maxBottom to track placement bounds
+                                const tagTop = wordEl.offsetTop;
+                                const tagBottom = wordEl.offsetTop + wordEl.offsetHeight;
+                                minTop = Math.min(minTop, tagTop);
+                                maxBottom = Math.max(maxBottom, tagBottom);
+                                
                                 return true;
                             }
                         })) {
@@ -201,25 +221,22 @@
                         }
                     }
                 }
-            }
-            /* ======================= END PLACE WORDS ======================= */
-            function adjustCloudHeight() {
-                var minTop = Infinity;
-                var maxBottom = -Infinity;
-                var tags = cloud.getElementsByClassName('tag');
-                for (var i = 0; i < tags.length; i++) {
-                    var tag = tags[i];
-                    var offsetTop = tag.offsetTop;
-                    var offsetHeight = tag.offsetHeight;
-                    if (offsetTop < minTop) minTop = offsetTop;
-                    if (offsetTop + offsetHeight > maxBottom) maxBottom = offsetTop + offsetHeight;
-                }
-                var newHeight = maxBottom - minTop;
-                cloud.style.height = newHeight + "px";
 
-                // Adjust the container to move upward if there's an unwanted offset
-                cloud.style.transform = `translateY(${-minTop}px)`;
+                // Adjust height after placing all words
+                adjustCloudHeight(minTop, maxBottom);
             }
+
+            function adjustCloudHeight(minTop, maxBottom) {
+                var newHeight = maxBottom - minTop;
+                if (newHeight > 0) {
+                    cloud.style.height = newHeight + "px";
+                } else {
+                    // Fallback to a reasonable min-height if calculation fails
+                    cloud.style.height = "150px";
+                }
+            }
+
+
 
 
             placeWords();

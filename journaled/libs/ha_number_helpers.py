@@ -11,6 +11,8 @@ SUPERVISOR_TOKEN = os.environ.get('SUPERVISOR_TOKEN')
 
 
 def create_input_number(name, initial_value=0, min_value=0, max_value=100, step=1):
+    if os.environ.get('DISABLE_HAOS_API') == '1':
+        return "HAOS API is disabled"
     headers = {
         'Authorization': f'Bearer {SUPERVISOR_TOKEN}',
         'Content-Type': 'application/json'
@@ -34,6 +36,8 @@ def create_input_number(name, initial_value=0, min_value=0, max_value=100, step=
         return f"Failed to create Input Number: {response.text}"
     
 def list_input_numbers():
+    if os.environ.get('DISABLE_HAOS_API') == '1':
+        return []
     headers = {
         'Authorization': f'Bearer {SUPERVISOR_TOKEN}',
         'Content-Type': 'application/json'
@@ -48,6 +52,8 @@ def list_input_numbers():
 
 
 def increment_input_number(entity_id):
+    if os.environ.get('DISABLE_HAOS_API') == '1':
+        return "HAOS API is disabled"
     headers = {
         'Authorization': f'Bearer {SUPERVISOR_TOKEN}',
         'Content-Type': 'application/json'
