@@ -264,6 +264,192 @@ STOPWORDS = set([
 
 
 
+
+
+MOOD_COLORS ={
+    "positive": {
+        "happy": {"background": "#fffc4a", "color": "black"},
+        "joyful": {"background": "#fffc4a", "color": "black"},
+        "cheerful": {"background": "#fffc4a", "color": "black"},
+        "elated": {"background": "#fffc4a", "color": "black"},
+        "contented": {"background": "#fffc4a", "color": "black"},
+        "blissful": {"background": "#fffc4a", "color": "black"},
+        "delighted": {"background": "#fffc4a", "color": "black"},
+        "ecstatic": {"background": "#fffc4a", "color": "black"},
+        "gleeful": {"background": "#fffc4a", "color": "black"},
+        "jubilant": {"background": "#fffc4a", "color": "black"},
+        "merry": {"background": "#fffc4a", "color": "black"},
+        "radiant": {"background": "#fffc4a", "color": "black"},
+        "thrilled": {"background": "#fffc4a", "color": "black"},
+        "upbeat": {"background": "#fffc4a", "color": "black"},
+        "vibrant": {"background": "#fffc4a", "color": "black"},
+        
+        "excited": {"background": "#e74094", "color": "white"},
+        "enthusiastic": {"background": "#e74094", "color": "white"},
+        "eager": {"background": "#e74094", "color": "white"},
+        "animated": {"background": "#e74094", "color": "white"},
+        "exhilarated": {"background": "#e74094", "color": "white"},
+        "pumped": {"background": "#e74094", "color": "white"},
+        "stimulated": {"background": "#e74094", "color": "white"},
+        "aroused": {"background": "#e74094", "color": "white"},
+        "keen": {"background": "#e74094", "color": "white"},
+        "lively": {"background": "#e74094", "color": "white"},
+        
+        "hopeful": {"background": "#a4de02", "color": "black"},
+        "optimistic": {"background": "#a4de02", "color": "black"},
+        "positive": {"background": "#a4de02", "color": "black"},
+        "confident": {"background": "#a4de02", "color": "black"},
+        "expectant": {"background": "#a4de02", "color": "black"},
+        "bullish": {"background": "#a4de02", "color": "black"},
+        "buoyant": {"background": "#a4de02", "color": "black"},
+        "sanguine": {"background": "#a4de02", "color": "black"},
+        "promising": {"background": "#a4de02", "color": "black"},
+        
+        "grateful": {"background": "#ffd700", "color": "black"},
+        "thankful": {"background": "#ffd700", "color": "black"},
+        "appreciative": {"background": "#ffd700", "color": "black"},
+        "indebted": {"background": "#ffd700", "color": "black"},
+        "beholden": {"background": "#ffd700", "color": "black"},
+        "obliged": {"background": "#ffd700", "color": "black"},
+        "gratified": {"background": "#ffd700", "color": "black"},
+        
+        "content": {"background": "#ffcc00", "color": "black"},
+        "satisfied": {"background": "#ffcc00", "color": "black"},
+        "pleased": {"background": "#ffcc00", "color": "black"},
+        "serene": {"background": "#ffcc00", "color": "black"},
+        "tranquil": {"background": "#ffcc00", "color": "black"},
+        "fulfilled": {"background": "#ffcc00", "color": "black"},
+        "at_ease": {"background": "#ffcc00", "color": "black"},
+        "comfortable": {"background": "#ffcc00", "color": "black"},
+        "peaceful": {"background": "#ffcc00", "color": "black"},
+        "quiet": {"background": "#ffcc00", "color": "black"},
+        "untroubled": {"background": "#ffcc00", "color": "black"}
+    },
+    
+    "negative": {
+        "sad": {"background": "#4d43ac", "color": "white"},
+        "bad": {"background": "#4d43ac", "color": "white"},
+        "sorrowful": {"background": "#4d43ac", "color": "white"},
+        "unhappy": {"background": "#4d43ac", "color": "white"},
+        "dejected": {"background": "#4d43ac", "color": "white"},
+        "despondent": {"background": "#4d43ac", "color": "white"},
+        "downcast": {"background": "#4d43ac", "color": "white"},
+        "melancholy": {"background": "#4d43ac", "color": "white"},
+        "mournful": {"background": "#4d43ac", "color": "white"},
+        "gloomy": {"background": "#4d43ac", "color": "white"},
+        "disheartened": {"background": "#4d43ac", "color": "white"},
+        "blue": {"background": "#4d43ac", "color": "white"},
+        "miserable": {"background": "#4d43ac", "color": "white"},
+        "depressed": {"background": "#4d43ac", "color": "white"},
+        
+        "angry": {"background": "#d83131", "color": "white"},
+        "furious": {"background": "#d83131", "color": "white"},
+        "irate": {"background": "#d83131", "color": "white"},
+        "enraged": {"background": "#d83131", "color": "white"},
+        "incensed": {"background": "#d83131", "color": "white"},
+        "livid": {"background": "#d83131", "color": "white"},
+        "wrathful": {"background": "#d83131", "color": "white"},
+        "annoyed": {"background": "#d83131", "color": "white"},
+        "irritated": {"background": "#d83131", "color": "white"},
+        "exasperated": {"background": "#d83131", "color": "white"},
+        "tired": {"background": "#d83131", "color": "white"},
+        "resentful": {"background": "#d83131", "color": "white"},
+        "outraged": {"background": "#d83131", "color": "white"},
+        "fuming": {"background": "#d83131", "color": "white"},
+        
+        "anxious": {"background": "#f7b731", "color": "black"},
+        "worried": {"background": "#f7b731", "color": "black"},
+        "nervous": {"background": "#f7b731", "color": "black"},
+        "sick": {"background": "#f7b731", "color": "black"},
+        "apprehensive": {"background": "#f7b731", "color": "black"},
+        "uneasy": {"background": "#f7b731", "color": "black"},
+        "tense": {"background": "#f7b731", "color": "black"},
+        "fretful": {"background": "#f7b731", "color": "black"},
+        "restless": {"background": "#f7b731", "color": "black"},
+        "agitated": {"background": "#f7b731", "color": "black"},
+        "jittery": {"background": "#f7b731", "color": "black"},
+        "troubled": {"background": "#f7b731", "color": "black"},
+        "concerned": {"background": "#f7b731", "color": "black"},
+        
+        
+        "stressed": {"background": "#ff0156", "color": "white"},
+        "overwhelmed": {"background": "#ff0156", "color": "white"},
+        "strained": {"background": "#ff0156", "color": "white"},
+        "pressured": {"background": "#ff0156", "color": "white"},
+        "burdened": {"background": "#ff0156", "color": "white"},
+        "frazzled": {"background": "#ff0156", "color": "white"},
+        "exhausted": {"background": "#ff0156", "color": "white"},
+        "burned_out": {"background": "#ff0156", "color": "white"},
+        "taxed": {"background": "#ff0156", "color": "white"},
+        
+        "frustrated": {"background": "#a52a2a", "color": "white"},
+        "exasperated": {"background": "#a52a2a", "color": "white"},
+        "annoyed": {"background": "#a52a2a", "color": "white"},
+        "irritated": {"background": "#a52a2a", "color": "white"},
+        "thwarted": {"background": "#a52a2a", "color": "white"},
+        "discouraged": {"background": "#a52a2a", "color": "white"},
+        "disheartened": {"background": "#a52a2a", "color": "white"},
+        "agitated": {"background": "#a52a2a", "color": "white"},
+        "impassioned": {"background": "#a52a2a", "color": "white"},
+        "discontented": {"background": "#a52a2a", "color": "white"}
+    },
+    
+    "neutral": {
+        "calm": {"background": "#3183bd", "color": "white"},
+        "serene": {"background": "#3183bd", "color": "white"},
+        "peaceful": {"background": "#3183bd", "color": "white"},
+        "composed": {"background": "#3183bd", "color": "white"},
+        "relaxed": {"background": "#3183bd", "color": "white"},
+        "tranquil": {"background": "#3183bd", "color": "white"},
+        "unruffled": {"background": "#3183bd", "color": "white"},
+        "placid": {"background": "#3183bd", "color": "white"},
+        "collected": {"background": "#3183bd", "color": "white"},
+        "still": {"background": "#3183bd", "color": "white"},
+        "quiet": {"background": "#3183bd", "color": "white"},
+        
+        "neutral": {"background": "#bfbfbf", "color": "black"},
+        "indifferent": {"background": "#bfbfbf", "color": "black"},
+        "uncommitted": {"background": "#bfbfbf", "color": "black"},
+        "impartial": {"background": "#bfbfbf", "color": "black"},
+        "unbiased": {"background": "#bfbfbf", "color": "black"},
+        "detached": {"background": "#bfbfbf", "color": "black"},
+        "unemotional": {"background": "#bfbfbf", "color": "black"},
+        "nonchalant": {"background": "#bfbfbf", "color": "black"},
+        
+        "indifferent": {"background": "#474747", "color": "white"},
+        "unconcerned": {"background": "#474747", "color": "white"},
+        "apathetic": {"background": "#474747", "color": "white"},
+        "uninterested": {"background": "#474747", "color": "white"},
+        "detached": {"background": "#474747", "color": "white"},
+        "lukewarm": {"background": "#474747", "color": "white"},
+        "impassive": {"background": "#474747", "color": "white"},
+        "unemotional": {"background": "#474747", "color": "white"},
+        
+        "thoughtful": {"background": "#708090", "color": "white"},
+        "contemplative": {"background": "#708090", "color": "white"},
+        "reflective": {"background": "#708090", "color": "white"},
+        "pensive": {"background": "#708090", "color": "white"},
+        "meditative": {"background": "#708090", "color": "white"},
+        "introspective": {"background": "#708090", "color": "white"},
+        "considerate": {"background": "#708090", "color": "white"},
+        "mindful": {"background": "#708090", "color": "white"},
+        "absorbed": {"background": "#708090", "color": "white"},
+        "ruminative": {"background": "#708090", "color": "white"},
+        "preoccupied": {"background": "#708090", "color": "white"}
+    }
+}
+
+
+
+
+
+
+
+
+
+def get_mood_colors():
+    return MOOD_COLORS
+
 from datetime import datetime
 import random
 

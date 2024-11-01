@@ -1,6 +1,11 @@
 #!/bin/bash
+cd /app
+
 echo "Upgrading database..."
-python /app/check_and_upgrade_db.py
+python /app/pre_lauch_scripts/check_and_upgrade_db.py
+
+echo "generating css"
+python /app/pre_lauch_scripts/generate_mood_css.py
 
 # Start Flask app
 echo "Starting Flask server..."

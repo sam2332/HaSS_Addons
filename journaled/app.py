@@ -8,6 +8,7 @@ from libs.ConfigFile import ConfigFile
 from libs.utils import link_tags, nl2br, wrapped_url_for,u2s,time_link,set_timezone
 from libs.models import db
 from routes import main, tags, settings
+from CONST import get_mood_colors
 SUPERVISOR_TOKEN = os.environ.get('SUPERVISOR_TOKEN')
 try:
     set_timezone()
@@ -104,6 +105,7 @@ def youtube_embedder(text):
     """
 
 # Register the custom filter in Flask
+
 app.jinja_env.filters['dbl_br_remover'] = dbl_br_remover
 app.jinja_env.filters['basic_markdown'] = basic_markdown
 app.jinja_env.filters['link_tags'] = link_tags
@@ -112,10 +114,12 @@ app.jinja_env.filters['u2s'] = u2s
 app.jinja_env.filters['time_link'] = time_link
 
 app.wrapped_url_for = wrapped_url_for
+
+
 @app.context_processor
 def override_url_for():
-    global wrapped_url_for
-    return dict(url_for=wrapped_url_for,ourl_for=url_for)
+    global wrapped_url_for,get_mood_colors
+    return dict(url_for=wrapped_url_for,ourl_for=url_for,get_mood_colors=get_mood_colors)
 
 
 db.init_app(app)
@@ -133,5 +137,7 @@ settings.register_blueprint(app)
 with app.app_context():
     db.create_all()
     
+
 if __name__ == "__main__":
+
     app.run(host="0.0.0.0", port=5000)

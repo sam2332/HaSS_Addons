@@ -70,69 +70,10 @@
             animation:  pulse-color 1s infinite;
             animation-timing-function: ease-in-out;
         }
-        .mood_happy {
-                background-color: #fffc4a; /* Bright Yellow */
-                color: black;
-            }
-
-            .mood_sad {
-                background-color: #4d43ac; /* Deep Purple */
-                color: white;
-            }
-
-            .mood_angry {
-                background-color: #d83131; /* Vivid Red */
-                color: white;
-            }
-
-            .mood_anxious {
-                background-color: #f7b731; /* Light Orange */
-                color: black;
-            }
-
-            .mood_excited {
-                background-color: #e74094; /* Vibrant Pink */
-                color: white;
-            }
-
-            .mood_calm {
-                background-color: #3183bd; /* Soft Blue */
-                color: white;
-            }
-
-            .mood_tired {
-                background-color: #424446; /* Dark Gray */
-                color: white;
-            }
-
-            .mood_confused {
-                background-color: #156e53; /* Teal */
-                color: white;
-            }
-
-
-            .mood_hopeful {
-                background-color: #a4de02; /* Lime Green */
-                color: black;
-            }
-
-            .mood_neutral {
-                background-color: #bfbfbf; /* Light Gray */
-                color: black;
-            }
-
-            .mood_indifferent {
-                background-color: #474747; /* Medium Gray */
-                color: white;
-            }
-
-            .mood_stressed {
-                background-color: #ff0156; /* Coral */
-                color: white;
-            }
-
-    </style>
     
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='mood_styles.css') }}">
+
     {% include 'partials/magic_url_link_block.html' with context %}
     {% block extra_head %}{% endblock %}
 </head>

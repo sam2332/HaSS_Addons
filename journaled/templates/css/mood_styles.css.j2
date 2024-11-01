@@ -1,0 +1,11 @@
+/* Generated Mood Styles */
+
+{% for category, moods in mood_colors.items() %}
+    /* {{ category.capitalize() }} Moods */
+    {% for mood, styles in moods.items() %}
+.mood_{{ mood }} {
+    background-color: {{ styles.background }};
+    color: {{ styles.color }};
+}
+    {% endfor %}
+{% endfor %}

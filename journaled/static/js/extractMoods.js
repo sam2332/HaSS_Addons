@@ -11,6 +11,11 @@ function extractMoods(text) {
         /\bI feel (\w+)\b/gi,
         /\bIt makes me (\w+)\b/gi,
         /\bI've been feeling (\w+)\b/gi,
+        /\bI am Feeling (\w+)\b/gi,
+
+        /\bIm Feeling (\w+)\b/gi,
+
+        /\bi'm Feeling (\w+)\b/gi,
         /\bI am (\w+)\b/gi,
         /\bI'm (\w+)\b/gi,
         /\bFeeling (\w+)\b/gi,
@@ -53,5 +58,15 @@ function extractMoods(text) {
         moods = moods.length ? moods[0] : null;
     }
 
+    var Not_Moods = [
+        'feeling',
+        'feel',
+        'feels',
+        'so',
+        'am',
+    ]
+    if (Not_Moods.includes(moods)) {
+        moods = null;
+    }
     return moods;
 }
