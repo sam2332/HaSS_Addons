@@ -10,7 +10,30 @@
         </blockquote>
     {% endif %}
     <form method="POST" enctype="multipart/form-data" class="mt-3">
+
+        <!-- todays date with a little bi-clock and when you click it it shows a datetime selector to back date journal entries
+         -->
+        <div class="text-muted" id="time_set">
+                <i class="bi bi-clock mr-1"></i><span>{{ fdate }}</span>
+        </div>
+        <input type="datetime-local" class="form-control" id="input_custom_date" name="custom_date" value="{{ date }}" style="display:none;" aria-describedby="time_set">
+        <input type="hidden" id="custom_date_used" name="custom_date_used" value="false">
+
         <!-- button bar/button group horizontal toolbar with dication buttons-->
+        <div class="btn-toolbar mb-2 mt-2" role="toolbar">
+            <div class="btn-group mr-2" role="group">
+                <button type="button" class="btn btn-secondary" id="clearButton">
+                    <i class="bi bi-trash"></i> Clear
+                </button>
+                <button type="button" class="btn btn-secondary" id="dictateButton">
+                    <i class="bi bi-mic"></i> Dictate
+                </button>
+                <button type="button" class="btn btn-secondary" id="addQuestion">
+                    <i class="bi bi-question"></i> New Question
+                </button>
+            </div>
+        </div>
+        <!-- entry input -->
         <textarea id='entry_input' name="content" placeholder="What's on your mind?">{{writing_prompt}}</textarea>
         <div class="form-group mt-2 col-3 mx-auto">
             <label for="attachment text-decoration-underline" id="attachment_label">Attachment?</label>
@@ -23,7 +46,7 @@
     <!-- mood banner (to show the custom one before a mood is detected)-->
      <div class="mt-3" id="mood_banner" style="display:none">
         <h5>How are you feeling today?</h5>
-        <small class="text-muted">Click here to selecta mood.</small>
+        <small class="text-muted">Click here to select a mood.</small>
      </div>
     <!-- detected mood -->
     <div class="mt-3" id="auto_detect_container" style="display:none">
@@ -64,6 +87,7 @@
 {% block extra_scripts %}
 <script src="{{url_for('static', filename='js/extractMoods.js')}}"></script>
 <script>
+    var textarea = document.getElementById('entry_input')
     window.custom_mood = false;
     document.getElementById("attachment_label").addEventListener("click", function() {
         document.getElementById("attachment").click();
@@ -80,9 +104,22 @@
     });
 
 
-    var textarea = document.getElementById('entry_input')
+
+
+
+
+
+
     textarea.style.height = 'auto';  
     textarea.style.height = (textarea.scrollHeight+5) + 'px';  // Set 
+    // reize on content change
+    textarea.addEventListener('input', function () {
+        textarea.style.height = 'auto';  // Set it to auto first to prevent scroll
+        textarea.style.height = (textarea.scrollHeight+5) + 'px';  // Set 
+    });
+
+
+
 
     // auto detect mood
     var mood_banner = document.getElementById('mood_banner');
@@ -99,6 +136,10 @@
         if (content.length > 0) {
             var mood = extractMoods(content);
             if (mood == null) {
+                auto_detect_container.style.display = 'none';
+                document.getElementById("mood").value = "";
+                mood_banner.style.display = 'block';
+                other_mood_container.style.display = 'none';
                 return;
             }
             //IF MOOD IS VALUE IN THE SELECTOR
@@ -123,11 +164,147 @@
         }
     });
 
-    detected_mood.addEventListener('click', function() {
+    mood_banner.addEventListener('click', function() {
         auto_detect_container.style.display = 'none';
         mood_banner.style.display = 'none';
         other_mood_container.style.display = 'block';
         window.custom_mood = true;
+    });
+
+
+
+document.getElementById("clearButton").addEventListener("click", function() {
+    textarea.value = "";
+    textarea.style.height = 'auto';  // Set it to auto first to prevent scroll
+    textarea.style.height = (textarea.scrollHeight+5) + 'px';  // Set 
+});
+
+// Check if the browser supports webkitSpeechRecognition
+if ('webkitSpeechRecognition' in window) {
+    var recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+    var isDictating = false;
+    var textarea = document.getElementById("entry_input");
+    var cursorPosition = 0;
+
+    // Track the cursor position in the textarea
+    textarea.addEventListener("click", function() {
+        cursorPosition = textarea.selectionStart;
+    });
+    textarea.addEventListener("keyup", function() {
+        cursorPosition = textarea.selectionStart;
+    });
+
+    function startDictation() {
+        isDictating = true;
+        recognition.start();
+        updateDictateButton("Stop");
+    }
+
+    function stopDictation() {
+        isDictating = false;
+        recognition.stop();
+        updateDictateButton("Dictate");
+    }
+
+    function updateDictateButton(text) {
+        document.getElementById("dictateButton").innerHTML = `<i class="bi ${text === "Stop" ? "bi-stop" : "bi-mic"}"></i> ${text}`;
+    }
+
+    recognition.onresult = function(event) {
+        var dictationText = event.results[0][0].transcript;
+        var currentText = textarea.value;
+
+        // Insert dictation text at the last cursor position
+        textarea.value = currentText.slice(0, cursorPosition) + dictationText + currentText.slice(cursorPosition);
+        
+        // Move cursor position forward to the end of the inserted text
+        cursorPosition += dictationText.length;
+        textarea.setSelectionRange(cursorPosition, cursorPosition);
+        textarea.focus();
+    };
+
+    recognition.onend = function() {
+        if (isDictating) {
+            stopDictation();
+            textarea.style.height = 'auto';  // Set it to auto first to prevent scroll
+            textarea.style.height = (textarea.scrollHeight+5) + 'px';  // Set 
+        }
+    };
+
+    recognition.onerror = function(event) {
+        console.error("Speech recognition error detected: " + event.error);
+        stopDictation();
+    };
+
+    document.getElementById("dictateButton").addEventListener("click", function() {
+        if (isDictating) {
+            stopDictation();
+        } else {
+            startDictation();
+        }
+    });
+} else {
+    alert("Speech recognition not supported in this browser.");
+}
+
+
+
+    //clock date input
+    var time_set_element = document.getElementById("time_set");
+    var input_custom_date_element = document.getElementById("input_custom_date");
+    time_set_element.addEventListener("click", function() {
+        input_custom_date_element.style.display = "block";
+        time_set_element.style.display = "none";
+        document.getElementById("custom_date_used").value = "true";
+    });
+
+
+
+
+    //add question
+    var add_question_button = document.getElementById("addQuestion");
+    var add_question_url = "{{ url_for('main.generate_random_question') }}";
+    var entry_input = document.getElementById("entry_input");
+    add_question_button.addEventListener("click", function() {
+        fetch(add_question_url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                content: entry_input.value
+            }),
+        })
+        .then(response => response.json())  // Expect JSON
+        .then(data => {
+            // Use `data.prompt` to get the prompt content
+            var lines = entry_input.value.trim().split('\n');
+            if (lines[lines.length - 1] == ">") {
+                lines.pop();
+                lines.pop();
+            }else{
+                lines.push('');
+            }
+              // Check if there's content already; only add double newline if there is
+            
+            //entry_input.value = (lines.length ? lines.join('\n') + "\n" : "") + data.prompt;
+            if (lines.length){
+                lines.push(data.prompt);
+                entry_input.value = lines.join('\n')
+            } else {
+                entry_input.value = data.prompt;
+            }
+
+            // Ensure no blank lines at the start of the textarea
+            entry_input.value = entry_input.value.replace(/^\n+/, "");
+
+            entry_input.style.height = 'auto';
+            entry_input.style.height = (entry_input.scrollHeight + 5) + 'px';
+        })
+
     });
     </script>
 {% endblock %}

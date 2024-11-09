@@ -217,5 +217,15 @@
     document.getElementById("max_word_cloud_count").addEventListener("change", function() {
         fetch("{{url_for('settings.set_max_word_cloud_count',count='')}}"+this.value)
     });
+
+    // track expanded accordion and reopen on page load
+    $('#settingsAccordion').on('shown.bs.collapse', function (e) {
+        localStorage.setItem('settingsAccordion', e.target.id);
+    });
+
+    var last = localStorage.getItem('settingsAccordion');
+    if (last) {
+        $('#'+last).collapse('show');
+    }
 </script>
 {% endblock %}

@@ -5,10 +5,14 @@ import time
 import json
 import requests
 from libs.ConfigFile import ConfigFile
-from libs.utils import link_tags, nl2br, wrapped_url_for,u2s,time_link,set_timezone
+from libs.utils import link_tags, nl2br, wrapped_url_for,u2s,time_link,set_timezone, youtube_embedder, auto_linker, datetime_jinja, dbl_br_remover, basic_markdown
 from libs.models import db
 from routes import main, tags, settings
 from CONST import get_mood_colors
+from datetime import datetime
+
+
+
 SUPERVISOR_TOKEN = os.environ.get('SUPERVISOR_TOKEN')
 try:
     set_timezone()
@@ -31,7 +35,7 @@ CONFIG_PATH = '/config'
 if os.name == 'nt':
     CONFIG_PATH = 'C:'+CONFIG_PATH
     
-ADDON_FILES_DIR_PATH = f'{CONFIG_PATH}/Journal'
+ADDON_FILES_DIR_PATH = f'{CONFIG_PATH}/Journald'
 #abspath = os.path.abspath(__file__)
 ADDON_FILES_DIR_PATH = os.path.abspath(ADDON_FILES_DIR_PATH)
 ADDON_CONFIG_FILE = f'{ADDON_FILES_DIR_PATH}/config.json'
@@ -69,43 +73,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{ADDON_FILES_DIR_PATH}/app.d
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
-def basic_markdown(text):
-    out =[]
-    lines = text.split('\n')
-    in_list = False
-    for line in lines:
-        if line.startswith('>'):
-            out.append(f'<blockquote class="blockquote"><p>{line[1:]}</p></blockquote>')
-        elif line.startswith('* '):
-            if not in_list:
-                in_list = True
-                out.append('<ul>')
-            out.append(f'<li>{line[2:]}</li>')
-        else:
-            if in_list:
-                in_list = False
-                out.append('</ul>')
-            out.append(line)
-            
-    if in_list:
-        in_list = False
-        out.append('</ul>')
-    return '\n'.join(out)
-
-def dbl_br_remover(text):
-    return text.replace('<br><br>','<br>')
-
-
-
-def youtube_embedder(text):
-    url = text.replace('https://www.youtube.com/watch?v=','https://www.youtube.com/embed/')
-    
-    return f"""
-    <iframe width="560" height="315" src="{url}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    """
-
-# Register the custom filter in Flask
-
+app.jinja_env.filters['youtube_embedder'] = youtube_embedder
+app.jinja_env.filters['auto_linker'] = auto_linker
+app.jinja_env.filters['datetime'] = datetime_jinja
 app.jinja_env.filters['dbl_br_remover'] = dbl_br_remover
 app.jinja_env.filters['basic_markdown'] = basic_markdown
 app.jinja_env.filters['link_tags'] = link_tags

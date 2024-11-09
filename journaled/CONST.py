@@ -341,6 +341,8 @@ MOOD_COLORS ={
         "blue": {"background": "#4d43ac", "color": "white"},
         "miserable": {"background": "#4d43ac", "color": "white"},
         "depressed": {"background": "#4d43ac", "color": "white"},
+        "empty": {"background": "#4d43ac", "color": "white"},
+        "fake"  : {"background": "#4d43ac", "color": "white"},
         
         "angry": {"background": "#d83131", "color": "white"},
         "furious": {"background": "#d83131", "color": "white"},
@@ -454,17 +456,26 @@ from datetime import datetime
 import random
 
 class WritingPromptGenerator:
-    def __init__(self):
+    def __init__(self, existing_content=None):
+        self.existing_content = existing_content
+        if self.existing_content is None:
+            self.existing_content = ""
         self.original_prompts = WRITING_PROMPTS.copy()
         self.prompts = WRITING_PROMPTS.copy()
         random.shuffle(self.prompts)
-
-    def get_next_prompt(self):
-        if not self.prompts:
+    def _get_next_prompt(self):
+        if len(self.prompts) == 0:
             self.prompts = self.original_prompts.copy()
             random.shuffle(self.prompts)
-        prompt = self.prompts.pop()
-        
+        return self.prompts.pop()
+    def get_next_prompt(self):
+        tries = 15
+        while tries > 0:
+            prompt = self._get_next_prompt()
+            if prompt not in self.existing_content:
+                break
+            tries -= 1
+            
         prompt = prompt[0].upper() + prompt[1:]
         
         return prompt

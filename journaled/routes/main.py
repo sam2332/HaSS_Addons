@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from libs.models import db, JournalEntry, Tag
 from libs.utils import extract_tags, extract_phrases
 from libs.utils import get_remote_user
@@ -45,6 +45,21 @@ def register_blueprint(app):
         if request.method == 'POST':
             content = request.form['content']
             mood = request.form['mood']
+            custom_date_used = request.form.get('custom_date_used', False)
+            custom_date = request.form.get('custom_date', None)
+            if custom_date_used and custom_date_used != 'false':
+                print("custom date")
+                print(custom_date)
+                
+                #its a datetime-local input so we need to convert it to a datetime object, and correct tz
+                post_date = datetime.strptime(custom_date, '%Y-%m-%dT%H:%M')
+                print(post_date)
+                post_date = post_date.replace(tzinfo=None)
+                print(post_date)
+            else:
+                print("no custom date")
+                post_date = datetime.now()
+                print(post_date)
             attachments = request.files.getlist('attachments')
             
             ah = HashTagAdder()
@@ -55,7 +70,7 @@ def register_blueprint(app):
             tags_in_content = extract_tags(content)
 
             # Save journal entry with user
-            entry = JournalEntry(content=content, user=user,mood=mood)
+            entry = JournalEntry(content=content, user=user,mood=mood,timestamp=post_date)
             #if any tags_in_content in auto_blur_tags then set visible to False
             
             if user_settings.get("auto_blur_mode","off") == 'partial match':
@@ -141,10 +156,12 @@ def register_blueprint(app):
         if user_settings.get("writing_prompt_count",0) > 0:
             writing_prompt_count = int(user_settings.get("writing_prompt_count",0))
             for i in range(writing_prompt_count):
-                writing_prompt +=  wpg.get_next_prompt() + "\n>\n\n"
+                writing_prompt +=  wpg.get_next_prompt() + "\n> \n\n"
                 
-                
+        date = datetime.now()
         return render_template('journal.html',
+            date=date.strftime("%Y-%m-%dT%H:%M"),
+            fdate = date.strftime("%m-%d-%Y"),
             user = user,
             saying=saying,
             last_post_uuid =last_post_uuid,
@@ -158,19 +175,69 @@ def register_blueprint(app):
     
     
     
+    # generate_random_question
+    @bp.route('/generate_random_question', methods=['POST'])
+    def generate_random_question():
+        data = request.get_json()  # Parse JSON data from the request
+        existing_content = data.get('content', [])  # Get content from JSON, defaulting to empty list
+        
+        user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
+        
+        # Generate the writing prompt
+        wpg = WritingPromptGenerator(existing_content=existing_content)
+        writing_prompt = wpg.get_next_prompt() + "\n> \n\n"
+        
+        # Return the writing prompt as a JSON response
+        return jsonify(prompt=writing_prompt), 200
+
     
     
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
+        
+    from calendar import monthrange
+    from datetime import datetime
+
+    @bp.route('/mood_calendar/<int:year>/<int:month>')
+    def mood_calendar(year, month):
+        user = get_remote_user()
+        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
+        if user_settings.get("name_override","") != "":
+            user = user_settings.get("name_override")
+        entries = JournalEntry.query.filter_by(user=user).all()
+        mood_calendar = {}
+
+        # Organize mood data by date
+        for entry in entries:
+            entry_date = entry.timestamp.date()
+            if entry_date.year == year and entry_date.month == month:
+                if entry_date not in mood_calendar:
+                    mood_calendar[entry_date] = {}
+                if entry.mood not in mood_calendar[entry_date]:
+                    mood_calendar[entry_date][entry.mood] = 1
+                else:
+                    mood_calendar[entry_date][entry.mood] += 1
+
+        # Days in month and starting weekday
+        days_in_month = monthrange(year, month)[1]
+        start_day = datetime(year, month, 1).weekday()
+
+        return render_template(
+            'mood_calendar.html',
+            user=user,
+            mood_calendar=mood_calendar,
+            year=year,
+            month=month,
+            days_in_month=days_in_month,
+            start_day=start_day
+        )
+
+        
+        
+        
+        
     
     
     
@@ -389,7 +456,16 @@ def register_blueprint(app):
             
         if user_settings.get("name_override","") != "":
             user = user_settings.get("name_override")
-        return render_template('past.html', entries_with_attachements=entries_with_attachements, user = user,past_saying=past_saying,mood_tally=mood_tally)
+            
+            
+            
+        
+    
+        now = datetime.now()
+        this_months_mood_calendar = app.wrapped_url_for('main.mood_calendar', year=now.year, month=now.month)
+
+
+        return render_template('past.html', entries_with_attachements=entries_with_attachements, user = user,past_saying=past_saying,mood_tally=mood_tally,this_months_mood_calendar=this_months_mood_calendar)
 
 
 

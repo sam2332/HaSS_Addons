@@ -148,3 +148,58 @@ def set_timezone():
     except Exception as e:
         os.environ['TZ'] = "UTC"  # Fallback to UTC if the request fails
 
+
+
+
+
+def basic_markdown(text):
+    out =[]
+    lines = text.split('\n')
+    in_list = False
+    for line in lines:
+        if line.startswith('>'):
+            out.append(f'<blockquote class="blockquote"><p>{line[1:]}</p></blockquote>')
+        elif line.startswith('* '):
+            if not in_list:
+                in_list = True
+                out.append('<ul>')
+            out.append(f'<li>{line[2:]}</li>')
+        else:
+            if in_list:
+                in_list = False
+                out.append('</ul>')
+            out.append(line)
+            
+    if in_list:
+        in_list = False
+        out.append('</ul>')
+    return '\n'.join(out)
+
+def dbl_br_remover(text):
+    return text.replace('<br><br>','<br>')
+
+
+
+def youtube_embedder(text):
+    url = text.replace('https://www.youtube.com/watch?v=','https://www.youtube.com/embed/')
+    
+    return f"""
+    <iframe width="560" height="315" src="{url}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    """
+
+# Register the custom filter in Flask
+
+import re
+
+def auto_linker(text):
+    url = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', text)
+    if len(url) > 0:
+        #replace the url with the link
+        for u in url:
+            text = text.replace(u,f'<a href="{u}" target="_blank" >{u}</a>')
+    return text
+
+    
+    
+def datetime_jinja(year, month, day):
+    return datetime.datetime(year, month, day)

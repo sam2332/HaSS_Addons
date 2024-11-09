@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% import 'datetime' as datetime %}
+{% block title %}Mood Calendar for {{ user }} - {{ month }}/{{ year }}{% endblock %}
+{% block extra_head %}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        user-select: none;
+    }
+    th, td {
+        width: 14.28%;
+        height: 100px;
+        border: 1px solid #ddd;
+        vertical-align: top;
+        text-align: left;
+        padding: 5px;
+    }
+    th {
+        background-color: #f2f2f2;
+        text-align: center;
+    }
+    .day-number {
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<h1>Mood Calendar for {{ user }} - {{ month }}/{{ year }}</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Sun</th>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set day = 1 %}
+        {% for week in range(6) %}
+            <tr>
+                {% for weekday in range(7) %}
+                    {% if week == 0 and weekday < start_day %}
+                        <td></td>
+                    {% elif day > days_in_month %}
+                        <td></td>
+                    {% else %}
+                        <td>
+                            <div class="day-number">{{ day }}</div>
+                            {% set current_date = datetime(year, month, day).date() %}
+                            {% if current_date in mood_calendar %}
+                                {% for mood, count in mood_calendar[current_date].items() %}
+                                    <div>{{ mood }}: {{ count }}</div>
+                                {% endfor %}
+                            {% endif %}
+                            {% set day = day + 1 %}
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+

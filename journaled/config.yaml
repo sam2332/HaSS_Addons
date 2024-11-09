@@ -1,7 +1,7 @@
 name: "Journaled"
-version: "0.0.309"
+version: "0.0.336"
 slug: "journaled"
-description: "UNSTABLE - Journaled is a multi user journaling app for Home Assistant."
+description: "Journaled is a multi user journaling app for Home Assistant."
 startup: "application"
 boot: "auto"
 hassio_api: true
