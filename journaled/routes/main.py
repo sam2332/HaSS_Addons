@@ -197,44 +197,6 @@ def register_blueprint(app):
     
     
         
-    from calendar import monthrange
-    from datetime import datetime
-
-    @bp.route('/mood_calendar/<int:year>/<int:month>')
-    def mood_calendar(year, month):
-        user = get_remote_user()
-        user_settings = ConfigFile(f"{app.filesystem_paths['ADDON_FILES_DIR_PATH']}/{user}.json")
-        if user_settings.get("name_override","") != "":
-            user = user_settings.get("name_override")
-        entries = JournalEntry.query.filter_by(user=user).all()
-        mood_calendar = {}
-
-        # Organize mood data by date
-        for entry in entries:
-            entry_date = entry.timestamp.date()
-            if entry_date.year == year and entry_date.month == month:
-                if entry_date not in mood_calendar:
-                    mood_calendar[entry_date] = {}
-                if entry.mood not in mood_calendar[entry_date]:
-                    mood_calendar[entry_date][entry.mood] = 1
-                else:
-                    mood_calendar[entry_date][entry.mood] += 1
-
-        # Days in month and starting weekday
-        days_in_month = monthrange(year, month)[1]
-        start_day = datetime(year, month, 1).weekday()
-
-        return render_template(
-            'mood_calendar.html',
-            user=user,
-            mood_calendar=mood_calendar,
-            year=year,
-            month=month,
-            days_in_month=days_in_month,
-            start_day=start_day
-        )
-
-        
         
         
         
@@ -258,7 +220,7 @@ def register_blueprint(app):
             if bool(user_settings.get("autohasher_enabled",'false')):
                 content = ah.add_hashtags(content)
             tags_in_content = extract_tags(content)
-            attachments = request.files.getlist('attachements')
+            attachments = request.files.getlist('attachments')
 
             auto_blur_tags = user_settings.get("auto_blur_tags", [])
             # Save journal entry with user
@@ -275,8 +237,8 @@ def register_blueprint(app):
             db.session.commit()
 
             # Save attachements with user   
-            for attachement in attachments:
-                file_attachment_manager.save_file(attachement, entry.id)
+            for attachment in attachments:
+                file_attachment_manager.save_file(attachment, entry.id)
 
             #delete existing tags
             for tag in entry.tags:
@@ -314,9 +276,14 @@ def register_blueprint(app):
             entry_id = request.args.get('entry_id')
             entry = JournalEntry.query.filter_by(id=entry_id).first()
             
-            if user_settings.set("name_override","") != "":
+            if user_settings.get("name_override","") != "":
                 user = user_settings.get("name_override")
-            return render_template('update_journal_entry.html', entry = entry, user = user,entry_id=entry_id)
+            return render_template(
+                'update_journal_entry.html',
+                entry=entry,
+                user=user,
+                entry_id=entry_id
+            )
     
     
     
@@ -460,12 +427,9 @@ def register_blueprint(app):
             
             
         
-    
-        now = datetime.now()
-        this_months_mood_calendar = app.wrapped_url_for('main.mood_calendar', year=now.year, month=now.month)
 
 
-        return render_template('past.html', entries_with_attachements=entries_with_attachements, user = user,past_saying=past_saying,mood_tally=mood_tally,this_months_mood_calendar=this_months_mood_calendar)
+        return render_template('past.html', entries_with_attachements=entries_with_attachements, user = user,past_saying=past_saying,mood_tally=mood_tally)
 
 
 
